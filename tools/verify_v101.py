@@ -39,7 +39,7 @@ orig_cpp = original("VJGenerative.cpp")
 cpp = Path("VJGenerative.cpp").read_text(encoding="utf-8")
 metadata = [
     ('"VJGN"', '"V101"'),
-    ('"VJ Generative"', '"VJ Generative V1.0.1"'),
+    ('"VJ Generative"', '"VJ Gen V1.0.1"'),
     ('\t1, 0,\n\tFF_SOURCE,', '\t1, 1,\n\tFF_SOURCE,'),
     ('"Plugin FFGL generativo - 6 motores, 9 paletas"', '"V1.0.1: seis motores originais; Tunnel angular seam corrected"')
 ]
