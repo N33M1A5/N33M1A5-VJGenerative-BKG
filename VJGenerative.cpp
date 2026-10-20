@@ -161,7 +161,7 @@ float VJGenerative::GetFloatParameter( unsigned int index )
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
 	"V101",
-	"VJ Generative V1.0.1",
+	"VJ Gen V1.0.1",
 	2, 1,
 	1, 1,
 	FF_SOURCE,
