@@ -13,6 +13,7 @@ using namespace ffglex;
 enum Param
 {
 	P_ENGINE,
+    P_EXTRA_MOTOR, // second native FFGL option row: Classic or Particle Wave
 	P_PALETTE,
     P_COLOR_MODE, P_COLOR_BLEND, P_COLOR_MIX,
     P_A_R, P_A_G, P_A_B, P_A_ALPHA,
@@ -31,9 +32,10 @@ enum Param
 	P_COUNT
 };
 
-// V1.4: first six classic engines never change position. All 18 extra engines sorted A-Z.
-static const char* kEngines[] = { "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes", "Bokeh Lights", "Circuit Board", "Crystal", "Cyber Grid", "Digital Rain", "Fractal Bloom", "Hex Mosaic", "Kaleido Pulse", "Light Curtains", "Liquid Plasma", "Mandala", "Neon Ribbons", "Orbitas", "Particle Wave", "Polygon Prism", "Solid RGBA", "Stage Beams", "Starfield" };
-static const int kMotorShaderId[] = { 0, 1, 2, 3, 4, 5, 18, 22, 6, 9, 23, 16, 12, 10, 8, 19, 13, 20, 14, 7, 15, 11, 17, 21 };
+// Exact six original V1.0.1 motor names and order; native six-button FFGL row.
+static const char* kEngines[] = { "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes" };
+static const char* kExtraMotors[] = { "Classicos", "Particle Wave" };
+static const int kNumExtraMotors = 2;
 // The original 9 palette algorithms keep IDs 0..8. Display order is alphabetical.
 static const char* kPalettes[] = { "Acido Neon", "Ambar", "Arco-iris", "Artico", "Aurora Boreal", "Azul Eletrico", "Brasa", "Cobre", "Cyberpunk", "Deserto", "Dourado", "Esmeralda", "Floresta", "Fogo", "Galaxia", "Gelo", "Holograma", "Jade", "Lava", "Limao Neon", "Magenta Laser", "Mono", "Neon", "Oceano", "Outrun", "Por do sol", "Rosa Quartzo", "Roxo Laser", "Safira", "Solar", "Synthwave", "Tropical", "Turquesa", "Ultravioleta", "Vaporwave", "Vermelho Rubi" };
 static const int kPaletteShaderId[] = { 9, 10, 0, 11, 12, 13, 14, 15, 16, 17, 18, 19, 5, 1, 20, 6, 21, 22, 23, 24, 25, 8, 3, 2, 26, 7, 27, 28, 29, 30, 31, 32, 33, 4, 34, 35 };
@@ -132,7 +134,7 @@ VJGenerative::VJGenerative()
     SetMaxInputs(0);
 
     // Defaults FIRST. SetParamInfof() reads GetFloatParameter() during registration.
-    params[P_ENGINE]=0.f; params[P_PALETTE]=(float)kDefaultPaletteIndex;
+    params[P_ENGINE]=0.f; params[P_EXTRA_MOTOR]=0.f; params[P_PALETTE]=(float)kDefaultPaletteIndex;
     params[P_COLOR_MODE]=0.f; params[P_COLOR_BLEND]=0.f; params[P_COLOR_MIX]=.5f;
     params[P_A_R]=1.f; params[P_A_G]=0.f; params[P_A_B]=0.f; params[P_A_ALPHA]=1.f;
     params[P_B_R]=0.f; params[P_B_G]=0.f; params[P_B_B]=1.f; params[P_B_ALPHA]=1.f;
@@ -145,13 +147,15 @@ VJGenerative::VJGenerative()
     params[P_CUSTOM_W]=(1920.f-128.f)/8064.f;
     params[P_CUSTOM_H]=(1080.f-128.f)/8064.f; params[P_GPU_TEST]=0.f;
 
+    // One short FFGL OPTION row is rendered by Resolume as native selection buttons.
+    // A 24-option FFGL parameter was presented by the host as a list.
     SetOptionParamInfo(P_ENGINE,"Motor",kNumEngines,0.f);
     for(int i=0;i<kNumEngines;i++)
        SetParamElementInfo(P_ENGINE,i,kEngines[i],(float)i);
-    // Resolume FFGL option separators can create additional rows.
-    AddElementSeparator(P_ENGINE,6);
-    AddElementSeparator(P_ENGINE,12);
-    AddElementSeparator(P_ENGINE,18);
+    // Only the approved new engine. Exactly the same FFGL option style; no dropdown.
+    SetOptionParamInfo(P_EXTRA_MOTOR,"Motor Adicional",kNumExtraMotors,0.f);
+    for(int i=0;i<kNumExtraMotors;i++)
+       SetParamElementInfo(P_EXTRA_MOTOR,i,kExtraMotors[i],(float)i);
 
     SetOptionParamInfo(P_PALETTE,"Paleta",kNumPalettes,(float)kDefaultPaletteIndex);
     for(int i=0;i<kNumPalettes;i++)
@@ -253,20 +257,23 @@ FFResult VJGenerative::ProcessOpenGL(ProcessOpenGLStruct* pGL)
 
     int motor=(int)std::lround(params[P_ENGINE]);
     motor=std::max(0,std::min(kNumEngines-1,motor));
-    const bool classic=motor<6;
+    const bool particleWave=params[P_EXTRA_MOTOR]>=.5f;
+    const bool classic=!particleWave;
+    const int paletteIndex=std::max(0,std::min(kNumPalettes-1,(int)std::lround(params[P_PALETTE])));
+    const int paletteId=kPaletteShaderId[paletteIndex];
     const bool originalLook=params[P_COLOR_MODE]<.5f &&
-                            params[P_OPACITY]>.9999f && params[P_GLOW]<.0001f;
+                            params[P_OPACITY]>.9999f && params[P_GLOW]<.0001f &&
+                            paletteId<9;
     FFGLShader* active=&shader;
     if(classic && !originalLook && classicColorReady)active=&classicColorShader;
-    else if(!classic && expansionReady)active=&expansionShader;
+    else if(particleWave && expansionReady)active=&expansionShader;
 
     ScopedShaderBinding binding(active->GetGLID());
     active->Set("iResolution",width,height,1.f);
     active->Set("iTime",(float)time);
     active->Set("uBeat",(float)beats);
     active->Set("uEngine",params[P_ENGINE]);
-    const int paletteIndex=std::max(0,std::min(kNumPalettes-1,(int)std::lround(params[P_PALETTE])));
-    active->Set("uPalette",(float)kPaletteShaderId[paletteIndex]);
+    active->Set("uPalette",(float)paletteId);
     active->Set("uScale",params[P_SCALE]);
     active->Set("uIntensity",params[P_INTENSITY]);
     active->Set("uHue",params[P_HUE]);
@@ -285,7 +292,7 @@ FFResult VJGenerative::ProcessOpenGL(ProcessOpenGLStruct* pGL)
         active->Set("uGlow",params[P_GLOW]);
     }
     if(active==&expansionShader){
-        active->Set("uVJEngine",(float)(kMotorShaderId[motor]-6));
+        active->Set("uVJEngine",1.f); // Particle Wave is engine index 1 in expansion shader.
         active->Set("uDetail",params[P_DETAIL]);
         active->Set("uDepth",params[P_DEPTH]);
         active->Set("uDensity",params[P_DENSITY]);
@@ -301,7 +308,13 @@ FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 {
 	if( index >= P_COUNT ) return FF_FAIL;
     if(!std::isfinite(value))return FF_FAIL;
-    if(index==P_ENGINE)params[index]=std::max(0.f,std::min((float)(kNumEngines-1),value));
+    if(index==P_ENGINE){
+       params[index]=std::max(0.f,std::min((float)(kNumEngines-1),value));
+       // Pressing one of the six original buttons returns to that classical motor.
+       params[P_EXTRA_MOTOR]=0.f;
+    }
+    else if(index==P_EXTRA_MOTOR)
+       params[index]=std::max(0.f,std::min(1.f,value));
     else if(index==P_PALETTE)params[index]=std::max(0.f,std::min((float)(kNumPalettes-1),value));
     else if(index==P_COLOR_MODE || index==P_COLOR_BLEND)params[index]=std::max(0.f,std::min(3.f,value));
     else if(index==P_CANVAS)params[index]=std::max(0.f,std::min(4.f,value));
@@ -329,10 +342,10 @@ char* VJGenerative::GetParameterDisplay(unsigned int index)
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJ16",
-	"VJ Gen V1.4",
+	"VJ17",
+	"VJ Gen V1.4.1",
 	2, 1,
-	1, 6,
+	1, 7,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"V1.4: 36 alphabetic palettes, 24 engines, original classic visuals retained" );
+	"V1.4.1: original 6 motor buttons, Particle Wave button row, 36 sorted palettes" );
