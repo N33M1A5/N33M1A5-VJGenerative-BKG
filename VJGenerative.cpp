@@ -1,5 +1,9 @@
 #include "FFGLSDK.h"
-#include "shaders.h"
+#include "shaders.h" // IMMUTABLE V1.0.1 shader
+#include "shaders_expansion.h"
+#include <string>
+#include <algorithm>
+#include <cstdio>
 #include <chrono>
 #include <cmath>
 
@@ -9,6 +13,9 @@ enum Param
 {
 	P_ENGINE,
 	P_PALETTE,
+    P_COLOR_MODE, P_COLOR_BLEND, P_COLOR_MIX,
+    P_A_R, P_A_G, P_A_B, P_A_ALPHA,
+    P_B_R, P_B_G, P_B_B, P_B_ALPHA,
 	P_SPEED,
 	P_SCALE,
 	P_INTENSITY,
@@ -18,13 +25,67 @@ enum Param
 	P_BPM,
 	P_PULSE,
 	P_CONTRAST,
+    P_DETAIL, P_DEPTH, P_DENSITY, P_DIRECTION, P_GLOW, P_OPACITY,
+    P_CANVAS, P_CUSTOM_W, P_CUSTOM_H, P_GPU_TEST,
 	P_COUNT
 };
 
-static const char* kEngines[]  = { "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes" };
+static const char* kEngines[] = {
+  "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes",
+  "Crystal", "Particle Wave", "Light Curtains", "Cyber Grid", "Kaleido Pulse", "Solid RGBA",
+  "Hex Mosaic", "Mandala", "Orbitas", "Polygon Prism", "Fractal Bloom", "Stage Beams",
+  "Bokeh Lights", "Liquid Plasma", "Neon Ribbons", "Starfield", "Circuit Board", "Digital Rain"
+};
 static const char* kPalettes[] = { "Arco-iris", "Fogo", "Oceano", "Neon", "Ultravioleta", "Floresta", "Gelo", "Por do sol", "Mono" };
 static const int kNumEngines   = sizeof( kEngines ) / sizeof( kEngines[ 0 ] );
 static const int kNumPalettes  = sizeof( kPalettes ) / sizeof( kPalettes[ 0 ] );
+static const char* kColorModes[] = {"Original", "RGBA A", "Paleta A+B", "A+B Animada"};
+static const char* kColorBlends[] = {"Crossfade", "Add", "Screen", "Multiply"};
+static const char* kCanvasModes[] = {"Auto / Output", "16:9", "9:16", "32:9", "Custom"};
+static constexpr unsigned int kClassicCount = 6;
+
+static bool replaceOnce(std::string& s, const std::string& from, const std::string& to)
+{
+    const auto p=s.find(from);
+    if(p==std::string::npos || s.find(from,p+from.size())!=std::string::npos)return false;
+    s.replace(p,from.size(),to);
+    return true;
+}
+// Make a *separate* runtime variant of the original shader for opt-in RGBA/opacity/glow.
+// The original shader string is never modified; factory defaults use its original GL program.
+static std::string makeClassicPaletteShader()
+{
+    std::string s(kFragmentShader);
+    if(!replaceOnce(s,"vec3 pal(float t){","vec3 originalPal(float t){"))return {};
+    if(!replaceOnce(s,"uniform float uSlices, uSeed, uPulse, uContrast;",
+       "uniform float uSlices, uSeed, uPulse, uContrast;\n"
+       "uniform float uRGBAType,uRGBABlend,uRGBAMix,uOpacity,uGlow;\n"
+       "uniform vec4 uRGBA_A,uRGBA_B;"))return {};
+    const std::string customPalette=R"GLSL(
+vec3 pal(float t){
+    vec3 original=originalPal(t);
+    int mode=int(uRGBAType+.5);
+    if(mode==0)return original;
+    vec3 A=clamp(uRGBA_A.rgb,0.,1.),B=clamp(uRGBA_B.rgb,0.,1.);
+    if(mode==1)return A;
+    float phase=t+uHue+(mode==3?iTime*.055:0.);
+    float k=clamp(.5+.5*cos(6.28318530718*phase)+uRGBAMix-.5,0.,1.);
+    int blending=int(uRGBABlend+.5);
+    if(blending==1)return clamp(A+B*k,0.,1.);
+    if(blending==2)return 1.-(1.-A)*(1.-B*k);
+    if(blending==3)return mix(A,A*B,k);
+    return mix(A,B,k);
+}
+)GLSL";
+    if(!replaceOnce(s,"// 0 - Nevoa (domain warping)",customPalette+"\n// 0 - Nevoa (domain warping)"))return {};
+    if(!replaceOnce(s,"fragColor=vec4(clamp(col,0.,1.),1.);",
+       "col+=max(col-vec3(.16),vec3(0.))*clamp(uGlow,0.,1.)*1.15;\n"
+       "float alpha=clamp(uOpacity,0.,1.);\n"
+       "if(int(uRGBAType+.5)>0)alpha*=mix(uRGBA_A.a,uRGBA_B.a,clamp(uRGBAMix,0.,1.));\n"
+       "fragColor=vec4(clamp(col,0.,1.),alpha);"))return {};
+    return s;
+}
+
 
 class VJGenerative : public CFFGLPlugin
 {
@@ -37,11 +98,16 @@ public:
 	FFResult DeInitGL() override;
 	FFResult SetFloatParameter( unsigned int index, float value ) override;
 	float GetFloatParameter( unsigned int index ) override;
+    char* GetParameterDisplay(unsigned int index) override;
 
 private:
-	FFGLShader shader;
+	FFGLShader shader; // V1.0.1 untouched
+    FFGLShader classicColorShader; // built from original, new palette only
+    FFGLShader expansionShader;
+    bool classicColorReady=false, expansionReady=false;
+    char display[32] = {};
 	FFGLScreenQuad quad;
-	float params[ P_COUNT ];
+	float params[ P_COUNT ] = {};
 	double time       = 0.0;  // tempo acumulado (afetado pela Speed)
 	double beats      = 0.0;  // batidas acumuladas (tempo real x BPM)
 	std::chrono::steady_clock::time_point last;
@@ -50,106 +116,182 @@ private:
 
 VJGenerative::VJGenerative()
 {
-	SetMinInputs( 0 );
-	SetMaxInputs( 0 );
+    SetMinInputs(0);
+    SetMaxInputs(0);
 
-	SetOptionParamInfo( P_ENGINE, "Motor", kNumEngines, 0.0f );
-	for( int i = 0; i < kNumEngines; i++ )
-		SetParamElementInfo( P_ENGINE, i, kEngines[ i ], (float)i );
+    // Defaults FIRST. SetParamInfof() reads GetFloatParameter() during registration.
+    params[P_ENGINE]=0.f; params[P_PALETTE]=0.f;
+    params[P_COLOR_MODE]=0.f; params[P_COLOR_BLEND]=0.f; params[P_COLOR_MIX]=.5f;
+    params[P_A_R]=1.f; params[P_A_G]=0.f; params[P_A_B]=0.f; params[P_A_ALPHA]=1.f;
+    params[P_B_R]=0.f; params[P_B_G]=0.f; params[P_B_B]=1.f; params[P_B_ALPHA]=1.f;
+    params[P_SPEED]=.5f; params[P_SCALE]=.5f; params[P_INTENSITY]=.5f;
+    params[P_HUE]=0.f; params[P_SYMMETRY]=0.f; params[P_SEED]=0.f;
+    params[P_BPM]=.5f; params[P_PULSE]=0.f; params[P_CONTRAST]=.5f;
+    params[P_DETAIL]=.5f; params[P_DEPTH]=.5f; params[P_DENSITY]=.5f;
+    params[P_DIRECTION]=0.f; params[P_GLOW]=0.f; params[P_OPACITY]=1.f;
+    params[P_CANVAS]=0.f;
+    params[P_CUSTOM_W]=(1920.f-128.f)/8064.f;
+    params[P_CUSTOM_H]=(1080.f-128.f)/8064.f; params[P_GPU_TEST]=0.f;
 
-	SetOptionParamInfo( P_PALETTE, "Paleta", kNumPalettes, 0.0f );
-	for( int i = 0; i < kNumPalettes; i++ )
-		SetParamElementInfo( P_PALETTE, i, kPalettes[ i ], (float)i );
+    SetOptionParamInfo(P_ENGINE,"Motor",kNumEngines,0.f);
+    for(int i=0;i<kNumEngines;i++)
+       SetParamElementInfo(P_ENGINE,i,kEngines[i],(float)i);
+    // Resolume FFGL option separators can create additional rows.
+    AddElementSeparator(P_ENGINE,6);
+    AddElementSeparator(P_ENGINE,12);
+    AddElementSeparator(P_ENGINE,18);
 
-	SetParamInfof( P_SPEED, "Velocidade", FF_TYPE_STANDARD );
-	SetParamInfof( P_SCALE, "Escala", FF_TYPE_STANDARD );
-	SetParamInfof( P_INTENSITY, "Intensidade", FF_TYPE_STANDARD );
-	SetParamInfof( P_HUE, "Matiz", FF_TYPE_STANDARD );
-	SetParamInfof( P_SYMMETRY, "Simetria", FF_TYPE_STANDARD );
-	SetParamInfof( P_SEED, "Semente", FF_TYPE_STANDARD );
-	SetParamInfof( P_BPM, "BPM (60-180)", FF_TYPE_STANDARD );
-	SetParamInfof( P_PULSE, "Pulso", FF_TYPE_STANDARD );
-	SetParamInfof( P_CONTRAST, "Contraste", FF_TYPE_STANDARD );
+    SetOptionParamInfo(P_PALETTE,"Paleta",kNumPalettes,0.f);
+    for(int i=0;i<kNumPalettes;i++)
+       SetParamElementInfo(P_PALETTE,i,kPalettes[i],(float)i);
 
-	params[ P_ENGINE ]    = 0.0f;
-	params[ P_PALETTE ]   = 0.0f;
-	params[ P_SPEED ]     = 0.5f;
-	params[ P_SCALE ]     = 0.5f;
-	params[ P_INTENSITY ] = 0.5f;
-	params[ P_HUE ]       = 0.0f;
-	params[ P_SYMMETRY ]  = 0.0f;
-	params[ P_SEED ]      = 0.0f;
-	params[ P_BPM ]       = 0.5f;
-	params[ P_PULSE ]     = 0.0f;
-	params[ P_CONTRAST ]  = 0.5f;
+    // One color section for ALL 24 engines, immediately after Paleta.
+    SetOptionParamInfo(P_COLOR_MODE,"Modo de Cor",4,0.f);
+    SetOptionParamInfo(P_COLOR_BLEND,"Mistura Cores",4,0.f);
+    for(int i=0;i<4;i++){
+       SetParamElementInfo(P_COLOR_MODE,i,kColorModes[i],(float)i);
+       SetParamElementInfo(P_COLOR_BLEND,i,kColorBlends[i],(float)i);
+    }
+    SetParamInfof(P_COLOR_MIX,"Mix Cor A/B",FF_TYPE_STANDARD);
+    SetParamInfof(P_A_R,"A Red",FF_TYPE_RED);
+    SetParamInfof(P_A_G,"A Green",FF_TYPE_GREEN);
+    SetParamInfof(P_A_B,"A Blue",FF_TYPE_BLUE);
+    SetParamInfof(P_A_ALPHA,"A Alpha",FF_TYPE_ALPHA);
+    SetParamInfof(P_B_R,"B Red",FF_TYPE_RED);
+    SetParamInfof(P_B_G,"B Green",FF_TYPE_GREEN);
+    SetParamInfof(P_B_B,"B Blue",FF_TYPE_BLUE);
+    SetParamInfof(P_B_ALPHA,"B Alpha",FF_TYPE_ALPHA);
+    for(unsigned i=P_COLOR_MODE;i<=P_B_ALPHA;i++)SetParamGroup(i,"PALETA PERSONALIZADA | RGBA");
+
+    SetParamInfof(P_SPEED,"Velocidade",FF_TYPE_STANDARD);
+    SetParamInfof(P_SCALE,"Escala",FF_TYPE_STANDARD);
+    SetParamInfof(P_INTENSITY,"Intensidade",FF_TYPE_STANDARD);
+    SetParamInfof(P_HUE,"Matiz",FF_TYPE_STANDARD);
+    SetParamInfof(P_SYMMETRY,"Simetria",FF_TYPE_STANDARD);
+    SetParamInfof(P_SEED,"Semente",FF_TYPE_STANDARD);
+    SetParamInfof(P_BPM,"BPM (60-180)",FF_TYPE_STANDARD);
+    SetParamInfof(P_PULSE,"Pulso",FF_TYPE_STANDARD);
+    SetParamInfof(P_CONTRAST,"Contraste",FF_TYPE_STANDARD);
+
+    SetParamInfof(P_DETAIL,"Detalhe",FF_TYPE_STANDARD);
+    SetParamInfof(P_DEPTH,"Profundidade",FF_TYPE_STANDARD);
+    SetParamInfof(P_DENSITY,"Densidade",FF_TYPE_STANDARD);
+    SetParamInfof(P_DIRECTION,"Inverter Movimento",FF_TYPE_BOOLEAN);
+    SetParamInfof(P_GLOW,"Realce de Luz",FF_TYPE_STANDARD);
+    SetParamInfof(P_OPACITY,"Opacidade",FF_TYPE_ALPHA);
+    for(unsigned i=P_DETAIL;i<=P_OPACITY;i++)SetParamGroup(i,"CONTROLES AVANCADOS");
+    SetOptionParamInfo(P_CANVAS,"Canvas",5,0.f);
+    for(int i=0;i<5;i++)SetParamElementInfo(P_CANVAS,i,kCanvasModes[i],(float)i);
+    SetParamInfof(P_CUSTOM_W,"Largura Custom",FF_TYPE_STANDARD);
+    SetParamInfof(P_CUSTOM_H,"Altura Custom",FF_TYPE_STANDARD);
+    for(unsigned i=P_CANVAS;i<=P_CUSTOM_H;i++)SetParamGroup(i,"RESOLUCAO | LED");
+    SetParamInfof(P_GPU_TEST,"Teste de Shader GPU",FF_TYPE_BOOLEAN);
+    SetParamGroup(P_GPU_TEST,"DIAGNOSTICO");
 }
-
-FFResult VJGenerative::InitGL( const FFGLViewportStruct* vp )
+FFResult VJGenerative::InitGL(const FFGLViewportStruct* vp)
 {
-	if( !shader.Compile( kVertexShader, kFragmentShader ) )
-	{
-		DeInitGL();
-		return FF_FAIL;
-	}
-	if( !quad.Initialise() )
-	{
-		DeInitGL();
-		return FF_FAIL;
-	}
-	started = false;
-	return CFFGLPlugin::InitGL( vp );
+    if(!shader.Compile(kVertexShader,kFragmentShader)){
+       DeInitGL();
+       return FF_FAIL;
+    }
+    std::string custom = makeClassicPaletteShader();
+    classicColorReady=!custom.empty() && classicColorShader.Compile(kVertexShader,custom.c_str());
+    expansionReady=expansionShader.Compile(kVJVertexShader,kVJFragmentShader);
+    if(!classicColorReady)FFGLLog::LogToHost("N33 Unified: palette shader failed; original V1 still available.");
+    if(!expansionReady)FFGLLog::LogToHost("N33 Unified: expansion shader failed; original V1 still available.");
+    if(!quad.Initialise()){DeInitGL();return FF_FAIL;}
+    started=false;
+    return CFFGLPlugin::InitGL(vp);
 }
 
 FFResult VJGenerative::DeInitGL()
 {
-	shader.FreeGLResources();
-	quad.Release();
-	return FF_SUCCESS;
+    shader.FreeGLResources();
+    classicColorShader.FreeGLResources();
+    expansionShader.FreeGLResources();
+    classicColorReady=false;expansionReady=false;
+    quad.Release();
+    return FF_SUCCESS;
 }
 
-FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
+FFResult VJGenerative::ProcessOpenGL(ProcessOpenGLStruct* pGL)
 {
-	auto now = std::chrono::steady_clock::now();
-	if( !started )
-	{
-		last    = now;
-		started = true;
-	}
-	double dt = std::chrono::duration< double >( now - last ).count();
-	last      = now;
-	if( dt > 0.25 ) dt = 0.25;
+    auto now=std::chrono::steady_clock::now();
+    if(!started){last=now;started=true;}
+    double dt=std::chrono::duration<double>(now-last).count();
+    last=now;
+    if(dt>0.25)dt=0.25;
+    if(dt<0.)dt=0.;
+    const double speed=params[P_SPEED]*2.0;
+    time+=dt*speed*(params[P_DIRECTION]>=.5f?-1.0:1.0);
+    const double bpm=60.0+params[P_BPM]*120.0;
+    beats+=dt*bpm/60.0;
 
-	// Velocidade: 0..1 -> 0..2x (0.5 = normal)
-	double speed = params[ P_SPEED ] * 2.0;
-	time += dt * speed;
-	double bpm = 60.0 + params[ P_BPM ] * 120.0;
-	beats += dt * bpm / 60.0;
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    float width=(float)std::max(1,viewport[2]);
+    float height=(float)std::max(1,viewport[3]);
+    // Procedural output uses the REAL viewport in default Auto mode.
+    int canvas=(int)std::lround(params[P_CANVAS]);
+    if(canvas==1)width=height*(16.f/9.f);
+    else if(canvas==2)width=height*(9.f/16.f);
+    else if(canvas==3)width=height*(32.f/9.f);
+    else if(canvas==4)width=height*(128.f+8064.f*params[P_CUSTOM_W])/(128.f+8064.f*params[P_CUSTOM_H]);
 
-	GLint vp[ 4 ];
-	glGetIntegerv( GL_VIEWPORT, vp );
+    int motor=(int)std::lround(params[P_ENGINE]);
+    motor=std::max(0,std::min(kNumEngines-1,motor));
+    const bool classic=motor<6;
+    const bool originalLook=params[P_COLOR_MODE]<.5f &&
+                            params[P_OPACITY]>.9999f && params[P_GLOW]<.0001f;
+    FFGLShader* active=&shader;
+    if(classic && !originalLook && classicColorReady)active=&classicColorShader;
+    else if(!classic && expansionReady)active=&expansionShader;
 
-	ScopedShaderBinding binding( shader.GetGLID() );
-	shader.Set( "iResolution", (float)vp[ 2 ], (float)vp[ 3 ], 1.0f );
-	shader.Set( "iTime", (float)time );
-	shader.Set( "uBeat", (float)beats );
-	shader.Set( "uEngine", params[ P_ENGINE ] );
-	shader.Set( "uPalette", params[ P_PALETTE ] );
-	shader.Set( "uScale", params[ P_SCALE ] );
-	shader.Set( "uIntensity", params[ P_INTENSITY ] );
-	shader.Set( "uHue", params[ P_HUE ] );
-	shader.Set( "uSlices", params[ P_SYMMETRY ] );
-	shader.Set( "uSeed", params[ P_SEED ] * 100.0f );
-	shader.Set( "uPulse", params[ P_PULSE ] );
-	shader.Set( "uContrast", params[ P_CONTRAST ] );
+    ScopedShaderBinding binding(active->GetGLID());
+    active->Set("iResolution",width,height,1.f);
+    active->Set("iTime",(float)time);
+    active->Set("uBeat",(float)beats);
+    active->Set("uEngine",params[P_ENGINE]);
+    active->Set("uPalette",params[P_PALETTE]);
+    active->Set("uScale",params[P_SCALE]);
+    active->Set("uIntensity",params[P_INTENSITY]);
+    active->Set("uHue",params[P_HUE]);
+    active->Set("uSlices",params[P_SYMMETRY]);
+    active->Set("uSeed",params[P_SEED]*100.f);
+    active->Set("uPulse",params[P_PULSE]);
+    active->Set("uContrast",params[P_CONTRAST]);
 
-	quad.Draw();
-	return FF_SUCCESS;
+    if(active==&classicColorShader || active==&expansionShader){
+        active->Set("uRGBAType",params[P_COLOR_MODE]);
+        active->Set("uRGBABlend",params[P_COLOR_BLEND]);
+        active->Set("uRGBAMix",params[P_COLOR_MIX]);
+        active->Set("uRGBA_A",params[P_A_R],params[P_A_G],params[P_A_B],params[P_A_ALPHA]);
+        active->Set("uRGBA_B",params[P_B_R],params[P_B_G],params[P_B_B],params[P_B_ALPHA]);
+        active->Set("uOpacity",params[P_OPACITY]);
+        active->Set("uGlow",params[P_GLOW]);
+    }
+    if(active==&expansionShader){
+        active->Set("uVJEngine",(float)(motor-6));
+        active->Set("uDetail",params[P_DETAIL]);
+        active->Set("uDepth",params[P_DEPTH]);
+        active->Set("uDensity",params[P_DENSITY]);
+        active->Set("uCanvasMode",params[P_CANVAS]);
+        active->Set("uCustomSize",128.f+8064.f*params[P_CUSTOM_W],128.f+8064.f*params[P_CUSTOM_H]);
+        active->Set("uDiagnostic",params[P_GPU_TEST]);
+    }
+    quad.Draw();
+    return FF_SUCCESS;
 }
 
 FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 {
 	if( index >= P_COUNT ) return FF_FAIL;
-	params[ index ] = value;
+    if(!std::isfinite(value))return FF_FAIL;
+    if(index==P_ENGINE)params[index]=std::max(0.f,std::min((float)(kNumEngines-1),value));
+    else if(index==P_PALETTE)params[index]=std::max(0.f,std::min((float)(kNumPalettes-1),value));
+    else if(index==P_COLOR_MODE || index==P_COLOR_BLEND)params[index]=std::max(0.f,std::min(3.f,value));
+    else if(index==P_CANVAS)params[index]=std::max(0.f,std::min(4.f,value));
+    else params[index]=std::max(0.f,std::min(1.f,value));
 	return FF_SUCCESS;
 }
 
@@ -158,12 +300,25 @@ float VJGenerative::GetFloatParameter( unsigned int index )
 	return index < P_COUNT ? params[ index ] : 0.0f;
 }
 
+char* VJGenerative::GetParameterDisplay(unsigned int index)
+{
+   if(index==P_CUSTOM_W || index==P_CUSTOM_H){
+      const unsigned px=(unsigned)std::lround(128.f+8064.f*params[index]);
+      std::snprintf(display,sizeof(display),"%u px",px);
+      return display;
+   }
+   if(index==P_GPU_TEST){
+      return (char*)(expansionReady?"GPU OK":"GPU ERRO");
+   }
+   return CFFGLPlugin::GetParameterDisplay(index);
+}
+
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJGN",
-	"VJ Generative",
+	"VJ15",
+	"VJ Gen Unified",
 	2, 1,
-	1, 1,
+	1, 5,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"Plugin FFGL generativo - 6 motores, 9 paletas" );
+	"Unified 24 engine selector, palette A/B on all engines, V1 classic unchanged by default" );
