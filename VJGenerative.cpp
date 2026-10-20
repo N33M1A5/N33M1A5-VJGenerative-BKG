@@ -36,10 +36,10 @@ enum Param
 // Exact six original V1.0.1 motor names and order; native six-button FFGL row.
 static const char* kEngines[] = { "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes" };
 // A second FFGL native option button row: six premium motors plus return.
-static const char* kExtraMotors[] = { "Classicos", "Catedral Luz", "Chrome Tide",
-    "Energy Rift", "Infinity Cubes", "Nova Pulse", "Particle Wave" };
+static const char* kExtraMotors[] = { "Classicos", "Arquitetura", "Chrome Flow",
+    "Electric Storm", "Golden Fan", "Particle Wave", "Stage Rays" };
 static const int kNumExtraMotors=sizeof(kExtraMotors)/sizeof(kExtraMotors[0]);
-static const int kNewShaderIds[]={-1,18,19,20,21,22,1};
+static const int kNewShaderIds[]={-1,18,19,20,21,1,22};
 // The original 9 palette algorithms keep IDs 0..8. Display order is alphabetical.
 static const char* kPalettes[] = { "Acido Neon", "Ambar", "Arco-iris", "Artico", "Aurora Boreal", "Azul Eletrico", "Brasa", "Cobre", "Cyberpunk", "Deserto", "Dourado", "Esmeralda", "Floresta", "Fogo", "Galaxia", "Gelo", "Holograma", "Jade", "Lava", "Limao Neon", "Magenta Laser", "Mono", "Neon", "Oceano", "Outrun", "Por do sol", "Rosa Quartzo", "Roxo Laser", "Safira", "Solar", "Synthwave", "Tropical", "Turquesa", "Ultravioleta", "Vaporwave", "Vermelho Rubi" };
 static const int kPaletteShaderId[] = { 9, 10, 0, 11, 12, 13, 14, 15, 16, 17, 18, 19, 5, 1, 20, 6, 21, 22, 23, 24, 25, 8, 3, 2, 26, 7, 27, 28, 29, 30, 31, 32, 33, 4, 34, 35 };
@@ -356,10 +356,10 @@ char* VJGenerative::GetParameterDisplay(unsigned int index)
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJ18",
-	"VJ Gen V1.5",
+	"VJ19",
+	"VJ Gen V1.6",
 	2, 1,
-	1, 8,
+	1, 9,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"V1.5: original 6 classic motors plus 6 stage-premium motors, 36 palettes" );
+	"V1.6: six classic motors plus six original stage-ready motors, 36 palettes" );
