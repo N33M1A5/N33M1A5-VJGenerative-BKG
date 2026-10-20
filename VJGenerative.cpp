@@ -2,6 +2,7 @@
 #include "shaders.h"
 #include <chrono>
 #include <cmath>
+#include <cstdio>
 
 using namespace ffglex;
 
@@ -49,11 +50,13 @@ public:
 	FFResult DeInitGL() override;
 	FFResult SetFloatParameter( unsigned int index, float value ) override;
 	float GetFloatParameter( unsigned int index ) override;
+    char* GetParameterDisplay( unsigned int index ) override;
 
 private:
 	FFGLShader shader;
 	FFGLScreenQuad quad;
 	float params[ P_COUNT ];
+    char numericDisplay[40] = {};
 	double time       = 0.0;  // tempo acumulado (afetado pela Speed)
 	double beats      = 0.0;  // batidas acumuladas (tempo real x BPM)
 	std::chrono::steady_clock::time_point last;
@@ -237,6 +240,32 @@ FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 float VJGenerative::GetFloatParameter( unsigned int index )
 {
 	return index < P_COUNT ? params[ index ] : 0.0f;
+}
+
+char* VJGenerative::GetParameterDisplay(unsigned int index)
+{
+    if(index >= P_COUNT) return nullptr;
+    if(index == P_CUSTOM_W || index == P_CUSTOM_H) {
+        const unsigned px = (unsigned)std::lround(256.0 + 7936.0 * params[index]);
+        std::snprintf(numericDisplay,sizeof(numericDisplay),"%u px",px);
+        return numericDisplay;
+    }
+    if(index == P_POS_X || index == P_POS_Y ||
+       index == P_ANCHOR_X || index == P_ANCHOR_Y) {
+        const float centeredPercent=(params[index]-.5f)*200.f;
+        std::snprintf(numericDisplay,sizeof(numericDisplay),"%+.1f %%",centeredPercent);
+        return numericDisplay;
+    }
+    if(index == P_TRANSFORM_SCALE) {
+        const float zoom=std::exp2((params[index]-.5f)*4.f)*100.f;
+        std::snprintf(numericDisplay,sizeof(numericDisplay),"%.1f %%",zoom);
+        return numericDisplay;
+    }
+    if(index == P_ROTATION) {
+        std::snprintf(numericDisplay,sizeof(numericDisplay),"%+.1f deg",(params[index]-.5f)*360.f);
+        return numericDisplay;
+    }
+    return CFFGLPlugin::GetParameterDisplay(index);
 }
 
 static CFFGLPluginInfo PluginInfo(
