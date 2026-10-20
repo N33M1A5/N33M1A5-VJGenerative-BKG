@@ -11,6 +11,8 @@ using namespace ffglex;
 enum Param
 {
 	P_ENGINE,
+    // These FFGL option IDs render as native button rows immediately below Motor.
+    P_GEOMETRY, P_LIGHT, P_DEPTH_ENGINES,
 	P_PALETTE,
     // Color section directly below the Palette row in the FFGL host UI.
     P_RGBA_MODE, P_RGBA_BLEND, P_RGBA_MIX,
@@ -27,9 +29,9 @@ enum Param
 	P_BPM,
 	P_PULSE,
 	P_CONTRAST,
-    // Additional engine rows remain separate.
-    P_GEOMETRY, P_LIGHT, P_DEPTH_ENGINES,
+    // Extra controls sit AFTER all original parameters.
     P_DETAIL, P_VJ_DEPTH, P_DENSITY,
+    P_DIRECTION, P_GLOW,
     P_ASPECT_MODE, P_CUSTOM_WIDTH, P_CUSTOM_HEIGHT,
 	P_COUNT
 };
@@ -38,9 +40,9 @@ static const char* kEngines[]  = { "Nevoa", "Tunel", "Lasers", "Celulas", "Auror
 static const char* kPalettes[] = { "Arco-iris", "Fogo", "Oceano", "Neon", "Ultravioleta", "Floresta", "Gelo", "Por do sol", "Mono" };
 static const int kNumEngines   = sizeof( kEngines ) / sizeof( kEngines[ 0 ] );
 static const int kNumPalettes  = sizeof( kPalettes ) / sizeof( kPalettes[ 0 ] );
-static const char* kGeometry[]={"Classico V1","Crystal","Hex Mosaic","Mandala","Orbital Rings","Polygon Prism","Fractal Bloom"};
-static const char* kLighting[]={"Classico V1","Light Curtains","Stage Beams","Particle Waves","Bokeh Lights","Liquid Plasma","Neon Ribbons"};
-static const char* kDepth[]={"Classico V1","Cyber Grid","Kaleido Pulse","Starfield Warp","Circuit Board","Digital Rain","Solid RGBA"};
+static const char* kGeometry[]={"V1","Crystal","Hex","Mandala","Orbitas","Prismas","Fractal"};
+static const char* kLighting[]={"V1","Cortinas","Beams","Particulas","Bokeh","Plasma","Ribbons"};
+static const char* kDepth[]={"V1","Grid","Kaleido","Estrelas","Circuitos","Chuva","SolidRGBA"};
 static const int kGeometryIds[]={-1,0,6,7,8,9,10};
 static const int kLightingIds[]={-1,2,11,1,12,13,14};
 static const int kDepthIds[]={-1,3,4,15,16,17,5};
@@ -67,6 +69,7 @@ private:
     bool expansionReady = false;
     int activeBank = 0; // 0=V1; 1=Geometry; 2=Light; 3=Depth
     char displayBuffer[32]={};
+    double expansionTime=0.0; // Independent VJ time; preserves V1.0.1 time semantics.
 	FFGLScreenQuad quad;
 	float params[ P_COUNT ];
 	double time       = 0.0;  // tempo acumulado (afetado pela Speed)
@@ -83,6 +86,18 @@ VJGenerative::VJGenerative()
 	SetOptionParamInfo( P_ENGINE, "Motor", kNumEngines, 0.0f );
 	for( int i = 0; i < kNumEngines; i++ )
 		SetParamElementInfo( P_ENGINE, i, kEngines[ i ], (float)i );
+
+    // Three additional FFGL OPTION rows, with the SAME native button UI as Motor.
+    // Ungrouped to ensure they sit directly under Motor, before Paleta.
+    SetOptionParamInfo(P_GEOMETRY,"Motor - Geometria",7,0.f);
+    SetOptionParamInfo(P_LIGHT,"Motor - Luz",7,0.f);
+    SetOptionParamInfo(P_DEPTH_ENGINES,"Motor - 3D",7,0.f);
+    for(int i=0;i<7;i++){
+        SetParamElementInfo(P_GEOMETRY,i,kGeometry[i],(float)i);
+        SetParamElementInfo(P_LIGHT,i,kLighting[i],(float)i);
+        SetParamElementInfo(P_DEPTH_ENGINES,i,kDepth[i],(float)i);
+    }
+    params[P_GEOMETRY]=params[P_LIGHT]=params[P_DEPTH_ENGINES]=0.f;
 
 	SetOptionParamInfo( P_PALETTE, "Paleta", kNumPalettes, 0.0f );
 	for( int i = 0; i < kNumPalettes; i++ )
@@ -134,23 +149,17 @@ VJGenerative::VJGenerative()
 	params[ P_PULSE ]     = 0.0f;
 	params[ P_CONTRAST ]  = 0.5f;
 
-    // Separate button rows - the original six remain in Motor.
-    SetOptionParamInfo(P_GEOMETRY,"MOTORES GEOMETRIA",7,0.f);
-    SetOptionParamInfo(P_LIGHT,"MOTORES LUZ",7,0.f);
-    SetOptionParamInfo(P_DEPTH_ENGINES,"MOTORES 3D",7,0.f);
-    for(int i=0;i<7;++i){
-        SetParamElementInfo(P_GEOMETRY,i,kGeometry[i],(float)i);
-        SetParamElementInfo(P_LIGHT,i,kLighting[i],(float)i);
-        SetParamElementInfo(P_DEPTH_ENGINES,i,kDepth[i],(float)i);
-    }
-    for(unsigned i=P_GEOMETRY;i<=P_DEPTH_ENGINES;i++)SetParamGroup(i,"VJ EXPANSION | MOTORES");
-    params[P_GEOMETRY]=params[P_LIGHT]=params[P_DEPTH_ENGINES]=0.f;
-
     SetParamInfof(P_DETAIL,"Detail",FF_TYPE_STANDARD);
     SetParamInfof(P_VJ_DEPTH,"Depth",FF_TYPE_STANDARD);
     SetParamInfof(P_DENSITY,"Density",FF_TYPE_STANDARD);
     for(unsigned i=P_DETAIL;i<=P_DENSITY;i++)SetParamGroup(i,"VJ EXPANSION | AJUSTES");
     params[P_DETAIL]=params[P_VJ_DEPTH]=params[P_DENSITY]=.5f;
+    SetParamInfof(P_DIRECTION,"Inverter Movimento",FF_TYPE_BOOLEAN);
+    SetParamInfof(P_GLOW,"Realce de Luz",FF_TYPE_STANDARD);
+    SetParamGroup(P_DIRECTION,"VJ EXPANSION | AJUSTES");
+    SetParamGroup(P_GLOW,"VJ EXPANSION | AJUSTES");
+    params[P_DIRECTION]=0.f;
+    params[P_GLOW]=0.f;
 
     SetOptionParamInfo(P_ASPECT_MODE,"Canvas",5,0.f);
     for(int i=0;i<5;i++)SetParamElementInfo(P_ASPECT_MODE,i,kCanvasModes[i],(float)i);
@@ -205,6 +214,7 @@ FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
 	// Velocidade: 0..1 -> 0..2x (0.5 = normal)
 	double speed = params[ P_SPEED ] * 2.0;
 	time += dt * speed;
+    expansionTime += dt * speed * (params[P_DIRECTION]>=.5f?-1.0:1.0);
 	double bpm = 60.0 + params[ P_BPM ] * 120.0;
 	beats += dt * bpm / 60.0;
 
@@ -215,7 +225,7 @@ FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
     FFGLShader& active=useExpansion?expansionShader:shader;
     ScopedShaderBinding binding(active.GetGLID());
     active.Set("iResolution",(float)vp[2],(float)vp[3],1.0f);
-    active.Set("iTime",(float)time);
+    active.Set("iTime",(float)(useExpansion?expansionTime:time));
     active.Set("uBeat",(float)beats);
     active.Set("uEngine",params[P_ENGINE]);
     active.Set("uPalette",params[P_PALETTE]);
@@ -234,6 +244,7 @@ FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
       active.Set("uDetail",params[P_DETAIL]);
       active.Set("uDepth",params[P_VJ_DEPTH]);
       active.Set("uDensity",params[P_DENSITY]);
+      active.Set("uGlow",params[P_GLOW]);
       active.Set("uRGBAType",params[P_RGBA_MODE]);
       active.Set("uRGBABlend",params[P_RGBA_BLEND]);
       active.Set("uRGBAMix",params[P_RGBA_MIX]);
@@ -288,10 +299,10 @@ char* VJGenerative::GetParameterDisplay(unsigned int index)
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJ13",
-	"VJ Expanded 121",
+	"VJ14",
+	"VJ Expanded 122",
 	2, 1,
-	1, 3,
+	1, 4,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"V1.2: 6 legacy motors preserved plus 18 new curated generators" );
+	"V1.2.2: 6 stable classic engines + 18 VJ engines with native button rows" );
