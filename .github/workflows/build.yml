@@ -1,11 +1,12 @@
-name: Build VJGenerativeV1 DLL
+name: Build VJGenerative V1.0.1 Tunnel Fix
 
 on:
   push:
-    branches: [main]
+    branches: ['release/v1.0.1-tunnel-fix']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
+      - 'tools/verify_v101.py'
       - 'build/windows/VJGenerativeV1.vcxproj'
       - '.github/workflows/build.yml'
   workflow_dispatch:
@@ -14,7 +15,22 @@ permissions:
   contents: read
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check V1.0 preservation, extract shaders
+        run: python3 tools/verify_v101.py
+      - name: Check GLSL syntax against OpenGL 4.10
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq glslang-tools
+          glslangValidator -S vert glsl-validation/v101.vert
+          glslangValidator -S frag glsl-validation/v101.frag
   build:
+    needs: verify
     runs-on: windows-latest
     steps:
       - name: Checkout N33M1A5 source
@@ -50,17 +66,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV1.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeV1.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV101.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV101.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeV1.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeV101.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeV1.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeV101.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: VJGenerativeV1-Windows-x64
-          path: artifact/VJGenerativeV1.dll
+          name: VJGenerativeV101-TunnelFix-Windows-x64
+          path: artifact/VJGenerativeV101.dll
           if-no-files-found: error
