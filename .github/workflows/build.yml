@@ -1,13 +1,15 @@
-name: Build VJGenerativeV1 DLL
+name: Build VJGenerativeV1.1 RGBA DLL
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/v1-1-rgba-canvas-vj']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
       - 'build/windows/VJGenerativeV1.vcxproj'
       - '.github/workflows/build.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -50,17 +52,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV1.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeV1.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV11.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV11.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeV1.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeV11.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeV1.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeV11.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: VJGenerativeV1-Windows-x64
-          path: artifact/VJGenerativeV1.dll
+          name: VJGenerativeV11-RGBA-Windows-x64
+          path: artifact/VJGenerativeV11.dll
           if-no-files-found: error

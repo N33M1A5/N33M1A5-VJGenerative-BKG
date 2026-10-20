@@ -13,6 +13,14 @@ uniform float iTime;
 uniform float uBeat;
 uniform float uEngine, uPalette, uScale, uIntensity, uHue;
 uniform float uSlices, uSeed, uPulse, uContrast;
+// V1.1: parametros aditivos. Com ColorMode=0, transform neutro e canvas Auto,
+// os shaders originais (motores 0..5) continuam exatamente iguais.
+uniform float uColorMode, uRGBAMix, uRGBABlend, uOpacity;
+uniform vec4 uColorA, uColorB; // RGBA (alpha nativo)
+uniform float uCanvasPreset, uCanvasFit;
+uniform vec2 uCustomCanvas, uPosition, uAnchor;
+uniform float uTransformScale, uRotation;
+uniform float uVJDetail, uVJDepth, uVJDensity;
 in vec2 uv;
 out vec4 fragColor;
 
@@ -119,9 +127,167 @@ vec3 eOrbs(vec2 p,float t){
   return c;
 }
 
+
+// RGBA: usa os canais alpha nativos do FFGL. RGB em espaco [0,1].
+vec4 rgbaCombine(float amount){
+  vec4 A=clamp(uColorA,0.,1.), B=clamp(uColorB,0.,1.);
+  float v=clamp(amount,0.,1.);
+  int op=int(uRGBABlend+.5);
+  if(op==1)return clamp(A+B*v,0.,1.);
+  if(op==2)return vec4(1.-(1.-A.rgb)*(1.-B.rgb*v),mix(A.a,B.a,v));
+  if(op==3)return vec4(mix(A.rgb,A.rgb*B.rgb,v),mix(A.a,A.a*B.a,v));
+  return mix(A,B,v);
+}
+float rgbaAnimate(vec2 p,float t){
+  return clamp(uRGBAMix+.32*sin(t*.35+p.x*1.3+p.y*.7+fbm(p*.75)*1.4),0.,1.);
+}
+vec4 chosenRGBA(vec2 p,float t){
+  int mode=int(uColorMode+.5);
+  if(mode<=1)return clamp(uColorA,0.,1.);
+  return rgbaCombine(mode==3?rgbaAnimate(p,t):uRGBAMix);
+}
+vec3 colorizeVJ(vec3 col,vec2 p,float t){
+  int mode=int(uColorMode+.5);
+  if(mode==0)return col;
+  vec3 tint=chosenRGBA(p,t).rgb;
+  float luminosity=dot(max(col,vec3(0.)),vec3(.2126,.7152,.0722));
+  return tint*luminosity*1.35;
+}
+
+// VJ 6: caleidoscopio de cristal — dobra radial, facetas e bordas antialias.
+vec3 eCrystal(vec2 p,float t){
+  float sectors=6.+floor(uVJDetail*14.);
+  float sector=6.2831853/sectors;
+  float a=atan(p.y,p.x)+t*(.055+.13*uVJDepth);
+  a=abs(mod(a,sector)-.5*sector);
+  float r=length(p);
+  vec2 q=vec2(cos(a),sin(a))*r;
+  float wave=fbm(q*(1.8+uVJDetail*1.8)+vec2(t*.11,-t*.09)+uSeed);
+  float fac=abs(sin(a*sectors*.5+wave*2.5));
+  float rad=abs(sin(r*(4.+uVJDetail*7.)-t*.47+wave*2.));
+  float fwFac=max(fwidth(fac),.008), fwRad=max(fwidth(rad),.008);
+  float edge=pow(1.-smoothstep(.0,fwFac*1.75,fac),3.);
+  float rings=pow(1.-smoothstep(.0,fwRad*1.75,rad),3.);
+  float bevel=exp(-abs(fac-.45)*17.);
+  float shimmer=.5+.5*sin(q.x*3.4-q.y*2.2+t*.12);
+  return pal(wave*.9+r*.16+t*.025)*(edge*.35+rings*.62+bevel*.24)
+      +vec3(1.)*pow(shimmer,12.)*bevel*.18;
+}
+
+// VJ 7: onda de particulas em linhas independentes com camadas de profundidade.
+vec3 eParticleWave(vec2 p,float t){
+  vec3 c=vec3(0.);
+  float count=5.+floor(uVJDensity*12.);
+  float aa=max(fwidth(p.y),.002);
+  for(int i=0;i<17;i++){
+    if(float(i)>=count)break;
+    float fi=float(i);
+    float y=(fi-(count-1.)*.5)*.115
+       +sin(p.x*(1.8+fi*.035)+t*(.24+fi*.014)+fi*.53)*(.06+.04*uVJDepth)
+       +.06*sin(p.x*.53-t*.14+fi*.3);
+    float line=exp(-abs(p.y-y)/(aa*1.4+.008));
+    float beads=pow(.5+.5*cos(p.x*(12.+uVJDetail*22.)+fi*1.7-t*.4),18.);
+    float sparkle=pow(max(0.,1.-abs(p.y-y)/(.022+aa)),3.)*beads;
+    float depth=1./(1.+fi*.095);
+    c+=pal(fi/count+t*.02)*(line*.21+sparkle*.64)*depth;
+  }
+  return c;
+}
+
+// VJ 8: camadas de luz volumetrica / cortinas com textura suave.
+vec3 eCurtains(vec2 p,float t){
+  vec3 c=vec3(0.);
+  float vapor=fbm(p*(.65+uVJDetail*.7)+vec2(t*.017,-t*.014)+uSeed);
+  for(int i=0;i<7;i++){
+    float fi=float(i);
+    float x=p.x+sin(p.y*(.72+fi*.12)+t*(.065+fi*.012)+fi*2.1)*(.13+.12*uVJDepth)
+      +(vapor-.5)*.20;
+    float center=(fi-3.)*.30;
+    float width=.10+.16*uVJDensity;
+    float curtain=exp(-pow(abs(x-center)/width,1.4));
+    float light=curtain*(.36+.65*vapor)*(1.-.07*fi);
+    c+=pal(fi*.15+t*.025)*light*.33;
+  }
+  return c + pal(vapor)*vapor*.06;
+}
+
+// VJ 9: grade digital, corredor com linhas AA e horizonte de profundidade.
+vec3 eCyberGrid(vec2 p,float t){
+  float y=p.y+.30;
+  float perspective=1./max(.12,abs(y)+.12);
+  float x=p.x*perspective*(.38+.45*uVJDepth);
+  float z=perspective*(.85+uVJDetail)-t*(.70+.4*uVJDepth);
+  vec2 grid=abs(fract(vec2(x,z)+uSeed*.15)-.5);
+  float dx=max(fwidth(x),.005), dz=max(fwidth(z),.005);
+  float lx=1.-smoothstep(.008,.008+dx*1.8,grid.x);
+  float lz=1.-smoothstep(.008,.008+dz*1.8,grid.y);
+  float line=max(lx,lz);
+  float haze=exp(-abs(y)*1.4)*(.08+.12*uVJDensity);
+  float glow=exp(-length(p*vec2(.55,1.5))*1.4)*.12;
+  return pal(z*.015+p.x*.08+t*.025)*line*(.24+.35*clamp(perspective/4.,0.,1.))
+      +pal(.3+t*.01)*(haze+glow);
+}
+
+// VJ 10: Source SOLID RGBA. Branco W independente e combinacao de A/B.
+vec3 eSolidRGBA(vec2 p,float t){
+  int mode=int(uColorMode+.5);
+  return chosenRGBA(p,t).rgb;
+}
+
+// Coordenadas parametrizadas para output arbitrario (inclui LED 3360x1008).
+// O aspect real e sempre o do viewport atual: nao redimensiona um bitmap.
+float canvasAspect(float outputAR){
+  int preset=int(uCanvasPreset+.5);
+  if(preset==1)return 16./9.;
+  if(preset==2)return 9./16.;
+  if(preset==3)return 4./3.;
+  if(preset==4)return 32./9.;
+  if(preset==5)return max(uCustomCanvas.x,256.)/max(uCustomCanvas.y,256.);
+  return outputAR;
+}
+vec2 transformedUV(vec2 inputUV){
+  vec2 anchorOffset=uAnchor-vec2(.5);
+  vec2 center=inputUV-uPosition-anchorOffset;
+  float rot=(uRotation-.5)*6.2831853;
+  float c=cos(rot),s=sin(rot);
+  vec2 rotated=mat2(c,-s,s,c)*center;
+  return rotated/exp2((uTransformScale-.5)*4.)+anchorOffset+vec2(.5);
+}
+vec2 getCanvasUV(vec2 inputUV,float outAspect,out float mask){
+  vec2 result=transformedUV(inputUV);
+  mask=1.;
+  int preset=int(uCanvasPreset+.5);
+  int fit=int(uCanvasFit+.5);
+  if(preset!=0 && fit==1){
+    float target=canvasAspect(outAspect);
+    vec2 size=vec2(1.);
+    if(outAspect>target)size.x=target/outAspect;
+    else size.y=outAspect/target;
+    result=(result-.5)/size+.5;
+  } else if(preset!=0 && fit==2){
+    float target=canvasAspect(outAspect);
+    vec2 centered=result-.5;
+    if(outAspect>target)centered.y*=target/outAspect;
+    else centered.x*=outAspect/target;
+    result=centered+.5;
+  }
+  if(preset!=0 && fit==1){
+    mask=step(0.,result.x)*step(result.x,1.)*
+         step(0.,result.y)*step(result.y,1.);
+  }
+  return result;
+}
+
 void main(){
-  float ar=iResolution.x/iResolution.y;
-  vec2 p=(uv-.5)*vec2(ar,1.)*2.;
+  float ar=iResolution.x/max(iResolution.y,1.);
+  float canvasMask=1.;
+  vec2 canvasUV=getCanvasUV(uv,ar,canvasMask);
+  vec2 p=(canvasUV-.5)*vec2(ar,1.)*2.;
+  if(int(uCanvasPreset+.5)!=0 && int(uCanvasFit+.5)==3)
+    p=(canvasUV-.5)*vec2(canvasAspect(ar),1.)*2.;
+  if(int(uCanvasPreset+.5)!=0 && int(uCanvasFit+.5)==1)
+    p=(canvasUV-.5)*vec2(canvasAspect(ar),1.)*2.;
+
 
   float beatPhase=fract(uBeat);
   float pulse=pow(1.-beatPhase,3.)*uPulse;
@@ -144,13 +310,27 @@ void main(){
   else if(e==2) col=eLasers(p,iTime);
   else if(e==3) col=eCells(p,iTime);
   else if(e==4) col=eAurora(p,iTime);
-  else col=eOrbs(p,iTime);
+  else if(e==5) col=eOrbs(p,iTime);
+  else if(e==6) col=eCrystal(p,iTime);
+  else if(e==7) col=eParticleWave(p,iTime);
+  else if(e==8) col=eCurtains(p,iTime);
+  else if(e==9) col=eCyberGrid(p,iTime);
+  else col=eSolidRGBA(p,iTime);
 
+  float layerAlpha=(e==10 || int(uColorMode+.5)!=0)?chosenRGBA(p,iTime).a:1.;
+  float alpha=clamp(uOpacity,0.,1.)*canvasMask*clamp(layerAlpha,0.,1.);
+  if(e==10){
+    // Solid RGBA: cor exata com alpha sem tonemapping.
+    fragColor=vec4(clamp(col,0.,1.)*alpha,alpha);
+    return;
+  }
+  // Com uColorMode=0, col permanece 100% identico a V1.0.
+  col=colorizeVJ(col,p,iTime);
   col*=uIntensity*2.*(1.+pulse*.6);
   col=1.-exp(-col*1.4);
   col=pow(col,vec3(mix(1.35,.75,uContrast)));
   col*=1.-.25*dot(uv-.5,uv-.5);
   col+=(hash21(gl_FragCoord.xy+iTime)-.5)/255.;
-  fragColor=vec4(clamp(col,0.,1.),1.);
+  fragColor=vec4(clamp(col,0.,1.)*alpha,alpha);
 }
 )GLSL";
