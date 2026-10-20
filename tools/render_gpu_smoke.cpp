@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+#include <epoxy/gl.h>
 #include <EGL/egl.h>
 #include <iostream>
 #include <fstream>
@@ -77,9 +77,7 @@ int main(){
   EGLContext ctx=eglCreateContext(display,config,EGL_NO_CONTEXT,ctxAttrs);
   if(ctx==EGL_NO_CONTEXT)throw std::runtime_error("Unable to create OpenGL 4.1 context");
   if(!eglMakeCurrent(display,surface,surface,ctx))throw std::runtime_error("eglMakeCurrent failed");
-  glewExperimental=GL_TRUE;
-  GLenum glew=glewInit();
-  if(glew!=GLEW_OK)throw std::runtime_error((char*)glewGetErrorString(glew));
+  if(!glGetString(GL_VERSION))throw std::runtime_error("Unable to load OpenGL via EGL/libepoxy");
   glGetError();
   std::cout<<"GPU "<<(const char*)glGetString(GL_RENDERER)<<" | OpenGL "<<(const char*)glGetString(GL_VERSION)<<"\n";
   const float quad[]={
