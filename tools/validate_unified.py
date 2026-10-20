@@ -23,15 +23,15 @@ assert 'params[P_COLOR_MODE]=0.f' in source
 assert 'paletteId<9' in source
 assert 'if(classic && !originalLook && classicColorReady)' in source
 assert 'kNewShaderIds[selection]' in source
-assert '"VJ18"' in source
+assert '"VJ19"' in source
 assert 'AddElementSeparator(P_EXTRA_MOTOR,1)' in source
 assert 'params[P_EXTRA_MOTOR]=0.f;' in source
 engines=source.split('static const char* kEngines[] = {',1)[1].split('};',1)[0]
 names=re.findall(r'"([^"]+)"',engines)
 assert names==["Nevoa","Tunel","Lasers","Celulas","Aurora","Orbes"],names
 namesExt=re.findall(r'"([^"]+)"',source.split('static const char* kExtraMotors[] = {',1)[1].split('};',1)[0])
-assert namesExt==["Classicos","Catedral Luz","Chrome Tide","Energy Rift","Infinity Cubes","Nova Pulse","Particle Wave"],namesExt
-assert 'static const int kNewShaderIds[]={-1,18,19,20,21,22,1};' in source
+assert namesExt==["Classicos","Arquitetura","Chrome Flow","Electric Storm","Golden Fan","Particle Wave","Stage Rays"],namesExt
+assert 'static const int kNewShaderIds[]={-1,18,19,20,21,1,22};' in source
 assert 'params[P_EXTRA_MOTOR]=0.f' in source
 palette_source=Path("palettes_extra.h").read_text(encoding="utf-8")
 palNames=re.findall(r'"([^"]+)"',source.split('static const char* kPalettes[] = {',1)[1].split('};',1)[0])
