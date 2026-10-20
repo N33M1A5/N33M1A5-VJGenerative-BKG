@@ -34,11 +34,11 @@ static void set1(GLuint p,const char* name,float v){GLint l=glGetUniformLocation
 static void set2(GLuint p,const char* name,float x,float y){GLint l=glGetUniformLocation(p,name);if(l>=0)glUniform2f(l,x,y);}
 static void set3(GLuint p,const char* name,float x,float y,float z){GLint l=glGetUniformLocation(p,name);if(l>=0)glUniform3f(l,x,y,z);}
 static void set4(GLuint p,const char* name,float x,float y,float z,float w){GLint l=glGetUniformLocation(p,name);if(l>=0)glUniform4f(l,x,y,z,w);}
-static std::vector<unsigned char> draw(GLuint p,GLuint vao,int motor,int colorMode,float time){
+static std::vector<unsigned char> draw(GLuint p,GLuint vao,int motor,int colorMode,float time,int paletteId=0){
  glUseProgram(p);
  set3(p,"iResolution",W,H,1.f);set1(p,"iTime",time);set1(p,"uBeat",1.35f);
  set1(p,"uEngine",float(motor));set1(p,"uVJEngine",float(motor));
- set1(p,"uPalette",0.f);set1(p,"uScale",.5f);set1(p,"uIntensity",.5f);
+ set1(p,"uPalette",float(paletteId));set1(p,"uScale",.5f);set1(p,"uIntensity",.5f);
  set1(p,"uHue",0.f);set1(p,"uSlices",0.f);set1(p,"uSeed",0.f);
  set1(p,"uPulse",0.f);set1(p,"uContrast",.5f);
  set1(p,"uDetail",.5f);set1(p,"uDepth",.5f);set1(p,"uDensity",.5f);
@@ -113,12 +113,22 @@ int main(){
   double newDifference=avgDifference(modernDefault,modernCustom);
   std::cout<<"Custom palette changes new motor "<<newDifference<<"\n";
   if(newDifference<.65)throw std::runtime_error("Custom RGB palette did not change new engine colors");
+  // A new alphabetical VJ preset should actually affect BOTH shader families.
+  auto legacyNeon=draw(customized,vao,0,0,5.f,16);  // Cyberpunk -> new preset 16
+  double presetChange=avgDifference(legacyDefault,legacyNeon);
+  std::cout<<"New Cyberpunk palette on original classic "<<presetChange<<"\n";
+  if(presetChange<.65)throw std::runtime_error("New VJ presets do not change original engines");
+  auto waveNewPal=draw(expanded,vao,1,0,5.f,16);
+  auto waveOriginal=draw(expanded,vao,1,0,5.f,0);
+  double wavePaletteChange=avgDifference(waveNewPal,waveOriginal);
+  std::cout<<"New Cyberpunk palette on Particle Wave "<<wavePaletteChange<<"\n";
+  if(wavePaletteChange<.65)throw std::runtime_error("New VJ presets do not change Particle Wave");
   auto first=draw(expanded,vao,1,0,5.f);
   auto later=draw(expanded,vao,1,0,6.f);
   double motion=avgDifference(first,later);
   std::cout<<"Particle wave animation after 1s: "<<motion<<"\n";
   if(motion<.20)throw std::runtime_error("New motor did not animate with Time");
-  std::cout<<"PASS: 6 legacy, 18 new, user-defined palettes and animation render on OpenGL GPU.\n";
+  std::cout<<"PASS: 6 original, Particle Wave, 36 fixed/custom palettes; other hidden GLSL engines smoke tested.\n";
   glDeleteProgram(legacy);glDeleteProgram(customized);glDeleteProgram(expanded);
   glDeleteBuffers(1,&vbo);glDeleteVertexArrays(1,&vao);
   eglMakeCurrent(display,EGL_NO_SURFACE,EGL_NO_SURFACE,EGL_NO_CONTEXT);
