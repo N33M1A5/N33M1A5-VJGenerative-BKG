@@ -1,11 +1,13 @@
-name: Build VJGenerativeV1.1 RGBA DLL
+name: Build V1.1 SAFE - Legacy V1 Shader Preserved
 
 on:
   push:
-    branches: [main, 'feature/v1-1-rgba-canvas-vj']
+    branches: [main, 'fix/v1-1-legacy-shader-isolation']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
+      - 'shaders_v1_original.h'
+      - 'tools/check_glsl.py'
       - 'build/windows/VJGenerativeV1.vcxproj'
       - '.github/workflows/build.yml'
   pull_request:
@@ -16,7 +18,22 @@ permissions:
   contents: read
 
 jobs:
+  glsl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install GLSL compiler
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq glslang-tools
+      - name: Check immutable V1.0 GLSL and extract both shaders
+        run: python3 tools/check_glsl.py
+      - name: Compile both GLSL vertex and fragment shaders
+        run: |
+          glslangValidator -S vert build/shaders/legacy.vert
+          glslangValidator -S frag build/shaders/legacy.frag
+          glslangValidator -S vert build/shaders/addon.vert
+          glslangValidator -S frag build/shaders/addon.frag
   build:
+    needs: glsl
     runs-on: windows-latest
     steps:
       - name: Checkout N33M1A5 source
@@ -36,6 +53,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $target | Out-Null
           Copy-Item VJGenerative.cpp "$target/VJGenerative.cpp" -Force
           Copy-Item shaders.h "$target/shaders.h" -Force
+          Copy-Item shaders_v1_original.h "$target/shaders_v1_original.h" -Force
           Copy-Item build/windows/VJGenerativeV1.vcxproj ffgl/build/windows/VJGenerativeV1.vcxproj -Force
           if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
           if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
@@ -52,17 +70,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV11.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeV11.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV11Safe.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV11Safe.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeV11.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeV11Safe.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeV11.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeV11Safe.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: VJGenerativeV11-RGBA-Windows-x64
-          path: artifact/VJGenerativeV11.dll
+          name: VJGenerativeV11-SAFE-Windows-x64
+          path: artifact/VJGenerativeV11Safe.dll
           if-no-files-found: error
