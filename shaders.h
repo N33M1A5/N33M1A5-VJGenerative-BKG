@@ -15,8 +15,8 @@ uniform float uEngine, uPalette, uScale, uIntensity, uHue;
 uniform float uSlices, uSeed, uPulse, uContrast;
 // V1.1: parametros aditivos. Com ColorMode=0, transform neutro e canvas Auto,
 // os shaders originais (motores 0..5) continuam exatamente iguais.
-uniform float uColorMode, uRGBWMix, uRGBWBlend, uOpacity;
-uniform vec4 uColorA, uColorB; // RGBW (W = emissao branca separada)
+uniform float uColorMode, uRGBAMix, uRGBABlend, uOpacity;
+uniform vec4 uColorA, uColorB; // RGBA (alpha nativo)
 uniform float uCanvasPreset, uCanvasFit;
 uniform vec2 uCustomCanvas, uPosition, uAnchor;
 uniform float uTransformScale, uRotation;
@@ -128,27 +128,28 @@ vec3 eOrbs(vec2 p,float t){
 }
 
 
-// RGBW: o FFGL produz RGB/alpha; W e convertido em branco para a textura.
-// Fixtures RGBW fisicas sao tratadas pelo mapeamento de DMX do Resolume.
-vec3 rgbwToRgb(vec4 c){return clamp(c.rgb + vec3(c.w),0.,1.);}
-vec3 rgbwCombine(float amount){
-  vec3 A=rgbwToRgb(uColorA), B=rgbwToRgb(uColorB);
+// RGBA: usa os canais alpha nativos do FFGL. RGB em espaco [0,1].
+vec4 rgbaCombine(float amount){
+  vec4 A=clamp(uColorA,0.,1.), B=clamp(uColorB,0.,1.);
   float v=clamp(amount,0.,1.);
-  int op=int(uRGBWBlend+.5);
-  if(op==1) return clamp(A+B*v,0.,1.);
-  if(op==2) return 1.-(1.-A)*(1.-B*v);
-  if(op==3) return mix(A,A*B,v);
+  int op=int(uRGBABlend+.5);
+  if(op==1)return clamp(A+B*v,0.,1.);
+  if(op==2)return vec4(1.-(1.-A.rgb)*(1.-B.rgb*v),mix(A.a,B.a,v));
+  if(op==3)return vec4(mix(A.rgb,A.rgb*B.rgb,v),mix(A.a,A.a*B.a,v));
   return mix(A,B,v);
 }
-float rgbwAnimate(vec2 p,float t){
-  return clamp(uRGBWMix + .32*sin(t*.35+p.x*1.3+p.y*.7+fbm(p*.75)*1.4),0.,1.);
+float rgbaAnimate(vec2 p,float t){
+  return clamp(uRGBAMix+.32*sin(t*.35+p.x*1.3+p.y*.7+fbm(p*.75)*1.4),0.,1.);
+}
+vec4 chosenRGBA(vec2 p,float t){
+  int mode=int(uColorMode+.5);
+  if(mode<=1)return clamp(uColorA,0.,1.);
+  return rgbaCombine(mode==3?rgbaAnimate(p,t):uRGBAMix);
 }
 vec3 colorizeVJ(vec3 col,vec2 p,float t){
   int mode=int(uColorMode+.5);
-  if(mode==0) return col;
-  vec3 tint=rgbwToRgb(uColorA);
-  if(mode==2) tint=rgbwCombine(uRGBWMix);
-  if(mode==3) tint=rgbwCombine(rgbwAnimate(p,t));
+  if(mode==0)return col;
+  vec3 tint=chosenRGBA(p,t).rgb;
   float luminosity=dot(max(col,vec3(0.)),vec3(.2126,.7152,.0722));
   return tint*luminosity*1.35;
 }
@@ -226,11 +227,10 @@ vec3 eCyberGrid(vec2 p,float t){
       +pal(.3+t*.01)*(haze+glow);
 }
 
-// VJ 10: Source SOLID RGBW. Branco W independente e combinacao de A/B.
-vec3 eSolidRGBW(vec2 p,float t){
+// VJ 10: Source SOLID RGBA. Branco W independente e combinacao de A/B.
+vec3 eSolidRGBA(vec2 p,float t){
   int mode=int(uColorMode+.5);
-  if(mode==0||mode==1)return rgbwToRgb(uColorA);
-  return rgbwCombine(mode==3?rgbwAnimate(p,t):uRGBWMix);
+  return chosenRGBA(p,t).rgb;
 }
 
 // Coordenadas parametrizadas para output arbitrario (inclui LED 3360x1008).
@@ -312,11 +312,12 @@ void main(){
   else if(e==7) col=eParticleWave(p,iTime);
   else if(e==8) col=eCurtains(p,iTime);
   else if(e==9) col=eCyberGrid(p,iTime);
-  else col=eSolidRGBW(p,iTime);
+  else col=eSolidRGBA(p,iTime);
 
-  float alpha=clamp(uOpacity,0.,1.)*canvasMask;
+  float layerAlpha=(e==10 || int(uColorMode+.5)!=0)?chosenRGBA(p,iTime).a:1.;
+  float alpha=clamp(uOpacity,0.,1.)*canvasMask*clamp(layerAlpha,0.,1.);
   if(e==10){
-    // Solid: cor sem tonemapping (o canal W preserva branco puro).
+    // Solid RGBA: cor exata com alpha sem tonemapping.
     fragColor=vec4(clamp(col,0.,1.)*alpha,alpha);
     return;
   }
