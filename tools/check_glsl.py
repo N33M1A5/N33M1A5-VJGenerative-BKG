@@ -18,7 +18,7 @@ headers = [
 ]
 for filename, variable, output in headers:
     content = Path(filename).read_text(encoding="utf-8")
-    pat = r"static\\s+const\\s+char\\s*\\*\\s*" + variable + r'\\s*=\\s*R"GLSL\\((.*?)\\)GLSL";'
+    pat = r"static\s+const\s+char\s*\*\s*" + variable + r'\s*=\s*R"GLSL\((.*?)\)GLSL";'
     match = re.search(pat, content, flags=re.S)
     if not match:
         raise SystemExit("Cannot extract " + variable + " from " + filename)
