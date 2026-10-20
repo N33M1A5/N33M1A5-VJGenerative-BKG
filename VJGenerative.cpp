@@ -19,8 +19,8 @@ enum Param
 	P_PULSE,
 	P_CONTRAST,
     // V1.1: os 11 primeiros parametros nao mudam de posicao.
-    P_COLOR_MODE, P_R1, P_G1, P_B1, P_W1,
-    P_R2, P_G2, P_B2, P_W2, P_RGBW_MIX, P_RGBW_BLEND,
+    P_COLOR_MODE, P_R1, P_G1, P_B1, P_A1,
+    P_R2, P_G2, P_B2, P_A2, P_RGBA_MIX, P_RGBA_BLEND,
     P_OPACITY,
     P_CANVAS_PRESET, P_CANVAS_FIT, P_CUSTOM_W, P_CUSTOM_H,
     P_POS_X, P_POS_Y, P_TRANSFORM_SCALE, P_ROTATION, P_ANCHOR_X, P_ANCHOR_Y,
@@ -29,12 +29,12 @@ enum Param
 };
 
 static const char* kEngines[]  = { "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes",
-    "Crystal Kaleido", "Particle Waves", "Light Curtains", "Cyber Grid", "Solid RGBW" };
+    "Crystal Kaleido", "Particle Waves", "Light Curtains", "Cyber Grid", "Solid RGBA" };
 static const char* kPalettes[] = { "Arco-iris", "Fogo", "Oceano", "Neon", "Ultravioleta", "Floresta", "Gelo", "Por do sol", "Mono" };
 static const int kNumEngines   = sizeof( kEngines ) / sizeof( kEngines[ 0 ] );
 static const int kNumPalettes  = sizeof( kPalettes ) / sizeof( kPalettes[ 0 ] );
-static const char* kColorModes[] = {"Original", "RGBW A", "RGBW A+B", "RGBW Animated"};
-static const char* kRGBWBlends[] = {"Crossfade", "Add", "Screen", "Multiply"};
+static const char* kColorModes[] = {"Original", "RGBA A", "RGBA A+B", "RGBA Animated"};
+static const char* kRGBABlends[] = {"Crossfade", "Add", "Screen", "Multiply"};
 static const char* kCanvasPresets[] = {"Auto / Output", "16:9", "9:16", "4:3", "32:9", "Custom"};
 static const char* kCanvasFits[] = {"Adaptive", "Fit", "Fill", "Stretch"};
 
@@ -94,26 +94,26 @@ VJGenerative::VJGenerative()
 	params[ P_BPM ]       = 0.5f;
 	params[ P_PULSE ]     = 0.0f;
 	params[ P_CONTRAST ]  = 0.5f;
-    // RGBW: 2 conjuntos independentes, cada um com branco W.
+    // RGBA: 2 cores independentes, cada uma com alpha.
     SetOptionParamInfo(P_COLOR_MODE, "Color Mode", 4, 0.0f);
     for(int i=0;i<4;i++) SetParamElementInfo(P_COLOR_MODE,i,kColorModes[i],(float)i);
-    SetOptionParamInfo(P_RGBW_BLEND, "RGBW Combine", 4, 0.0f);
-    for(int i=0;i<4;i++) SetParamElementInfo(P_RGBW_BLEND,i,kRGBWBlends[i],(float)i);
+    SetOptionParamInfo(P_RGBA_BLEND, "RGBA Combine", 4, 0.0f);
+    for(int i=0;i<4;i++) SetParamElementInfo(P_RGBA_BLEND,i,kRGBABlends[i],(float)i);
     SetParamInfof(P_R1,"A - Red",FF_TYPE_RED);
     SetParamInfof(P_G1,"A - Green",FF_TYPE_GREEN);
     SetParamInfof(P_B1,"A - Blue",FF_TYPE_BLUE);
-    SetParamInfof(P_W1,"A - White",FF_TYPE_STANDARD);
+    SetParamInfof(P_A1,"A - Alpha",FF_TYPE_ALPHA);
     SetParamInfof(P_R2,"B - Red",FF_TYPE_RED);
     SetParamInfof(P_G2,"B - Green",FF_TYPE_GREEN);
     SetParamInfof(P_B2,"B - Blue",FF_TYPE_BLUE);
-    SetParamInfof(P_W2,"B - White",FF_TYPE_STANDARD);
-    SetParamInfof(P_RGBW_MIX,"RGBW Mix A/B",FF_TYPE_STANDARD);
+    SetParamInfof(P_A2,"B - Alpha",FF_TYPE_ALPHA);
+    SetParamInfof(P_RGBA_MIX,"RGBA Mix A/B",FF_TYPE_STANDARD);
     SetParamInfof(P_OPACITY,"Source Opacity",FF_TYPE_STANDARD);
-    for(unsigned i=P_COLOR_MODE;i<=P_OPACITY;i++) SetParamGroup(i,"COLOR / RGBW");
+    for(unsigned i=P_COLOR_MODE;i<=P_OPACITY;i++) SetParamGroup(i,"COLOR / RGBA");
     params[P_COLOR_MODE]=0; // ORIGINAL: garante visual identico dos motores 0-5.
-    params[P_R1]=1; params[P_G1]=0; params[P_B1]=0; params[P_W1]=0;
-    params[P_R2]=0; params[P_G2]=0; params[P_B2]=1; params[P_W2]=0;
-    params[P_RGBW_MIX]=.5f; params[P_RGBW_BLEND]=0; params[P_OPACITY]=1;
+    params[P_R1]=1; params[P_G1]=0; params[P_B1]=0; params[P_A1]=1;
+    params[P_R2]=0; params[P_G2]=0; params[P_B2]=1; params[P_A2]=1;
+    params[P_RGBA_MIX]=.5f; params[P_RGBA_BLEND]=0; params[P_OPACITY]=1;
 
     SetOptionParamInfo(P_CANVAS_PRESET,"Canvas Aspect",6,0);
     for(int i=0;i<6;i++) SetParamElementInfo(P_CANVAS_PRESET,i,kCanvasPresets[i],(float)i);
@@ -200,10 +200,10 @@ FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
 	shader.Set( "uPulse", params[ P_PULSE ] );
 	shader.Set( "uContrast", params[ P_CONTRAST ] );
     shader.Set("uColorMode",params[P_COLOR_MODE]);
-    shader.Set("uColorA",params[P_R1],params[P_G1],params[P_B1],params[P_W1]);
-    shader.Set("uColorB",params[P_R2],params[P_G2],params[P_B2],params[P_W2]);
-    shader.Set("uRGBWMix",params[P_RGBW_MIX]);
-    shader.Set("uRGBWBlend",params[P_RGBW_BLEND]);
+    shader.Set("uColorA",params[P_R1],params[P_G1],params[P_B1],params[P_A1]);
+    shader.Set("uColorB",params[P_R2],params[P_G2],params[P_B2],params[P_A2]);
+    shader.Set("uRGBAMix",params[P_RGBA_MIX]);
+    shader.Set("uRGBABlend",params[P_RGBA_BLEND]);
     shader.Set("uOpacity",params[P_OPACITY]);
     shader.Set("uCanvasPreset",params[P_CANVAS_PRESET]);
     shader.Set("uCanvasFit",params[P_CANVAS_FIT]);
@@ -228,7 +228,7 @@ FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
     if(index==P_ENGINE) params[index]=std::fmax(0.f,std::fmin((float)(kNumEngines-1),value));
     else if(index==P_PALETTE) params[index]=std::fmax(0.f,std::fmin((float)(kNumPalettes-1),value));
     else if(index==P_COLOR_MODE) params[index]=std::fmax(0.f,std::fmin(3.f,value));
-    else if(index==P_RGBW_BLEND) params[index]=std::fmax(0.f,std::fmin(3.f,value));
+    else if(index==P_RGBA_BLEND) params[index]=std::fmax(0.f,std::fmin(3.f,value));
     else if(index==P_CANVAS_PRESET) params[index]=std::fmax(0.f,std::fmin(5.f,value));
     else if(index==P_CANVAS_FIT) params[index]=std::fmax(0.f,std::fmin(3.f,value));
 	return FF_SUCCESS;
@@ -241,10 +241,10 @@ float VJGenerative::GetFloatParameter( unsigned int index )
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJGN",
-	"VJ Generative",
+	"VJG1",
+	"VJ Gen V11",
 	2, 1,
 	1, 1,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"V1.1 RGBW + custom canvas + 11 engines. Original 6 preserved" );
+	"V1.1 RGBA + custom canvas + 11 engines. Original 6 preserved" );
