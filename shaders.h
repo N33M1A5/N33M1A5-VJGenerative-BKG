@@ -165,8 +165,9 @@ vec3 eCrystal(vec2 p,float t){
   float wave=fbm(q*(1.8+uVJDetail*1.8)+vec2(t*.11,-t*.09)+uSeed);
   float fac=abs(sin(a*sectors*.5+wave*2.5));
   float rad=abs(sin(r*(4.+uVJDetail*7.)-t*.47+wave*2.));
-  float edge=pow(clamp(1.-fac,.0,1.),6.);
-  float rings=pow(clamp(1.-rad,.0,1.),8.);
+  float fwFac=max(fwidth(fac),.008), fwRad=max(fwidth(rad),.008);
+  float edge=pow(1.-smoothstep(.0,fwFac*1.75,fac),3.);
+  float rings=pow(1.-smoothstep(.0,fwRad*1.75,rad),3.);
   float bevel=exp(-abs(fac-.45)*17.);
   float shimmer=.5+.5*sin(q.x*3.4-q.y*2.2+t*.12);
   return pal(wave*.9+r*.16+t*.025)*(edge*.35+rings*.62+bevel*.24)
@@ -282,6 +283,8 @@ void main(){
   float canvasMask=1.;
   vec2 canvasUV=getCanvasUV(uv,ar,canvasMask);
   vec2 p=(canvasUV-.5)*vec2(ar,1.)*2.;
+  if(int(uCanvasPreset+.5)!=0 && int(uCanvasFit+.5)==3)
+    p=(canvasUV-.5)*vec2(canvasAspect(ar),1.)*2.;
   if(int(uCanvasPreset+.5)!=0 && int(uCanvasFit+.5)==1)
     p=(canvasUV-.5)*vec2(canvasAspect(ar),1.)*2.;
 
