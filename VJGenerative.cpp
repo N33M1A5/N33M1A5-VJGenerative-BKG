@@ -12,6 +12,12 @@ enum Param
 {
 	P_ENGINE,
 	P_PALETTE,
+    // Color section directly below the Palette row in the FFGL host UI.
+    P_RGBA_MODE, P_RGBA_BLEND, P_RGBA_MIX,
+    P_A_R, P_A_G, P_A_B, P_A_ALPHA,
+    P_B_R, P_B_G, P_B_B, P_B_ALPHA,
+    P_OPACITY,
+    // Original six visuals and nine controls keep their names and defaults.
 	P_SPEED,
 	P_SCALE,
 	P_INTENSITY,
@@ -21,13 +27,10 @@ enum Param
 	P_BPM,
 	P_PULSE,
 	P_CONTRAST,
-    // ALL additions follow the first eleven V1.0.1 parameter IDs.
+    // Additional engine rows remain separate.
     P_GEOMETRY, P_LIGHT, P_DEPTH_ENGINES,
     P_DETAIL, P_VJ_DEPTH, P_DENSITY,
-    P_RGBA_MODE, P_RGBA_BLEND, P_RGBA_MIX,
-    P_A_R, P_A_G, P_A_B, P_A_ALPHA,
-    P_B_R, P_B_G, P_B_B, P_B_ALPHA,
-    P_OPACITY, P_ASPECT_MODE, P_CUSTOM_WIDTH, P_CUSTOM_HEIGHT,
+    P_ASPECT_MODE, P_CUSTOM_WIDTH, P_CUSTOM_HEIGHT,
 	P_COUNT
 };
 
@@ -85,6 +88,30 @@ VJGenerative::VJGenerative()
 	for( int i = 0; i < kNumPalettes; i++ )
 		SetParamElementInfo( P_PALETTE, i, kPalettes[ i ], (float)i );
 
+    // Native color controls are intentionally registered IMMEDIATELY after Paleta.
+    SetOptionParamInfo(P_RGBA_MODE,"Cor / RGBA",4,0.f);
+    SetOptionParamInfo(P_RGBA_BLEND,"Mistura RGBA",4,0.f);
+    for(int i=0;i<4;++i){
+       SetParamElementInfo(P_RGBA_MODE,i,kRGBAChoices[i],(float)i);
+       SetParamElementInfo(P_RGBA_BLEND,i,kRGBABlends[i],(float)i);
+    }
+    SetParamInfof(P_RGBA_MIX,"Mistura A/B",FF_TYPE_STANDARD);
+    SetParamInfof(P_A_R,"A Red",FF_TYPE_RED);
+    SetParamInfof(P_A_G,"A Green",FF_TYPE_GREEN);
+    SetParamInfof(P_A_B,"A Blue",FF_TYPE_BLUE);
+    SetParamInfof(P_A_ALPHA,"A Alpha",FF_TYPE_ALPHA);
+    SetParamInfof(P_B_R,"B Red",FF_TYPE_RED);
+    SetParamInfof(P_B_G,"B Green",FF_TYPE_GREEN);
+    SetParamInfof(P_B_B,"B Blue",FF_TYPE_BLUE);
+    SetParamInfof(P_B_ALPHA,"B Alpha",FF_TYPE_ALPHA);
+    SetParamInfof(P_OPACITY,"Opacidade",FF_TYPE_ALPHA);
+    for(unsigned i=P_RGBA_MODE;i<=P_OPACITY;i++)SetParamGroup(i,"CORES | RGBA");
+    params[P_RGBA_MODE]=params[P_RGBA_BLEND]=0.f; params[P_RGBA_MIX]=.5f;
+    params[P_A_R]=1.f;params[P_A_G]=params[P_A_B]=0.f;params[P_A_ALPHA]=1.f;
+    params[P_B_R]=params[P_B_G]=0.f;params[P_B_B]=1.f;params[P_B_ALPHA]=1.f;
+    params[P_OPACITY]=1.f;
+
+
 	SetParamInfof( P_SPEED, "Velocidade", FF_TYPE_STANDARD );
 	SetParamInfof( P_SCALE, "Escala", FF_TYPE_STANDARD );
 	SetParamInfof( P_INTENSITY, "Intensidade", FF_TYPE_STANDARD );
@@ -124,28 +151,6 @@ VJGenerative::VJGenerative()
     SetParamInfof(P_DENSITY,"Density",FF_TYPE_STANDARD);
     for(unsigned i=P_DETAIL;i<=P_DENSITY;i++)SetParamGroup(i,"VJ EXPANSION | AJUSTES");
     params[P_DETAIL]=params[P_VJ_DEPTH]=params[P_DENSITY]=.5f;
-
-    SetOptionParamInfo(P_RGBA_MODE,"RGBA Mode",4,0.f);
-    SetOptionParamInfo(P_RGBA_BLEND,"RGBA Blend",4,0.f);
-    for(int i=0;i<4;++i){
-       SetParamElementInfo(P_RGBA_MODE,i,kRGBAChoices[i],(float)i);
-       SetParamElementInfo(P_RGBA_BLEND,i,kRGBABlends[i],(float)i);
-    }
-    SetParamInfof(P_RGBA_MIX,"RGBA Mix A/B",FF_TYPE_STANDARD);
-    SetParamInfof(P_A_R,"A Red",FF_TYPE_RED);
-    SetParamInfof(P_A_G,"A Green",FF_TYPE_GREEN);
-    SetParamInfof(P_A_B,"A Blue",FF_TYPE_BLUE);
-    SetParamInfof(P_A_ALPHA,"A Alpha",FF_TYPE_ALPHA);
-    SetParamInfof(P_B_R,"B Red",FF_TYPE_RED);
-    SetParamInfof(P_B_G,"B Green",FF_TYPE_GREEN);
-    SetParamInfof(P_B_B,"B Blue",FF_TYPE_BLUE);
-    SetParamInfof(P_B_ALPHA,"B Alpha",FF_TYPE_ALPHA);
-    SetParamInfof(P_OPACITY,"Opacity",FF_TYPE_ALPHA);
-    for(unsigned i=P_RGBA_MODE;i<=P_OPACITY;i++)SetParamGroup(i,"VJ EXPANSION | RGBA");
-    params[P_RGBA_MODE]=params[P_RGBA_BLEND]=0.f; params[P_RGBA_MIX]=.5f;
-    params[P_A_R]=1.f;params[P_A_G]=params[P_A_B]=0.f;params[P_A_ALPHA]=1.f;
-    params[P_B_R]=params[P_B_G]=0.f;params[P_B_B]=1.f;params[P_B_ALPHA]=1.f;
-    params[P_OPACITY]=1.f;
 
     SetOptionParamInfo(P_ASPECT_MODE,"Canvas",5,0.f);
     for(int i=0;i<5;i++)SetParamElementInfo(P_ASPECT_MODE,i,kCanvasModes[i],(float)i);
@@ -247,8 +252,8 @@ FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 {
 	if( index >= P_COUNT ) return FF_FAIL;
     // Original 11 IDs, parameter meaning and defaults are preserved.
-    if(index<=P_CONTRAST) {
-       if(index==P_ENGINE && value!=params[P_ENGINE])activeBank=0;
+    if(index==P_ENGINE || index==P_PALETTE || (index>=P_SPEED && index<=P_CONTRAST)) {
+       if(index==P_ENGINE)activeBank=0;
        params[index]=value;
     } else {
        if(!std::isfinite(value))return FF_FAIL;
@@ -283,10 +288,10 @@ char* VJGenerative::GetParameterDisplay(unsigned int index)
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJ12",
-	"VJ Gen Expanded",
+	"VJ13",
+	"VJ Expanded 121",
 	2, 1,
-	1, 2,
+	1, 3,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
 	"V1.2: 6 legacy motors preserved plus 18 new curated generators" );

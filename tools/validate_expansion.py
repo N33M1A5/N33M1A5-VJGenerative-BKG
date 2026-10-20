@@ -14,13 +14,17 @@ names='"Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes"'
 assert names in cpp,"V1.0.1 original 6 motor names or order changed."
 assert 'SetOptionParamInfo( P_ENGINE, "Motor", kNumEngines, 0.0f )' in cpp
 assert 'params[ P_CONTRAST ]  = 0.5f;' in cpp
+assert cpp.index("P_PALETTE,") < cpp.index("P_RGBA_MODE,") < cpp.index("P_SPEED,")
 assert cpp.index("P_CONTRAST,") < cpp.index("P_GEOMETRY,")
+assert cpp.index('SetOptionParamInfo( P_PALETTE,') < cpp.index('SetOptionParamInfo(P_RGBA_MODE,') < cpp.index('SetParamInfof( P_SPEED,')
+assert 'SetParamGroup(i,"CORES | RGBA")' in cpp
+assert 'if(index==P_ENGINE || index==P_PALETTE || (index>=P_SPEED && index<=P_CONTRAST))' in cpp
 assert '#include "shaders.h"' in cpp
 assert 'FFGLShader shader;' in cpp
 assert 'shader.Compile( kVertexShader, kFragmentShader )' in cpp
 assert 'expansionShader.Compile(kVJVertexShader,kVJFragmentShader)' in cpp
 assert 'activeBank!=0 && expansionReady' in cpp
-assert '"VJ12"' in cpp,"V1.2 must not hijack the V1.0.1 host unique plugin id"
+assert '"VJ13"' in cpp,"V1.2 must not hijack the V1.0.1 host unique plugin id"
 print("PASS: Original V1.0.1 engine GLSL and six-engine selector protected.")
 
 destination=Path("glsl-validation")
