@@ -91,6 +91,162 @@ vec3 kaleido(vec2 p,float t){
  float aura=pow(.5+.5*cos(a*23.-r*4.-t*.3),10.);
  return pal(r*.18+a*.8+t*.04)*(aaLine(g,.065)*.67+aaLine(rr,.07)*.73+aura*.2)*(1.+pulse*.4);
 }
+
+// 6 - Hex Mosaic: crystalline hexagonal tiles with independently lit edges.
+vec3 hexMosaic(vec2 p,float t){
+ p*=2.5+uDensity*3.;p.x*=.57735027;
+ vec2 r=vec2(p.x+p.y*.5,p.y);
+ vec2 g=abs(fract(r)-.5);
+ float a=max(g.x,g.y),b=abs(g.x-g.y);
+ float borders=aaLine(abs(a-.39),.018)+aaLine(abs(b-.23),.02)*.3;
+ float cell=hash21(floor(r)+uSeed);
+ float flicker=.72+.28*sin(t*.15+cell*TAU);
+ return pal(cell*.7+t*.025)*(.14+.46*borders)*flicker;
+}
+// 7 - Sacred Mandala: geometry that forms concentric petals.
+vec3 mandala(vec2 p,float t){
+ float r=length(p),a=atan(p.y,p.x);
+ float petals=6.+floor(uDetail*18.);
+ float shape=abs(cos(a*petals*.5+t*.07))*r;
+ float ribs=abs(sin(shape*(10.+uDensity*12.)-t*.3));
+ float circles=abs(sin(r*(9.+uDepth*12.)+t*.27));
+ float l=aaLine(ribs,.09)*.72+aaLine(circles,.06)*.6;
+ float glow=exp(-r*1.7)*(.12+.23*pow(abs(sin(a*petals*.5)),8.));
+ return pal(r*.35+a*.09+t*.03)*(l+glow);
+}
+// 8 - Orbit Rings: independently rotating concentric rings.
+vec3 orbitRings(vec2 p,float t){
+ vec3 c=vec3(0.);
+ for(int i=0;i<9;i++){
+  float k=float(i),radius=.22+k*(.12+uDensity*.018);
+  vec2 center=vec2(.10*sin(t*(.11+.013*k)+k),.07*cos(t*(.13+.02*k)+k));
+  float d=abs(length(p-center)-radius);
+  float arc=.2+.8*pow(.5+.5*cos(atan(p.y-center.y,p.x-center.x)*(3.+mod(k,4.))-t*(.35+.04*k)+k),3.);
+  c+=pal(k*.13+t*.024)*aaLine(d,.012+.014*uDetail)*arc*.47;
+ }
+ return c;
+}
+// 9 - Polygon Prism: hard edged shifting facet mesh.
+vec3 polygonPrism(vec2 p,float t){
+ p*=2.1+uDensity*2.;
+ vec2 tile=floor(p),q=fract(p)-.5;
+ float side=3.+floor(uDetail*7.);
+ float angle=atan(q.y,q.x)+t*.08;
+ float sector=TAU/side;
+ float rad=length(q)*cos(mod(angle,sector)-sector*.5);
+ float boundary=aaLine(abs(rad-(.18+.06*sin(t*.2+hash21(tile)*TAU))),.012);
+ float rib=aaLine(abs(sin(angle*side*.5+rad*12.)),.055);
+ float seed=hash21(tile+uSeed);
+ return pal(seed*.8+rad+t*.025)*(boundary*.7+rib*.16+.03);
+}
+// 10 - Fractal Bloom: soft branching luminous structures.
+vec3 fractalBloom(vec2 p,float t){
+ vec2 q=p*(1.4+uDensity*1.3);
+ vec2 warp=vec2(fbm(q+vec2(t*.08,uSeed)),fbm(q+vec2(4.,7.)-t*.06));
+ float n=fbm(q+2.7*warp);
+ float petal=abs(sin(atan(q.y,q.x)*(4.+floor(uDetail*8.))+length(q)*5.-t*.32+n*4.));
+ float core=exp(-length(q)*2.);
+ return pal(n*.9+t*.026)*(pow(1.-petal,5.)*.65+n*n*.62+core*.45);
+}
+// 11 - Stage Beams: atmospheric performance beams from several moving fixtures.
+vec3 stageBeams(vec2 p,float t){
+ vec3 c=vec3(0.);
+ for(int i=0;i<12;i++){
+  float fi=float(i);
+  vec2 source=vec2((fi/11.-.5)*4.,-1.45);
+  vec2 v=p-source;
+  float angle=1.570796+.73*sin(t*(.24+.009*fi)+fi*1.73+uSeed);
+  vec2 dir=vec2(cos(angle),sin(angle));
+  float perp=abs(v.x*dir.y-v.y*dir.x),along=dot(v,dir);
+  float aa=max(fwidth(perp),.004);
+  float width=.018+.04*uDetail;
+  float beam=exp(-perp/(width+aa)) *step(0.,along)*exp(-along*(.18+.14*(1.-uDepth)));
+  c+=pal(fi*.083+t*.02)*beam*.38;
+ }
+ return c;
+}
+// 12 - Lens Bokeh: defocused depth-layer floating light disks.
+vec3 bokeh(vec2 p,float t){
+ vec3 c=vec3(0.);
+ for(int j=-2;j<=2;j++)for(int i=-3;i<=3;i++){
+  vec2 id=vec2(float(i),float(j));
+  float seed=hash21(id+uSeed);
+  float depth=mix(.65,2.1,seed);
+  vec2 q=(p-id*.52-vec2(sin(t*.07+seed*7.),cos(t*.075+seed*9.))*.13);
+  float d=length(q)*depth;
+  float radius=.055+.10*seed*uDensity+.03;
+  float disk=1.-smoothstep(radius*.65,radius+max(fwidth(d),.006),d);
+  float halo=exp(-d*d/(radius*radius*7.))*.08;
+  c+=pal(seed+t*.02)*(disk*.4+halo);
+ }
+ return c;
+}
+// 13 - Liquid Plasma: animated domain warped colored fluid.
+vec3 liquidPlasma(vec2 p,float t){
+ vec2 q=p*(1.+uDensity*2.);
+ vec2 w=vec2(fbm(q+vec2(t*.08,.2)),fbm(q+vec2(9.,2.)-t*.075));
+ vec2 v=vec2(fbm(q+2.5*w+vec2(t*.13,0.)),fbm(q+2.5*w+vec2(0.,t*.1)));
+ float f=fbm(q+v*(2.5+uDepth*3.));
+ float ridges=pow(abs(sin((f+w.x)*TAU)),7.)*uDetail*.45;
+ return pal(f+w.y*.6+t*.025)*(.20+1.45*f*f+ridges);
+}
+// 14 - Neon Ribbons: glossy flowing lines organized in depth.
+vec3 ribbons(vec2 p,float t){
+ vec3 c=vec3(0.);
+ for(int i=0;i<10;i++){
+  float k=float(i);
+  float offs=(k-4.5)*(.19+.03*uDensity);
+  float wave=sin(p.x*(1.3+k*.12)+t*(.23+.02*k)+k*.86)*(.09+.12*uDepth);
+  float y=offs+wave+sin(p.x*3.5-t*.14+k)*.045;
+  float dist=abs(p.y-y);
+  float core=aaLine(dist,.009+.011*uDetail);
+  float halo=exp(-dist*17.)*.13;
+  c+=pal(k*.105+p.x*.02+t*.015)*(core*.45+halo*.15);
+ }
+ return c;
+}
+// 15 - Starfield Warp: continuous depth-perspective particles.
+vec3 starfield(vec2 p,float t){
+ vec3 c=vec3(0.);
+ for(int layer=0;layer<4;layer++){
+  float k=float(layer);
+  float z=fract(k*.25+t*(.08+.09*uDepth));
+  float depth=.10+z*2.4;
+  vec2 grid=p*depth*(5.+uDensity*10.);
+  vec2 cell=floor(grid),pos=fract(grid)-.5;
+  float rnd=hash21(cell+uSeed+k*31.);
+  vec2 offset=vec2(hash21(cell+8.1+k),hash21(cell+19.1+k))-.5;
+  float d=length(pos-offset*.6);
+  float star=aaLine(d,.012+.03*rnd*uDetail)*step(.60,rnd);
+  c+=pal(rnd+k*.2+t*.018)*star*(.35+z*.3);
+ }
+ return c;
+}
+// 16 - Circuit Board: orthogonal tracks, nodes and scrolling signal pulses.
+vec3 circuitBoard(vec2 p,float t){
+ p*=3.+uDensity*4.;
+ vec2 id=floor(p),f=fract(p)-.5;
+ float seed=hash21(id+uSeed);
+ float h=aaLine(abs(f.y),.017)*step(.26,seed);
+ float v=aaLine(abs(f.x),.017)*step(seed,.74);
+ float node=aaLine(length(f),.06)*step(.5,seed);
+ float signal=pow(.5+.5*cos((p.x+p.y)*(2.+uDetail*8.)-t*1.6+seed*TAU),10.);
+ return pal(seed+t*.025)*(h*.35+v*.36+node*.55+signal*(h+v)*.4);
+}
+// 17 - Digital Rain: narrow animated bit columns, vertical depth parallax.
+vec3 digitalRain(vec2 p,float t){
+ vec2 q=p*vec2(11.+uDensity*17.,7.+uDetail*12.);
+ vec2 cell=floor(q),f=fract(q);
+ float seed=hash21(vec2(cell.x+uSeed,12.));
+ float speed=.35+seed*.9+uDepth*.3;
+ float scan=fract(f.y-t*speed+seed);
+ float digit=hash21(cell+vec2(0.,floor(t*.8*speed)));
+ float body=step(.48,digit)*step(.12,f.x)*step(f.x,.84)*step(.13,f.y)*step(f.y,.9);
+ float head=exp(-scan*7.);
+ float flicker=.35+.65*hash21(cell+floor(t*2.));
+ return pal(seed*.55+t*.02)*(body*head*flicker*.7);
+}
+
 void main(){
  float ar=aspect();
  vec2 p=(uv-.5)*vec2(ar,1.)*2.;
@@ -108,6 +264,18 @@ void main(){
  else if(id==2)col=curtains(p,iTime);
  else if(id==3)col=cyber(p,iTime);
  else if(id==4)col=kaleido(p,iTime);
+ else if(id==6)col=hexMosaic(p,iTime);
+ else if(id==7)col=mandala(p,iTime);
+ else if(id==8)col=orbitRings(p,iTime);
+ else if(id==9)col=polygonPrism(p,iTime);
+ else if(id==10)col=fractalBloom(p,iTime);
+ else if(id==11)col=stageBeams(p,iTime);
+ else if(id==12)col=bokeh(p,iTime);
+ else if(id==13)col=liquidPlasma(p,iTime);
+ else if(id==14)col=ribbons(p,iTime);
+ else if(id==15)col=starfield(p,iTime);
+ else if(id==16)col=circuitBoard(p,iTime);
+ else if(id==17)col=digitalRain(p,iTime);
  if(int(uRGBAType+.5)>0){float lum=dot(max(col,vec3(0.)),vec3(.2126,.7152,.0722));col=rgba.rgb*lum*1.35;alpha*=rgba.a;}
  col*=uIntensity*2.*(1.+beat*.6);
  col=1.-exp(-col*1.4);
