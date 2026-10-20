@@ -66,8 +66,8 @@ vec3 premiumChrome(vec2 p,float t){
         float spec2=exp(-pow((distance+width*.35)/(.04+.015*uDetail),2.));
         float shade=.12+.48*pow(.5+.5*cos(uv.x*.75+time*.28+k*.73),2.);
         vec3 metal=vec3(.052,.063,.075)+pal(k*.14+uv.x*.08+time*.022)*(.50+.24*shade);
-        result+=metal*core*(.14+.54*shade)+vec3(.75,.85,.98)*(spec*.34+spec2*.12)*core;
-        result+=pal(k*.16+time*.013)*rim*.10;
+        result+=metal*core*(.36+1.15*shade)+vec3(.83,.90,1.)*(spec*.49+spec2*.21)*core;
+        result+=pal(k*.16+time*.013)*rim*.19;
     }
     // Long spatial reflections move on top of the ribbons, not pixel noise.
     float reflected=pow(.5+.5*cos(uv.x*1.1+sin(uv.y*1.8+time)*.65-time*.3),15.);
@@ -93,12 +93,12 @@ vec3 premiumRift(vec2 p,float t){
         float bloom=exp(-distance/(.10+.065*uDensity));
         float flicker=.60+.40*sin(t*.91+f*4.2+y*13.)*sin(t*.46+f*.8);
         vec3 hue=pal(f*.14+t*.016+y*.10);
-        result+=hue*(core*(.62+.48*flash)*flicker+bloom*.090);
+        result+=hue*(core*(.75+.60*flash)*flicker+bloom*.20);
         result+=vec3(.80,.91,1.)*core*.19;
         float branchPosition=path+.18*sin(y*(4.5+f*.3)+t*.5+f*1.2);
         float branchMask=pow(.5+.5*cos(y*8.4+f*3.-t*.55),4.);
         float twig=exp(-abs(p.x-branchPosition)*(33.+16.*uDetail));
-        result+=hue*twig*branchMask*.18;
+        result+=hue*twig*branchMask*.27;
     }
     // Wide white flash is a strobe-like envelope, not a full-frame blown-out flash.
     float sweep=exp(-length(p*vec2(.52,.75))*1.7);
@@ -113,10 +113,12 @@ vec3 premiumCubes(vec2 p,float t){
     vec3 result=vec3(.002,.002,.003);
     float move=t*(.055+.035*uDepth);
     float petals=12.+floor(uDetail*16.);
-    for(int i=0;i<3;i++){
+    for(int i=0;i<5;i++){
         float f=float(i);
-        vec2 center=vec2((f-1.)*1.6,-.97+.06*sin(move+f));
+        bool upper=i>=3;
+        vec2 center=upper?vec2((f-3.5)*1.65,.88):vec2((f-1.)*1.30,-.73+.06*sin(move+f));
         vec2 q=p-center;
+        if(upper)q.y=-q.y;
         float r=length(q);
         float angle=atan(q.y,q.x);
         float fan=pow(abs(cos(angle*petals*.5+move*.65+f*.5)),19.);
@@ -128,13 +130,13 @@ vec3 premiumCubes(vec2 p,float t){
         float spokes=fan*(.5+.5*sin(r*9.-move*.8))*(1.-smoothstep(.24,1.4,r));
         float facets=pow(1.-sector,12.)*middle;
         vec3 ink=pal(f*.22+angle*.08+move*.04);
-        result+=ink*(rim*.56+spokes*.21+facets*.24);
+        result+=ink*(rim*.92+spokes*.46+facets*.44);
     }
     // Crown centrepiece — layered semicircular motif above the performers.
     float r=length(p*vec2(.83,1.)-vec2(0.,-.27));
     float rings=exp(-abs(r-.72)*36.)*.27+exp(-abs(r-.52)*37.)*.19;
     float spokes=pow(abs(cos(atan(p.y+.27,p.x)*13.+move)),24.)*exp(-abs(r-.67)*6.);
-    result+=pal(.16+move*.04)*(rings+spokes*.16);
+    result+=pal(.16+move*.04)*(rings*1.25+spokes*.32);
     return result;
 }
 
@@ -159,18 +161,18 @@ vec3 premiumNova(vec2 p,float t){
                   *smoothstep(-.04,.15,depth)*exp(-max(depth,0.)*.43);
         float edge=exp(-perp*(30.+25.*uDetail));
         float k=bank*.115+side*.07+t*.014;
-        result+=pal(k)*beam*(.065+.065*beat);
-        result+=pal(k+.08)*edge*beam*.10;
+        result+=pal(k)*beam*(.24+.19*beat);
+        result+=pal(k+.08)*edge*beam*.18;
     }
     for(int j=0;j<7;j++){
         float k=float(j);
         float x=(k-3.)*.52;
         float wobble=.12*sin(p.y*(1.+k*.16)+move*.55+k*1.8);
         float curtain=exp(-abs(p.x-x-wobble)*(4.+4.*uDetail));
-        result+=pal(k*.14+t*.014)*curtain*(.030+.043*uDensity);
+        result+=pal(k*.14+t*.014)*curtain*(.065+.095*uDensity);
     }
     float fog=fbm(p*.71+vec2(move*.12,-move*.06));
-    result+=pal(fog*.5+t*.017)*fog*.037;
+    result+=pal(fog*.5+t*.017)*fog*.088;
     return result;
 }
 )GLSL";
