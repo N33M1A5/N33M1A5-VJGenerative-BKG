@@ -22,13 +22,17 @@ assert 'params[P_SPEED]=.5f' in source and 'params[P_INTENSITY]=.5f' in source
 assert 'params[P_COLOR_MODE]=0.f' in source
 assert 'paletteId<9' in source
 assert 'if(classic && !originalLook && classicColorReady)' in source
-assert 'active->Set("uVJEngine",1.f)' in source
-assert '"VJ17"' in source
+assert 'kNewShaderIds[selection]' in source
+assert '"VJ18"' in source
+assert 'AddElementSeparator(P_EXTRA_MOTOR,1)' in source
 assert 'params[P_EXTRA_MOTOR]=0.f;' in source
 engines=source.split('static const char* kEngines[] = {',1)[1].split('};',1)[0]
 names=re.findall(r'"([^"]+)"',engines)
 assert names==["Nevoa","Tunel","Lasers","Celulas","Aurora","Orbes"],names
-assert 'static const char* kExtraMotors[] = { "Classicos", "Particle Wave" };' in source
+namesExt=re.findall(r'"([^"]+)"',source.split('static const char* kExtraMotors[] = {',1)[1].split('};',1)[0])
+assert namesExt==["Classicos","Catedral Luz","Chrome Tide","Energy Rift","Infinity Cubes","Nova Pulse","Particle Wave"],namesExt
+assert 'static const int kNewShaderIds[]={-1,18,19,20,21,22,1};' in source
+assert 'params[P_EXTRA_MOTOR]=0.f' in source
 palette_source=Path("palettes_extra.h").read_text(encoding="utf-8")
 palNames=re.findall(r'"([^"]+)"',source.split('static const char* kPalettes[] = {',1)[1].split('};',1)[0])
 assert len(palNames)==36, palNames
@@ -40,7 +44,7 @@ legacy_pal_map={0:"Arco-iris",1:"Fogo",2:"Oceano",3:"Neon",4:"Ultravioleta",5:"F
 assert all(palNames[palIDs.index(str(i))]==n for i,n in legacy_pal_map.items()),"Classic palette names swapped"
 assert "palettePreset" in palette_source and source.count('std::string(kPresetPaletteSource)')>=2
 assert 'makeExpansionPaletteShader()' in source
-print("PASS: 6 original Motor buttons + Particle Wave button row; 36 palettes alphabetized and legacy mapped exactly.")
+print("PASS: 6 original motors + Particle Wave and 5 premium visuals; 36 palettes preserve original mapping.")
 
 def extract(header,variable):
     m=re.search(r'static\s+const\s+char\s*\*\s*'+variable+r'\s*=\s*R"GLSL\((.*?)\)GLSL";',header,re.S)
@@ -78,5 +82,19 @@ expanded=expanded.replace("vec3 palOriginal(float t){",preset.group(1)+"\nvec3 p
 expanded=expanded.replace("vec3 fixedColor=palOriginal(t);",
   "int id=int(uPalette+.5);\n vec3 fixedColor=id>=9?palettePreset(id,t):palOriginal(t);",1)
 assert "palettePreset(id,t)" in expanded
+premium=Path("shaders_premium.h").read_text(encoding="utf-8")
+customPremium=re.search(r'static\s+const\s+char\s*\*\s*kPremiumMotorFunctions\s*=\s*R"GLSL\((.*?)\)GLSL";',premium,re.S)
+assert customPremium,"premium function shader literal missing"
+assert expanded.count("void main(){")==1
+expanded=expanded.replace("void main(){",customPremium.group(1)+"\nvoid main(){",1)
+dispatches={
+  18:"premiumCathedral",19:"premiumChrome",20:"premiumRift",
+  21:"premiumCubes",22:"premiumNova"
+}
+needle="else if(id==17)col=digitalRain(p,iTime);"
+assert expanded.count(needle)==1
+expanded=expanded.replace(needle,needle+"\n"+"\n".join(
+  f"else if(id=={i})col={fn}(p,iTime);" for i,fn in dispatches.items()),1)
+assert all(f"else if(id=={i})col={fn}(p,iTime);" in expanded for i,fn in dispatches.items())
 (out/"expanded.frag").write_text(expanded,encoding="utf-8")
-print("PASS: V1.0.1 shader intact; custom classic and Particle Wave palettes compile from 36 schemes.")
+print("PASS: original shader frozen, 5 premium GLSL motors injected, palettes and dispatch verified.")
