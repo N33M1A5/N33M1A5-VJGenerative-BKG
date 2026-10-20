@@ -8,6 +8,7 @@ on:
       - 'shaders.h'
       - 'shaders_expansion.h'
       - 'tools/validate_unified.py'
+      - 'tools/render_gpu_smoke.cpp'
       - 'build/windows/VJGenerativeV1.vcxproj'
       - '.github/workflows/build.yml'
   pull_request:
@@ -35,6 +36,11 @@ jobs:
           glslangValidator -S frag glsl-validation/legacy_palette.frag
           glslangValidator -S vert glsl-validation/expanded.vert
           glslangValidator -S frag glsl-validation/expanded.frag
+      - name: Real GPU rendering test - 24 motors and palettes
+        run: |
+          sudo apt-get install -y -qq libegl1-mesa-dev libglew-dev libgl1-mesa-dev
+          g++ -std=c++17 -O2 tools/render_gpu_smoke.cpp -o /tmp/n33-vj-render-smoke -lEGL -lGLEW -lGL
+          EGL_PLATFORM=surfaceless LIBGL_ALWAYS_SOFTWARE=1 /tmp/n33-vj-render-smoke
   build:
     needs: verify
     runs-on: windows-latest
