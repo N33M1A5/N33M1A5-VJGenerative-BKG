@@ -38,8 +38,8 @@ jobs:
           glslangValidator -S frag glsl-validation/expanded.frag
       - name: Real GPU rendering test - 24 motors and palettes
         run: |
-          sudo apt-get install -y -qq libegl1-mesa-dev libglew-dev libgl1-mesa-dev
-          g++ -std=c++17 -O2 tools/render_gpu_smoke.cpp -o /tmp/n33-vj-render-smoke -lEGL -lGLEW -lGL
+          sudo apt-get install -y -qq libegl1-mesa-dev libepoxy-dev libgl1-mesa-dev
+          g++ -std=c++17 -O2 tools/render_gpu_smoke.cpp -o /tmp/n33-vj-render-smoke -lEGL -lepoxy -lGL
           EGL_PLATFORM=surfaceless LIBGL_ALWAYS_SOFTWARE=1 /tmp/n33-vj-render-smoke
   build:
     needs: verify
