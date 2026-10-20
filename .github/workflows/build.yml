@@ -1,0 +1,66 @@
+name: Build VJGenerativeV1 DLL
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'VJGenerative.cpp'
+      - 'shaders.h'
+      - 'build/windows/VJGenerativeV1.vcxproj'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout N33M1A5 source
+        uses: actions/checkout@v4
+
+      - name: Checkout official Resolume FFGL SDK
+        uses: actions/checkout@v4
+        with:
+          repository: resolume/ffgl
+          ref: master
+          path: ffgl
+
+      - name: Install standalone plugin into SDK
+        shell: pwsh
+        run: |
+          $target = 'ffgl/source/plugins/VJGenerativeV1'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Copy-Item VJGenerative.cpp "$target/VJGenerative.cpp" -Force
+          Copy-Item shaders.h "$target/shaders.h" -Force
+          Copy-Item build/windows/VJGenerativeV1.vcxproj ffgl/build/windows/VJGenerativeV1.vcxproj -Force
+          if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
+          if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build FFGL DLL (Release x64)
+        shell: pwsh
+        run: |
+          msbuild 'ffgl/build/windows/VJGenerativeV1.vcxproj' /m /t:Build /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed.' }
+
+      - name: Validate and stage DLL
+        shell: pwsh
+        run: |
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV1.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV1.dll was not created.' }
+          New-Item -ItemType Directory -Force -Path artifact | Out-Null
+          Copy-Item $dll.FullName artifact/VJGenerativeV1.dll -Force
+          Write-Host "DLL: $($dll.FullName)"
+          Write-Host "Bytes: $($dll.Length)"
+          Get-FileHash artifact/VJGenerativeV1.dll -Algorithm SHA256 | Format-List
+
+      - name: Upload Windows x64 DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: VJGenerativeV1-Windows-x64
+          path: artifact/VJGenerativeV1.dll
+          if-no-files-found: error
