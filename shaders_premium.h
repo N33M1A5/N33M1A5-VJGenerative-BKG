@@ -28,8 +28,8 @@ vec3 premiumCathedral(vec2 p,float t){
         // Structural pillars and ceiling beams.
         float frame=premiumLine(premiumRectangle(v,vec2(.88,.61)),.013+.012*uDetail);
         float arch=premiumLine(length(vec2(v.x,max(0.,v.y)))-.49,.013)
-                    *smoothstep(.20,.30,v.y)*smoothstep(.92,.72,abs(v.x));
-        float column=premiumLine(abs(v.x)-.68,.013)*smoothstep(-.59,-.38,v.y)*smoothstep(.65,.54,v.y);
+                    *smoothstep(.20,.30,v.y)*(1.-smoothstep(.72,.92,abs(v.x)));
+        float column=premiumLine(abs(v.x)-.68,.013)*smoothstep(-.59,-.38,v.y)*(1.-smoothstep(.54,.65,v.y));
         float floorEdge=premiumLine(v.y+.60,.014)*smoothstep(.55,.87,abs(v.x));
         float halo=exp(-abs(premiumRectangle(v,vec2(.88,.61)))*13.)*.08;
         float attenuation=(.30+.70*z)*(1.-z*.32);
