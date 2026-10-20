@@ -51,14 +51,17 @@ vec3 eFluid(vec2 p,float t){
   return pal(f*1.2+length(q)*.5+t*.02)*(.25+1.3*f*f+.4*length(r));
 }
 
-// 1 - Tunel neon
+// 1 - Tunel neon (V1.0.1: correcao de costura angular)
 vec3 eTunnel(vec2 p,float t){
+  const float PI=3.14159265358979323846;
+  const float TAU=6.28318530717958647692;
   float d=length(p)+1e-3, a=atan(p.y,p.x);
+  float ang=fract((a+PI)/TAU);
   float z=.6/d+t*1.5;
-  vec2 g=abs(fract(vec2(a*1.2732+uSeed,z))-.5);
+  vec2 g=abs(fract(vec2(ang*8.0+uSeed,z))-.5);
   float l=min(g.x,g.y);
   float glow=.025/(l+.025);
-  return pal(z*.08+a*.05+t*.03)*glow*smoothstep(0.,.6,d)*.9;
+  return pal(z*.08+sin(a)*.05+t*.03)*glow*smoothstep(0.,.6,d)*.9;
 }
 
 // 2 - Lasers de palco
