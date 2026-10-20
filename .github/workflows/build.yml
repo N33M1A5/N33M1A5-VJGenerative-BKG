@@ -8,7 +8,6 @@ on:
       - 'shaders.h'
       - 'shaders_expansion.h'
       - 'tools/validate_unified.py'
-      - 'tools/validate_unified.py'
       - 'build/windows/VJGenerativeV1.vcxproj'
       - '.github/workflows/build.yml'
   pull_request:
