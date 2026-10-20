@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <cstdlib>
 
-static const int W=128,H=72;
+static const int W=256,H=144;
 static std::string load(const std::string& path){
  std::ifstream f(path);if(!f)throw std::runtime_error("missing GLSL "+path);
  std::ostringstream b;b<<f.rdbuf();return b.str();
@@ -53,6 +53,15 @@ static std::vector<unsigned char> draw(GLuint p,GLuint vao,int motor,int colorMo
  std::vector<unsigned char> pixels(W*H*4);glReadPixels(0,0,W,H,GL_RGBA,GL_UNSIGNED_BYTE,pixels.data());
  e=glGetError();if(e!=GL_NO_ERROR)throw std::runtime_error("glReadPixels error "+std::to_string(e));
  return pixels;
+}
+static void savePPM(const std::string& name,const std::vector<unsigned char>& rgb){
+ std::ofstream f(name,std::ios::binary);
+ if(!f)throw std::runtime_error("Could not write preview "+name);
+ f<<"P6\n"<<W<<" "<<H<<"\n255\n";
+ for(int y=H-1;y>=0;--y)for(int x=0;x<W;x++){
+  size_t i=(size_t(y)*W+x)*4;
+  f.put((char)rgb[i]);f.put((char)rgb[i+1]);f.put((char)rgb[i+2]);
+ }
 }
 static double avgBrightness(const std::vector<unsigned char>& p){
  double v=0.;for(size_t i=0;i<p.size();i+=4)v+=double(p[i])+double(p[i+1])+double(p[i+2]);
@@ -123,12 +132,27 @@ int main(){
   double wavePaletteChange=avgDifference(waveNewPal,waveOriginal);
   std::cout<<"New Cyberpunk palette on Particle Wave "<<wavePaletteChange<<"\n";
   if(wavePaletteChange<.65)throw std::runtime_error("New VJ presets do not change Particle Wave");
+  // Test the five curated premium motors AND Particle Wave against the real OpenGL rasterizer.
+  const int premiumIds[]={1,18,19,20,21,22};
+  const std::string premiumNames[]={"ParticleWave","CatedralLuz","ChromeTide","EnergyRift","InfinityCubes","NovaPulse"};
+  std::system("mkdir -p preview");
+  for(int idx=0;idx<6;idx++){
+    auto img=draw(expanded,vao,premiumIds[idx],0,5.f,16); // Cyberpunk palette
+    double lum=avgBrightness(img);
+    std::cout<<"PREMIUM "<<premiumNames[idx]<<" average "<<lum<<"\n";
+    if(lum<.45)throw std::runtime_error(premiumNames[idx]+" renders black");
+    auto laterImg=draw(expanded,vao,premiumIds[idx],0,7.f,16);
+    double changed=avgDifference(img,laterImg);
+    std::cout<<"PREMIUM motion "<<premiumNames[idx]<<" "<<changed<<"\n";
+    if(changed<.13)throw std::runtime_error(premiumNames[idx]+" does not animate");
+    savePPM("preview/"+premiumNames[idx]+".ppm",img);
+  }
   auto first=draw(expanded,vao,1,0,5.f);
   auto later=draw(expanded,vao,1,0,6.f);
   double motion=avgDifference(first,later);
   std::cout<<"Particle wave animation after 1s: "<<motion<<"\n";
   if(motion<.20)throw std::runtime_error("New motor did not animate with Time");
-  std::cout<<"PASS: 6 original, Particle Wave, 36 fixed/custom palettes; other hidden GLSL engines smoke tested.\n";
+  std::cout<<"PASS: 6 original + 6 premium show motors, animation, custom palettes and image previews.\n";
   glDeleteProgram(legacy);glDeleteProgram(customized);glDeleteProgram(expanded);
   glDeleteBuffers(1,&vbo);glDeleteVertexArrays(1,&vao);
   eglMakeCurrent(display,EGL_NO_SURFACE,EGL_NO_SURFACE,EGL_NO_CONTEXT);
