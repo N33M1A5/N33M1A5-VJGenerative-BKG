@@ -1,148 +1,176 @@
 #pragma once
-// N33M1A5 ORIGINAL premium stage visuals — shader source, not stock/VJ video assets.
-// Designed to use the exact existing palette/beat/scale/intensity/alpha controls.
-// Function IDs in the extension: 18 Catedral, 19 Chrome, 20 Energy, 21 Infinity, 22 Nova.
+// N33M1A5 V1.6: five original stage-ready procedural GLSL motors.
+// Design references: stage wireframe architecture, liquid reflective gradients,
+// lightning energy, Art Deco symmetry, and volumetric stage rays.
+// No paid assets, copied motion loops or third-party shaders.
 static const char* kPremiumMotorFunctions=R"GLSL(
-// 18 — CATEDRAL DE LUZ: layered luminous arch portal, converging depth and atmosphere.
-float sdArch(vec2 p){
-    p.y+=.18;
-    float side=abs(abs(p.x)-.62);
-    float legs=max(side, max(-1.0-p.y,p.y-.12));
-    float arc=abs(length(vec2(p.x,max(0.,p.y-.12)))-.62);
-    arc=max(arc,.12-p.y);
-    return min(legs,arc);
+float premiumLine(float d,float w){
+    return 1.-smoothstep(w,w+max(fwidth(d)*1.45,.0025),abs(d));
 }
+float premiumRectangle(vec2 p,vec2 size){
+    vec2 d=abs(p)-size;
+    return length(max(d,0.))+min(max(d.x,d.y),0.);
+}
+float premiumHash(float x){return fract(sin(x*132.431+4.11)*43758.5453);}
+
+// 18 — ARQUITETURA LED
+// Wide architectural wireframe stage with realistic successive portals.
+// High-contrast symmetric structures leave an intentionally dark centre for a performer.
 vec3 premiumCathedral(vec2 p,float t){
     vec3 col=vec3(0.);
-    vec2 r=p;float beat=.5+.5*cos(uBeat*TAU);
-    r.x+=.05*sin(t*.16+r.y*1.9);
-    for(int i=0;i<10;i++){
-        float n=float(i);
-        float phase=fract(n/10.+t*(.032+.03*uDepth));
-        float perspective=.16+phase*2.5;
-        vec2 q=r/max(perspective,.01);
-        q.y+=.12;
-        float d=sdArch(q);
-        float thin=aaLine(d,.012+.014*uDetail)/max(.4,perspective);
-        float halo=exp(-abs(d)*(15.+10.*uDensity))*(.05+.07*beat);
-        float tint=n*.13+phase*.3+t*.012;
-        col+=pal(tint)*(thin*.65+halo*.18)*(1.-phase*.35);
-        // Thin central light arrays reinforce symmetric stage proportions.
-        float glass=exp(-abs(q.x)*18.)*exp(-abs(q.y)*2.)*.045;
-        col+=pal(tint+.18)*glass;
+    float breath=.5+.5*cos(uBeat*TAU);
+    for(int i=0;i<11;i++){
+        float f=float(i);
+        float z=fract(f/11.+t*(.029+.025*uDepth));
+        float size=.17+3.3*z;
+        vec2 v=p/(size+.0005);
+        v.x+=.07*sin(f*.8+t*.08)*(1.-z);
+        // Structural pillars and ceiling beams.
+        float frame=premiumLine(premiumRectangle(v,vec2(.88,.61)),.013+.012*uDetail);
+        float arch=premiumLine(length(vec2(v.x,max(0.,v.y)))-.49,.013)
+                    *smoothstep(.20,.30,v.y)*smoothstep(.92,.72,abs(v.x));
+        float column=premiumLine(abs(v.x)-.68,.013)*smoothstep(-.59,-.38,v.y)*smoothstep(.65,.54,v.y);
+        float floorEdge=premiumLine(v.y+.60,.014)*smoothstep(.55,.87,abs(v.x));
+        float halo=exp(-abs(premiumRectangle(v,vec2(.88,.61)))*13.)*.08;
+        float attenuation=(.30+.70*z)*(1.-z*.32);
+        vec3 tint=pal(f*.13+t*.014);
+        col+=tint*(frame*.50+arch*.33+column*.35+floorEdge*.30+halo*.65)*attenuation;
     }
-    float atmosphere=exp(-length(r)*.65)*(.035+.06*beat);
-    col+=pal(t*.025+.3)*atmosphere;
+    // Moving luminous rails reinforce the sense of physical stage depth.
+    float railY=p.y+.71;
+    float rail=exp(-abs(railY-p.x*.23)*19.)+exp(-abs(railY+p.x*.23)*19.);
+    col+=pal(t*.02+.5)*rail*.09;
+    col+=pal(.28+t*.015)*exp(-length(p*vec2(.55,1.))*1.4)*(.025+.042*breath);
     return col;
 }
-// 19 — CHROME TIDE: domain warped metallic liquid with specular highlights and prismatic reflections.
+
+// 19 — CHROME FLOW
+// Five broad, flowing chrome ribbons with smooth glossy specular bands.
+// Large smooth regions avoid the tiny noisy pixels of the rejected previous prototype.
 vec3 premiumChrome(vec2 p,float t){
-    vec2 q=p*(1.05+uDensity*.95);
-    vec2 flow=vec2(fbm(q*.82+vec2(t*.07,.15)),fbm(q*.9+vec2(-.21,t*.065)));
-    vec2 w=q+flow*(1.5+1.4*uDepth);
-    float h=fbm(w*1.8+vec2(t*.15,-t*.09));
-    vec2 e=vec2(.025,0.);
-    float hx=fbm((w+e.xy)*1.8+vec2(t*.15,-t*.09))-h;
-    float hy=fbm((w+e.yx)*1.8+vec2(t*.15,-t*.09))-h;
-    vec3 normal=normalize(vec3(hx*19.,hy*19.,.6));
-    vec3 key=normalize(vec3(-.55,.7,.8));
-    vec3 fill=normalize(vec3(.6,-.45,.85));
-    float keySpec=pow(max(0.,dot(reflect(-key,normal),vec3(0.,0.,1.))),18.+32.*uDetail);
-    float fillSpec=pow(max(0.,dot(reflect(-fill,normal),vec3(0.,0.,1.))),29.);
-    float stripes=pow(.5+.5*cos(h*18.+flow.x*11.+q.x*1.8-t*.7),10.);
-    float edge=pow(1.-clamp(normal.z,0.,1.),2.);
-    vec3 metal=vec3(.018)+vec3(.13,.16,.20)*(.3+.5*normal.z);
-    vec3 spectral=pal(h*.64+flow.x*.22+t*.025);
-    metal+=spectral*(keySpec*1.45+fillSpec*.6+stripes*.3+edge*.16);
-    float softBox=pow(max(0.,.5+.5*cos(w.y*8.7-w.x*3.1+t*.17)),22.);
-    float flowingStripe=pow(max(0.,.5+.5*cos(w.y*14.+flow.x*8.5-t*.31)),18.);
-    metal+=vec3(.65,.8,.98)*(keySpec*.45+softBox*.16);
-    metal+=pal(flow.y*.4+t*.017)*flowingStripe*.23;
-    return metal;
+    vec2 uv=p;
+    float time=t*(.13+.08*uDepth);
+    vec3 result=vec3(.006,.009,.015);
+    float noise=fbm(p*.43+vec2(time*.13,-time*.10));
+    for(int i=0;i<6;i++){
+        float k=float(i);
+        float center=(k-2.5)*(.29+.075*uDensity)
+               +sin(uv.x*(1.05+.035*k)+time*.76+k*.95)*(.20+.11*uDepth)
+               +sin(uv.x*2.7-time*.32+k*.9)*.055
+               +(noise-.5)*.115;
+        float distance=uv.y-center;
+        float width=.19+.065*sin(time*.27+k);
+        float core=exp(-pow(distance/(max(width,.05)),2.));
+        float rim=exp(-pow(abs(distance)/(width*.84),2.))*pow(.5+.5*cos(distance*23.+sin(uv.x*1.5+time+k)*2.4),12.);
+        float spec=exp(-pow((distance-width*.28)/(.022+.013*uDetail),2.));
+        float spec2=exp(-pow((distance+width*.35)/(.04+.015*uDetail),2.));
+        float shade=.12+.48*pow(.5+.5*cos(uv.x*.75+time*.28+k*.73),2.);
+        vec3 metal=vec3(.052,.063,.075)+pal(k*.14+uv.x*.08+time*.022)*(.50+.24*shade);
+        result+=metal*core*(.14+.54*shade)+vec3(.75,.85,.98)*(spec*.34+spec2*.12)*core;
+        result+=pal(k*.16+time*.013)*rim*.10;
+    }
+    // Long spatial reflections move on top of the ribbons, not pixel noise.
+    float reflected=pow(.5+.5*cos(uv.x*1.1+sin(uv.y*1.8+time)*.65-time*.3),15.);
+    result+=pal(time*.02+.15)*reflected*.055;
+    return result;
 }
-// 20 — ENERGY RIFT: turbulent rift with asymmetric lightning, branching and sparks.
+
+// 20 — ELECTRIC STORM
+// Multiple full-height branching bolts with solid readable cores, wide halos and short flashes.
 vec3 premiumRift(vec2 p,float t){
-    vec2 q=p;
-    float w=fbm(vec2(q.y*(3.+uDensity*3.),t*.18+uSeed*.013));
-    float w2=fbm(vec2(q.y*9.-t*.44,3.21+uSeed*.03));
-    float center=(w-.5)*(.36+.24*uDepth)+sin(q.y*6.+t*.35)*.08+(w2-.5)*.10;
-    float x=q.x-center;
-    float fracture=.012+.022*(.5+.5*sin(q.y*21.+t*.7));
-    float core=exp(-abs(x)/(fracture+.006));
-    float halo=exp(-abs(x)/(.11+.16*uDensity));
-    float band=pow(.5+.5*sin(q.y*(14.+13.*uDetail)-t*.8+w2*4.),13.);
-    float twitch=pow(.5+.5*cos(q.y*31.+t*1.5),10.);
-    vec3 col=pal(q.y*.18+t*.036)*(core*.75+halo*.12+band*halo*.26);
-    col+=vec3(.85,.9,1.)*core*(.15+.25*twitch);
-    // Disconnected electrical streamers create asymmetry instead of a plain centered line.
-    for(int i=0;i<5;i++){
-        float fi=float(i);
-        float branch=center+.17*sin(q.y*(3.+fi)+t*(.33+fi*.05)+fi*2.5);
-        float dist=abs(q.x-branch);
-        float envelope=pow(.5+.5*sin(q.y*6.-fi*3.+t*.24),4.);
-        col+=pal(fi*.19+t*.03)*exp(-dist*(34.+uDetail*25.))*envelope*.17;
-    }
-    // Major portal glow reaches far beyond the lightning seam so LED walls read it from a distance.
-    float haze=exp(-abs(x)/( .28 + .12*uDensity ))*(.28+.17*pow(.5+.5*cos(uBeat*TAU),4.));
-    float slash=pow(.5+.5*sin(q.y*3.9+t*.7+w*6.5),9.)*exp(-abs(x)*2.6);
-    float branchGlow=exp(-abs(q.x-(center+.24*sin(q.y*4.1-t*.22)))*11.)*
-                     pow(.5+.5*cos(q.y*9.7+t*.27),6.)*.40;
-    float after=exp(-length(q)*1.3)*(.045+.14*pow(.5+.5*cos(uBeat*TAU),4.));
-    return col+pal(t*.04)*after + pal(q.y*.12+t*.05)*(haze*.55+slash*.24+branchGlow*.36);
-}
-// 21 — INFINITY CUBES: rotating perspective 3D wireframes with convincing depth parallax.
-float sdSegment(vec2 p,vec2 a,vec2 b){
-    vec2 v=b-a;
-    return length(p-(a+v*clamp(dot(p-a,v)/max(dot(v,v),.00001),0.,1.)));
-}
-mat2 rotate2(float a){float s=sin(a),c=cos(a);return mat2(c,s,-s,c);}
-float squareFrame(vec2 q,float r){
-    vec2 e=abs(q);
-    return max(e.x,e.y)-r;
-}
-vec3 premiumCubes(vec2 p,float t){
-    vec3 col=vec3(0.);
+    vec3 result=vec3(0.);
     float beat=.5+.5*cos(uBeat*TAU);
-    for(int i=0;i<9;i++){
-        float fi=float(i);
-        float depth=fract(fi/9.+t*(.025+.03*uDepth));
-        float perspective=.19+2.3*depth;
-        float a=t*(.08+.09*uDetail)+fi*.09;
-        vec2 q=rotate2(a)*p;
-        q.x+=.11*sin(fi*2.+t*.11)*depth;
-        float inner=.45*perspective;
-        float outer=.68*perspective;
-        float edge1=aaLine(abs(squareFrame(q,inner)),.012+.009*uDensity);
-        float edge2=aaLine(abs(squareFrame(rotate2(.785398+a*.22)*p,outer)),.010);
-        vec2 v=abs(q);
-        float diag=aaLine(abs(v.x-v.y),.018)*smoothstep(inner*.7,inner,v.x)
-                   *(1.-smoothstep(outer,outer*1.15,v.x));
-        float glow=exp(-abs(squareFrame(q,inner))*18.)*.035;
-        col+=pal(fi*.13+t*.012)*(edge1*.38+edge2*.28+diag*.13+glow)
-             *(1.2-depth*.55);
+    float flash=pow(beat,6.);
+    for(int i=0;i<6;i++){
+        float f=float(i);
+        float x0=(f-2.5)*(.46+.055*uDensity);
+        float y=p.y;
+        float n=fbm(vec2(y*(2.2+.10*f)+f*7.1,t*.32+f*2.1+uSeed*.06));
+        float n2=fbm(vec2(y*(10.5+.4*uDetail)+f*5.5,-t*.83+f*.81));
+        float path=x0+(n-.5)*(.36+.22*uDepth)+(n2-.5)*(.105+.06*uDetail);
+        float distance=abs(p.x-path);
+        float core=exp(-distance*(73.+30.*uDetail));
+        float bloom=exp(-distance/(.10+.065*uDensity));
+        float flicker=.60+.40*sin(t*.91+f*4.2+y*13.)*sin(t*.46+f*.8);
+        vec3 hue=pal(f*.14+t*.016+y*.10);
+        result+=hue*(core*(.62+.48*flash)*flicker+bloom*.090);
+        result+=vec3(.80,.91,1.)*core*.19;
+        float branchPosition=path+.18*sin(y*(4.5+f*.3)+t*.5+f*1.2);
+        float branchMask=pow(.5+.5*cos(y*8.4+f*3.-t*.55),4.);
+        float twig=exp(-abs(p.x-branchPosition)*(33.+16.*uDetail));
+        result+=hue*twig*branchMask*.18;
     }
-    col+=pal(t*.032+.3)*exp(-length(p)*2.4)*(.04+.07*beat);
-    return col;
+    // Wide white flash is a strobe-like envelope, not a full-frame blown-out flash.
+    float sweep=exp(-length(p*vec2(.52,.75))*1.7);
+    result+=pal(t*.018+.4)*sweep*(.013+.13*flash);
+    return result;
 }
-// 22 — NOVA PULSE: wide-screen shockwave explosions, bright photonic spokes and energy rings.
+
+// 21 — GOLDEN FAN
+// Art Deco radial fans, petals and nested scalloped arches on black.
+// Elegant choice for awards, wedding and worship presentations.
+vec3 premiumCubes(vec2 p,float t){
+    vec3 result=vec3(.002,.002,.003);
+    float move=t*(.055+.035*uDepth);
+    float petals=12.+floor(uDetail*16.);
+    for(int i=0;i<3;i++){
+        float f=float(i);
+        vec2 center=vec2((f-1.)*1.6,-.97+.06*sin(move+f));
+        vec2 q=p-center;
+        float r=length(q);
+        float angle=atan(q.y,q.x);
+        float fan=pow(abs(cos(angle*petals*.5+move*.65+f*.5)),19.);
+        float sector=abs(sin(angle*petals*.5+move*.38+f));
+        float inner=exp(-abs(r-(.35+.055*sin(move+f)))*27.);
+        float middle=exp(-abs(r-(.58+.035*sin(move*.7+f)))*26.);
+        float outer=exp(-abs(r-(.90+.025*sin(move*.6+f)))*21.);
+        float rim=inner*.40+middle*.52+outer*.37;
+        float spokes=fan*(.5+.5*sin(r*9.-move*.8))*(1.-smoothstep(.24,1.4,r));
+        float facets=pow(1.-sector,12.)*middle;
+        vec3 ink=pal(f*.22+angle*.08+move*.04);
+        result+=ink*(rim*.56+spokes*.21+facets*.24);
+    }
+    // Crown centrepiece — layered semicircular motif above the performers.
+    float r=length(p*vec2(.83,1.)-vec2(0.,-.27));
+    float rings=exp(-abs(r-.72)*36.)*.27+exp(-abs(r-.52)*37.)*.19;
+    float spokes=pow(abs(cos(atan(p.y+.27,p.x)*13.+move)),24.)*exp(-abs(r-.67)*6.);
+    result+=pal(.16+move*.04)*(rings+spokes*.16);
+    return result;
+}
+
+// 22 — STAGE RAYS
+// Stage fixture arrays, strong wide beams and atmospheric curtain glows.
+// A dark central safe area makes the visual usable behind artists and event logos.
 vec3 premiumNova(vec2 p,float t){
-    float r=length(p),a=atan(p.y,p.x),pulse=.5+.5*cos(uBeat*TAU);
-    float lobes=16.+floor(uDetail*32.);
-    float flare=pow(max(0.,cos(a*lobes*.5+sin(r*4.-t*.34)*.35)),24.);
-    float phase=fract(t*(.08+.08*uDepth));
-    float radius=.25+phase*(1.1+.4*uDensity);
-    float ring=aaLine(abs(r-radius),.025+.012*pulse)*(1.-phase*.38);
-    float backRing=aaLine(abs(r-(radius*.58)),.018)*.3;
-    float lightShaft=flare*exp(-r*(.65+.5*uDensity));
-    float corona=exp(-r*(3.+2.*uDensity));
-    float ripples=pow(.5+.5*cos(r*18.-t*1.2+fbm(p*1.4)*2.5),20.);
-    vec3 col=pal(a*.16+t*.02)*(lightShaft*.63+ring*.95+backRing*.42);
-    float volume=exp(-r*(1.25+.65*uDensity))*(.20+.19*pulse);
-    float star=pow(.5+.5*cos(a*(6.+floor(uDetail*8.))),18.)*exp(-r*.88);
-    float sparkles=pow(.5+.5*cos(a*44.+r*14.-t*.55),32.)*exp(-abs(r-radius)*4.);
-    col+=pal(r*.23+.32+t*.03)*(corona*.95+ripples*.22+volume*.7);
-    col+=pal(a*.14+t*.024)*(star*.30+sparkles*.17);
-    col+=vec3(.85,.9,1.)*ring*pulse*.43;
-    return col;
+    vec3 result=vec3(0.);
+    float move=t*(.10+.12*uDepth);
+    float beat=.5+.5*cos(uBeat*TAU);
+    for(int i=0;i<14;i++){
+        float fi=float(i),side=mod(fi,2.)<1.?1.:-1.;
+        float bank=floor(fi*.5);
+        vec2 lamp=vec2(side*(.37+bank*.26),1.13);
+        float angle=-1.570796+side*(.15+.43*sin(move*.6+bank*.35+uSeed*.01));
+        vec2 direction=vec2(cos(angle),sin(angle));
+        vec2 ray=p-lamp;
+        float depth=dot(ray,direction);
+        float perp=abs(ray.x*direction.y-ray.y*direction.x);
+        float coneWidth=.027+.045*uDensity+.10*max(0.,depth);
+        float beam=exp(-pow(perp/max(coneWidth,.006),1.4))
+                  *smoothstep(-.04,.15,depth)*exp(-max(depth,0.)*.43);
+        float edge=exp(-perp*(30.+25.*uDetail));
+        float k=bank*.115+side*.07+t*.014;
+        result+=pal(k)*beam*(.065+.065*beat);
+        result+=pal(k+.08)*edge*beam*.10;
+    }
+    for(int j=0;j<7;j++){
+        float k=float(j);
+        float x=(k-3.)*.52;
+        float wobble=.12*sin(p.y*(1.+k*.16)+move*.55+k*1.8);
+        float curtain=exp(-abs(p.x-x-wobble)*(4.+4.*uDetail));
+        result+=pal(k*.14+t*.014)*curtain*(.030+.043*uDensity);
+    }
+    float fog=fbm(p*.71+vec2(move*.12,-move*.06));
+    result+=pal(fog*.5+t*.017)*fog*.037;
+    return result;
 }
 )GLSL";
