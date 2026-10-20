@@ -160,10 +160,10 @@ float VJGenerative::GetFloatParameter( unsigned int index )
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJGN",
-	"VJ Generative",
+	"V101",
+	"VJ Generative V1.0.1",
 	2, 1,
-	1, 0,
+	1, 1,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"Plugin FFGL generativo - 6 motores, 9 paletas" );
+	"V1.0.1: seis motores originais; Tunnel angular seam corrected" );
