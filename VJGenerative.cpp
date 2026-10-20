@@ -1,6 +1,7 @@
 #include "FFGLSDK.h"
 #include "shaders.h" // IMMUTABLE V1.0.1 shader
 #include "shaders_expansion.h"
+#include "palettes_extra.h"
 #include <string>
 #include <algorithm>
 #include <cstdio>
@@ -30,15 +31,15 @@ enum Param
 	P_COUNT
 };
 
-static const char* kEngines[] = {
-  "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes",
-  "Crystal", "Particle Wave", "Light Curtains", "Cyber Grid", "Kaleido Pulse", "Solid RGBA",
-  "Hex Mosaic", "Mandala", "Orbitas", "Polygon Prism", "Fractal Bloom", "Stage Beams",
-  "Bokeh Lights", "Liquid Plasma", "Neon Ribbons", "Starfield", "Circuit Board", "Digital Rain"
-};
-static const char* kPalettes[] = { "Arco-iris", "Fogo", "Oceano", "Neon", "Ultravioleta", "Floresta", "Gelo", "Por do sol", "Mono" };
-static const int kNumEngines   = sizeof( kEngines ) / sizeof( kEngines[ 0 ] );
-static const int kNumPalettes  = sizeof( kPalettes ) / sizeof( kPalettes[ 0 ] );
+// V1.4: first six classic engines never change position. All 18 extra engines sorted A-Z.
+static const char* kEngines[] = { "Nevoa", "Tunel", "Lasers", "Celulas", "Aurora", "Orbes", "Bokeh Lights", "Circuit Board", "Crystal", "Cyber Grid", "Digital Rain", "Fractal Bloom", "Hex Mosaic", "Kaleido Pulse", "Light Curtains", "Liquid Plasma", "Mandala", "Neon Ribbons", "Orbitas", "Particle Wave", "Polygon Prism", "Solid RGBA", "Stage Beams", "Starfield" };
+static const int kMotorShaderId[] = { 0, 1, 2, 3, 4, 5, 18, 22, 6, 9, 23, 16, 12, 10, 8, 19, 13, 20, 14, 7, 15, 11, 17, 21 };
+// The original 9 palette algorithms keep IDs 0..8. Display order is alphabetical.
+static const char* kPalettes[] = { "Acido Neon", "Ambar", "Arco-iris", "Artico", "Aurora Boreal", "Azul Eletrico", "Brasa", "Cobre", "Cyberpunk", "Deserto", "Dourado", "Esmeralda", "Floresta", "Fogo", "Galaxia", "Gelo", "Holograma", "Jade", "Lava", "Limao Neon", "Magenta Laser", "Mono", "Neon", "Oceano", "Outrun", "Por do sol", "Rosa Quartzo", "Roxo Laser", "Safira", "Solar", "Synthwave", "Tropical", "Turquesa", "Ultravioleta", "Vaporwave", "Vermelho Rubi" };
+static const int kPaletteShaderId[] = { 9, 10, 0, 11, 12, 13, 14, 15, 16, 17, 18, 19, 5, 1, 20, 6, 21, 22, 23, 24, 25, 8, 3, 2, 26, 7, 27, 28, 29, 30, 31, 32, 33, 4, 34, 35 };
+static const int kNumEngines   = sizeof(kEngines)/sizeof(kEngines[0]);
+static const int kNumPalettes  = sizeof(kPalettes)/sizeof(kPalettes[0]);
+static constexpr int kDefaultPaletteIndex=2; // "Arco-iris" -> original shader palette ID 0
 static const char* kColorModes[] = {"Original", "RGBA A", "Paleta A+B", "A+B Animada"};
 static const char* kColorBlends[] = {"Crossfade", "Add", "Screen", "Multiply"};
 static const char* kCanvasModes[] = {"Auto / Output", "16:9", "9:16", "32:9", "Custom"};
@@ -61,11 +62,11 @@ static std::string makeClassicPaletteShader()
        "uniform float uSlices, uSeed, uPulse, uContrast;\n"
        "uniform float uRGBAType,uRGBABlend,uRGBAMix,uOpacity,uGlow;\n"
        "uniform vec4 uRGBA_A,uRGBA_B;"))return {};
-    const std::string customPalette=R"GLSL(
+    const std::string customPalette=std::string(kPresetPaletteSource)+R"GLSL(
 vec3 pal(float t){
     vec3 original=originalPal(t);
     int mode=int(uRGBAType+.5);
-    if(mode==0)return original;
+    if(mode==0)return int(uPalette+.5)>=9?palettePreset(int(uPalette+.5),t):original;
     vec3 A=clamp(uRGBA_A.rgb,0.,1.),B=clamp(uRGBA_B.rgb,0.,1.);
     if(mode==1)return A;
     float phase=t+uHue+(mode==3?iTime*.055:0.);
@@ -83,6 +84,17 @@ vec3 pal(float t){
        "float alpha=clamp(uOpacity,0.,1.);\n"
        "if(int(uRGBAType+.5)>0)alpha*=mix(uRGBA_A.a,uRGBA_B.a,clamp(uRGBAMix,0.,1.));\n"
        "fragColor=vec4(clamp(col,0.,1.),alpha);"))return {};
+    return s;
+}
+
+
+static std::string makeExpansionPaletteShader()
+{
+    std::string s(kVJFragmentShader);
+    if(!replaceOnce(s,"vec3 palOriginal(float t){",
+       std::string(kPresetPaletteSource)+"\nvec3 palOriginal(float t){"))return {};
+    if(!replaceOnce(s,"vec3 fixedColor=palOriginal(t);",
+       "int id=int(uPalette+.5);\n vec3 fixedColor=id>=9?palettePreset(id,t):palOriginal(t);"))return {};
     return s;
 }
 
@@ -120,7 +132,7 @@ VJGenerative::VJGenerative()
     SetMaxInputs(0);
 
     // Defaults FIRST. SetParamInfof() reads GetFloatParameter() during registration.
-    params[P_ENGINE]=0.f; params[P_PALETTE]=0.f;
+    params[P_ENGINE]=0.f; params[P_PALETTE]=(float)kDefaultPaletteIndex;
     params[P_COLOR_MODE]=0.f; params[P_COLOR_BLEND]=0.f; params[P_COLOR_MIX]=.5f;
     params[P_A_R]=1.f; params[P_A_G]=0.f; params[P_A_B]=0.f; params[P_A_ALPHA]=1.f;
     params[P_B_R]=0.f; params[P_B_G]=0.f; params[P_B_B]=1.f; params[P_B_ALPHA]=1.f;
@@ -141,7 +153,7 @@ VJGenerative::VJGenerative()
     AddElementSeparator(P_ENGINE,12);
     AddElementSeparator(P_ENGINE,18);
 
-    SetOptionParamInfo(P_PALETTE,"Paleta",kNumPalettes,0.f);
+    SetOptionParamInfo(P_PALETTE,"Paleta",kNumPalettes,(float)kDefaultPaletteIndex);
     for(int i=0;i<kNumPalettes;i++)
        SetParamElementInfo(P_PALETTE,i,kPalettes[i],(float)i);
 
@@ -196,7 +208,8 @@ FFResult VJGenerative::InitGL(const FFGLViewportStruct* vp)
     }
     std::string custom = makeClassicPaletteShader();
     classicColorReady=!custom.empty() && classicColorShader.Compile(kVertexShader,custom.c_str());
-    expansionReady=expansionShader.Compile(kVJVertexShader,kVJFragmentShader);
+    std::string expanded=makeExpansionPaletteShader();
+    expansionReady=!expanded.empty() && expansionShader.Compile(kVJVertexShader,expanded.c_str());
     if(!classicColorReady)FFGLLog::LogToHost("N33 Unified: palette shader failed; original V1 still available.");
     if(!expansionReady)FFGLLog::LogToHost("N33 Unified: expansion shader failed; original V1 still available.");
     if(!quad.Initialise()){DeInitGL();return FF_FAIL;}
@@ -252,7 +265,8 @@ FFResult VJGenerative::ProcessOpenGL(ProcessOpenGLStruct* pGL)
     active->Set("iTime",(float)time);
     active->Set("uBeat",(float)beats);
     active->Set("uEngine",params[P_ENGINE]);
-    active->Set("uPalette",params[P_PALETTE]);
+    const int paletteIndex=std::max(0,std::min(kNumPalettes-1,(int)std::lround(params[P_PALETTE])));
+    active->Set("uPalette",(float)kPaletteShaderId[paletteIndex]);
     active->Set("uScale",params[P_SCALE]);
     active->Set("uIntensity",params[P_INTENSITY]);
     active->Set("uHue",params[P_HUE]);
@@ -271,7 +285,7 @@ FFResult VJGenerative::ProcessOpenGL(ProcessOpenGLStruct* pGL)
         active->Set("uGlow",params[P_GLOW]);
     }
     if(active==&expansionShader){
-        active->Set("uVJEngine",(float)(motor-6));
+        active->Set("uVJEngine",(float)(kMotorShaderId[motor]-6));
         active->Set("uDetail",params[P_DETAIL]);
         active->Set("uDepth",params[P_DEPTH]);
         active->Set("uDensity",params[P_DENSITY]);
@@ -315,10 +329,10 @@ char* VJGenerative::GetParameterDisplay(unsigned int index)
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJ15",
-	"VJ Gen Unified",
+	"VJ16",
+	"VJ Gen V1.4",
 	2, 1,
-	1, 5,
+	1, 6,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"Unified 24 engine selector, palette A/B on all engines, V1 classic unchanged by default" );
+	"V1.4: 36 alphabetic palettes, 24 engines, original classic visuals retained" );
