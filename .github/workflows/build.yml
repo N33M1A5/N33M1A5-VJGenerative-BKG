@@ -1,8 +1,8 @@
-name: Build N33 VJ V1.5 Twelve Motors
+name: Build N33 VJ V1.6 Stage Ready Motors
 
 on:
   push:
-    branches: [main, 'feature/v1-5-12-motores-premium']
+    branches: [main, 'feature/v1-6-stage-ready-motors']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
@@ -46,7 +46,7 @@ jobs:
       - name: Upload real rendered premium visual previews
         uses: actions/upload-artifact@v4
         with:
-          name: N33-VJ-V1.5-Motor-Previews
+          name: N33-VJ-V1.6-Motor-Previews
           path: preview/*.ppm
           if-no-files-found: error
   build:
@@ -89,7 +89,7 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV150.dll' -Recurse | Select-Object -First 1
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV160.dll' -Recurse | Select-Object -First 1
           if (-not $dll) { throw 'Expected VJGenerativeV150.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
           Copy-Item $dll.FullName artifact/VJGenerativeV150.dll -Force
@@ -100,6 +100,6 @@ jobs:
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: N33-VJ-V1.5-Windows-x64
+          name: N33-VJ-V1.6-Windows-x64
           path: artifact/VJGenerativeV150.dll
           if-no-files-found: error
