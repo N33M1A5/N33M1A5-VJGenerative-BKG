@@ -1,13 +1,14 @@
-name: Build N33 VJ V1.4.1 Button Rows and Palettes
+name: Build N33 VJ V1.5 Twelve Motors
 
 on:
   push:
-    branches: [main, 'feature/v1-4-paletas-alfabeticas']
+    branches: [main, 'feature/v1-5-12-motores-premium']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
       - 'shaders_expansion.h'
       - 'palettes_extra.h'
+      - 'shaders_premium.h'
       - 'tools/validate_unified.py'
       - 'tools/render_gpu_smoke.cpp'
       - 'build/windows/VJGenerativeV1.vcxproj'
@@ -42,6 +43,12 @@ jobs:
           sudo apt-get install -y -qq libegl1-mesa-dev libepoxy-dev libgl1-mesa-dev
           g++ -std=c++17 -O2 tools/render_gpu_smoke.cpp -o /tmp/n33-vj-render-smoke -lEGL -lepoxy -lGL
           EGL_PLATFORM=surfaceless LIBGL_ALWAYS_SOFTWARE=1 /tmp/n33-vj-render-smoke
+      - name: Upload real rendered premium visual previews
+        uses: actions/upload-artifact@v4
+        with:
+          name: N33-VJ-V1.5-Motor-Previews
+          path: preview/*.ppm
+          if-no-files-found: error
   build:
     needs: verify
     runs-on: windows-latest
@@ -65,6 +72,7 @@ jobs:
           Copy-Item shaders.h "$target/shaders.h" -Force
           Copy-Item shaders_expansion.h "$target/shaders_expansion.h" -Force
           Copy-Item palettes_extra.h "$target/palettes_extra.h" -Force
+          Copy-Item shaders_premium.h "$target/shaders_premium.h" -Force
           Copy-Item build/windows/VJGenerativeV1.vcxproj ffgl/build/windows/VJGenerativeV1.vcxproj -Force
           if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
           if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
@@ -81,17 +89,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV141.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeV141.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV150.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV150.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeV141.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeV150.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeV141.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeV150.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: N33-VJ-V1.4.1-Windows-x64
-          path: artifact/VJGenerativeV141.dll
+          name: N33-VJ-V1.5-Windows-x64
+          path: artifact/VJGenerativeV150.dll
           if-no-files-found: error
