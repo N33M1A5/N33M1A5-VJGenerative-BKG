@@ -54,7 +54,10 @@ vec3 premiumChrome(vec2 p,float t){
     vec3 metal=vec3(.018)+vec3(.13,.16,.20)*(.3+.5*normal.z);
     vec3 spectral=pal(h*.64+flow.x*.22+t*.025);
     metal+=spectral*(keySpec*1.45+fillSpec*.6+stripes*.3+edge*.16);
-    metal+=vec3(.65,.8,.98)*keySpec*.25;
+    float softBox=pow(max(0.,.5+.5*cos(w.y*8.7-w.x*3.1+t*.17)),22.);
+    float flowingStripe=pow(max(0.,.5+.5*cos(w.y*14.+flow.x*8.5-t*.31)),18.);
+    metal+=vec3(.65,.8,.98)*(keySpec*.45+softBox*.16);
+    metal+=pal(flow.y*.4+t*.017)*flowingStripe*.23;
     return metal;
 }
 // 20 — ENERGY RIFT: turbulent rift with asymmetric lightning, branching and sparks.
@@ -79,8 +82,13 @@ vec3 premiumRift(vec2 p,float t){
         float envelope=pow(.5+.5*sin(q.y*6.-fi*3.+t*.24),4.);
         col+=pal(fi*.19+t*.03)*exp(-dist*(34.+uDetail*25.))*envelope*.17;
     }
-    float after=exp(-length(q)*1.3)*(.02+.06*pow(.5+.5*cos(uBeat*TAU),4.));
-    return col+pal(t*.04)*after;
+    // Major portal glow reaches far beyond the lightning seam so LED walls read it from a distance.
+    float haze=exp(-abs(x)/( .28 + .12*uDensity ))*(.28+.17*pow(.5+.5*cos(uBeat*TAU),4.));
+    float slash=pow(.5+.5*sin(q.y*3.9+t*.7+w*6.5),9.)*exp(-abs(x)*2.6);
+    float branchGlow=exp(-abs(q.x-(center+.24*sin(q.y*4.1-t*.22)))*11.)*
+                     pow(.5+.5*cos(q.y*9.7+t*.27),6.)*.40;
+    float after=exp(-length(q)*1.3)*(.045+.14*pow(.5+.5*cos(uBeat*TAU),4.));
+    return col+pal(t*.04)*after + pal(q.y*.12+t*.05)*(haze*.55+slash*.24+branchGlow*.36);
 }
 // 21 — INFINITY CUBES: rotating perspective 3D wireframes with convincing depth parallax.
 float sdSegment(vec2 p,vec2 a,vec2 b){
@@ -129,8 +137,12 @@ vec3 premiumNova(vec2 p,float t){
     float corona=exp(-r*(3.+2.*uDensity));
     float ripples=pow(.5+.5*cos(r*18.-t*1.2+fbm(p*1.4)*2.5),20.);
     vec3 col=pal(a*.16+t*.02)*(lightShaft*.63+ring*.95+backRing*.42);
-    col+=pal(r*.23+.32+t*.03)*(corona*.36+ripples*.12);
-    col+=vec3(.85,.9,1.)*ring*pulse*.27;
+    float volume=exp(-r*(1.25+.65*uDensity))*(.20+.19*pulse);
+    float star=pow(.5+.5*cos(a*(6.+floor(uDetail*8.))),18.)*exp(-r*.88);
+    float sparkles=pow(.5+.5*cos(a*44.+r*14.-t*.55),32.)*exp(-abs(r-radius)*4.);
+    col+=pal(r*.23+.32+t*.03)*(corona*.95+ripples*.22+volume*.7);
+    col+=pal(a*.14+t*.024)*(star*.30+sparkles*.17);
+    col+=vec3(.85,.9,1.)*ring*pulse*.43;
     return col;
 }
 )GLSL";
