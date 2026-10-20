@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\plugins\VJGenerativeV1\shaders.h" />
+    <ClInclude Include="..\..\source\plugins\VJGenerativeV1\shaders_v1_original.h" />
     <ClInclude Include="..\..\source\lib\FFGLSDK.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -63,7 +64,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\binaries\$(PlatformTarget)\$(Configuration)\</OutDir>
     <IntDir>$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
-    <TargetName>VJGenerativeV11</TargetName>
+    <TargetName>VJGenerativeV11Safe</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
