@@ -1,4 +1,5 @@
 #include "FFGLSDK.h"
+#include "shaders_v1_original.h"
 #include "shaders.h"
 #include <chrono>
 #include <cmath>
@@ -53,7 +54,9 @@ public:
     char* GetParameterDisplay( unsigned int index ) override;
 
 private:
-	FFGLShader shader;
+	FFGLShader shader; // EXACT ORIGINAL V1.0 SHADER
+    FFGLShader extensionShader; // V1.1 shader isolated from the legacy render
+    bool extensionAvailable = false;
 	FFGLScreenQuad quad;
 	float params[ P_COUNT ];
     char numericDisplay[40] = {};
@@ -152,7 +155,12 @@ FFResult VJGenerative::InitGL( const FFGLViewportStruct* vp )
 		DeInitGL();
 		return FF_FAIL;
 	}
-	if( !quad.Initialise() )
+	// V1.1 extras must never prevent the proven V1.0 kernel from loading.
+    extensionAvailable = extensionShader.Compile(kVertexShaderV11,kFragmentShaderV11);
+    if(!extensionAvailable) {
+        FFGLLog::LogToHost("N33M1A5 V1.1 SAFE: extension shader failed; V1.0 engine remains available.");
+    }
+    if( !quad.Initialise() )
 	{
 		DeInitGL();
 		return FF_FAIL;
@@ -164,6 +172,8 @@ FFResult VJGenerative::InitGL( const FFGLViewportStruct* vp )
 FFResult VJGenerative::DeInitGL()
 {
 	shader.FreeGLResources();
+    extensionShader.FreeGLResources();
+    extensionAvailable = false;
 	quad.Release();
 	return FF_SUCCESS;
 }
@@ -189,35 +199,47 @@ FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
 	GLint vp[ 4 ];
 	glGetIntegerv( GL_VIEWPORT, vp );
 
-	ScopedShaderBinding binding( shader.GetGLID() );
-	shader.Set( "iResolution", (float)vp[ 2 ], (float)vp[ 3 ], 1.0f );
-	shader.Set( "iTime", (float)time );
-	shader.Set( "uBeat", (float)beats );
-	shader.Set( "uEngine", params[ P_ENGINE ] );
-	shader.Set( "uPalette", params[ P_PALETTE ] );
-	shader.Set( "uScale", params[ P_SCALE ] );
-	shader.Set( "uIntensity", params[ P_INTENSITY ] );
-	shader.Set( "uHue", params[ P_HUE ] );
-	shader.Set( "uSlices", params[ P_SYMMETRY ] );
-	shader.Set( "uSeed", params[ P_SEED ] * 100.0f );
-	shader.Set( "uPulse", params[ P_PULSE ] );
-	shader.Set( "uContrast", params[ P_CONTRAST ] );
-    shader.Set("uColorMode",params[P_COLOR_MODE]);
-    shader.Set("uColorA",params[P_R1],params[P_G1],params[P_B1],params[P_A1]);
-    shader.Set("uColorB",params[P_R2],params[P_G2],params[P_B2],params[P_A2]);
-    shader.Set("uRGBAMix",params[P_RGBA_MIX]);
-    shader.Set("uRGBABlend",params[P_RGBA_BLEND]);
-    shader.Set("uOpacity",params[P_OPACITY]);
-    shader.Set("uCanvasPreset",params[P_CANVAS_PRESET]);
-    shader.Set("uCanvasFit",params[P_CANVAS_FIT]);
-    shader.Set("uCustomCanvas",256.f+7936.f*params[P_CUSTOM_W],256.f+7936.f*params[P_CUSTOM_H]);
-    shader.Set("uPosition",params[P_POS_X],params[P_POS_Y]);
-    shader.Set("uTransformScale",params[P_TRANSFORM_SCALE]);
-    shader.Set("uRotation",params[P_ROTATION]);
-    shader.Set("uAnchor",params[P_ANCHOR_X],params[P_ANCHOR_Y]);
-    shader.Set("uVJDetail",params[P_VJ_DETAIL]);
-    shader.Set("uVJDepth",params[P_VJ_DEPTH]);
-    shader.Set("uVJDensity",params[P_VJ_DENSITY]);
+	// Original V1.0 uses byte-identical shader source, parameters and GL path.
+    // Extensions run ONLY if an added feature is explicitly selected.
+    const bool modifiedCanvas =
+         params[P_CANVAS_PRESET] > 0.5f ||
+         params[P_POS_X] != 0.5f || params[P_POS_Y] != 0.5f ||
+         params[P_TRANSFORM_SCALE] != 0.5f || params[P_ROTATION] != 0.5f ||
+         params[P_ANCHOR_X] != 0.5f || params[P_ANCHOR_Y] != 0.5f;
+    const bool extensionRequested =
+         params[P_ENGINE] >= 6.0f || params[P_COLOR_MODE] != 0.0f ||
+         params[P_OPACITY] < 0.9999f || modifiedCanvas;
+    FFGLShader& activeShader = (extensionRequested && extensionAvailable) ?
+                               extensionShader : shader;
+    ScopedShaderBinding binding( activeShader.GetGLID() );
+	activeShader.Set( "iResolution", (float)vp[ 2 ], (float)vp[ 3 ], 1.0f );
+	activeShader.Set( "iTime", (float)time );
+	activeShader.Set( "uBeat", (float)beats );
+	activeShader.Set( "uEngine", params[ P_ENGINE ] );
+	activeShader.Set( "uPalette", params[ P_PALETTE ] );
+	activeShader.Set( "uScale", params[ P_SCALE ] );
+	activeShader.Set( "uIntensity", params[ P_INTENSITY ] );
+	activeShader.Set( "uHue", params[ P_HUE ] );
+	activeShader.Set( "uSlices", params[ P_SYMMETRY ] );
+	activeShader.Set( "uSeed", params[ P_SEED ] * 100.0f );
+	activeShader.Set( "uPulse", params[ P_PULSE ] );
+	activeShader.Set( "uContrast", params[ P_CONTRAST ] );
+    activeShader.Set("uColorMode",params[P_COLOR_MODE]);
+    activeShader.Set("uColorA",params[P_R1],params[P_G1],params[P_B1],params[P_A1]);
+    activeShader.Set("uColorB",params[P_R2],params[P_G2],params[P_B2],params[P_A2]);
+    activeShader.Set("uRGBAMix",params[P_RGBA_MIX]);
+    activeShader.Set("uRGBABlend",params[P_RGBA_BLEND]);
+    activeShader.Set("uOpacity",params[P_OPACITY]);
+    activeShader.Set("uCanvasPreset",params[P_CANVAS_PRESET]);
+    activeShader.Set("uCanvasFit",params[P_CANVAS_FIT]);
+    activeShader.Set("uCustomCanvas",256.f+7936.f*params[P_CUSTOM_W],256.f+7936.f*params[P_CUSTOM_H]);
+    activeShader.Set("uPosition",params[P_POS_X],params[P_POS_Y]);
+    activeShader.Set("uTransformScale",params[P_TRANSFORM_SCALE]);
+    activeShader.Set("uRotation",params[P_ROTATION]);
+    activeShader.Set("uAnchor",params[P_ANCHOR_X],params[P_ANCHOR_Y]);
+    activeShader.Set("uVJDetail",params[P_VJ_DETAIL]);
+    activeShader.Set("uVJDepth",params[P_VJ_DEPTH]);
+    activeShader.Set("uVJDensity",params[P_VJ_DENSITY]);
 
 	quad.Draw();
 	return FF_SUCCESS;
@@ -226,7 +248,10 @@ FFResult VJGenerative::ProcessOpenGL( ProcessOpenGLStruct* pGL )
 FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 {
 	if( index >= P_COUNT ) return FF_FAIL;
-	params[ index ] = std::fmax(0.0f,std::fmin(1.0f,value));
+    // Preserve the EXACT original V1.0 parameter behavior for all original IDs.
+    if(index <= P_CONTRAST) { params[index] = value; return FF_SUCCESS; }
+    if(!std::isfinite(value)) return FF_FAIL;
+    params[ index ] = std::fmax(0.0f,std::fmin(1.0f,value));
     // FFGL option values are discrete IDs rather than 0-1 normalized numbers.
     if(index==P_ENGINE) params[index]=std::fmax(0.f,std::fmin((float)(kNumEngines-1),value));
     else if(index==P_PALETTE) params[index]=std::fmax(0.f,std::fmin((float)(kNumPalettes-1),value));
@@ -270,10 +295,10 @@ char* VJGenerative::GetParameterDisplay(unsigned int index)
 
 static CFFGLPluginInfo PluginInfo(
 	PluginFactory< VJGenerative >,
-	"VJG1",
-	"VJ Gen V11",
+	"VJG2",
+	"VJ Gen V11 SAFE",
 	2, 1,
 	1, 1,
 	FF_SOURCE,
 	"Fundos generativos ao vivo",
-	"V1.1 RGBA + custom canvas + 11 engines. Original 6 preserved" );
+	"V1.1 SAFE: original V1.0 render isolated, RGBA and VJ extras" );
