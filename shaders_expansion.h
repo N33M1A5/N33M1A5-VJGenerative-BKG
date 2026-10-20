@@ -12,7 +12,7 @@ out vec4 fragColor;
 uniform vec3 iResolution;
 uniform float iTime,uBeat;
 uniform float uPalette,uScale,uIntensity,uHue,uSlices,uSeed,uPulse,uContrast;
-uniform float uVJEngine,uDetail,uDepth,uDensity,uRGBAType,uRGBABlend,uRGBAMix,uOpacity,uCanvasMode;
+uniform float uVJEngine,uDetail,uDepth,uDensity,uRGBAType,uRGBABlend,uRGBAMix,uOpacity,uCanvasMode,uGlow;
 uniform vec4 uRGBA_A,uRGBA_B;
 uniform vec2 uCustomSize;
 const float TAU=6.28318530718;
@@ -280,6 +280,8 @@ void main(){
  col*=uIntensity*2.*(1.+beat*.6);
  col=1.-exp(-col*1.4);
  col=pow(max(col,vec3(0.)),vec3(mix(1.35,.75,uContrast)));
+ // Single-pass highlight enhancement; default zero leaves original expansion output intact.
+ col+=max(col-vec3(.16),vec3(0.))*clamp(uGlow,0.,1.)*1.15;
  col*=1.-.25*dot(uv-.5,uv-.5);
  col+=(hash21(gl_FragCoord.xy+iTime)-.5)/255.;
  fragColor=vec4(clamp(col,0.,1.),alpha);

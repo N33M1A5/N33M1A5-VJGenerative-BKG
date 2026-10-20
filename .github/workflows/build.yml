@@ -1,8 +1,8 @@
-name: Build N33 VJ Expansion V1.2.1
+name: Build N33 VJ Expansion V1.2.2
 
 on:
   push:
-    branches: [main, 'feature/v1-2-1-color-under-palette']
+    branches: [main, 'feature/v1-2-2-engine-rows']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
@@ -72,17 +72,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeExpanded121.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeExpanded121.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeExpanded122.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeExpanded122.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeExpanded121.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeExpanded122.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeExpanded121.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeExpanded122.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: N33-VJ-Expansion-V1.2.1-Windows-x64
-          path: artifact/VJGenerativeExpanded121.dll
+          name: N33-VJ-Expansion-V1.2.2-Windows-x64
+          path: artifact/VJGenerativeExpanded122.dll
           if-no-files-found: error
