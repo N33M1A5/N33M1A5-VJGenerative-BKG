@@ -278,7 +278,7 @@ void main(){
  int id=int(uVJEngine+.5);
  vec4 rgba=rgbaMix(p,iTime);
  float alpha=clamp(uOpacity,0.,1.);
- if(id==5){fragColor=vec4(pal(uv.x*.5+uv.y*.5+iTime*.013),alpha*rgba.a);return;}
+ if(id==5){fragColor=vec4(rgba.rgb,alpha*rgba.a);return;}
  vec3 col=vec3(0.);
  if(id==0)col=crystal(p,iTime);
  else if(id==1)col=particles(p,iTime);
