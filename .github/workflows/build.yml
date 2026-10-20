@@ -1,12 +1,14 @@
-name: Build VJGenerative V1.0.1
+name: Build N33 VJ Unified V1.3
 
 on:
   push:
-    branches: [main, 'release/v1.0.1-replace-v1']
+    branches: [main, 'fix/v1-3-unified-engine-palette']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
-      - 'tools/verify_v101.py'
+      - 'shaders_expansion.h'
+      - 'tools/validate_unified.py'
+      - 'tools/render_gpu_smoke.cpp'
       - 'build/windows/VJGenerativeV1.vcxproj'
       - '.github/workflows/build.yml'
   pull_request:
@@ -23,14 +25,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Check V1.0 preservation, extract shaders
-        run: python3 tools/verify_v101.py
+      - name: Verify original shader and 24 shared engine options
+        run: python3 tools/validate_unified.py
       - name: Check GLSL syntax against OpenGL 4.10
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq glslang-tools
-          glslangValidator -S vert glsl-validation/v101.vert
-          glslangValidator -S frag glsl-validation/v101.frag
+          glslangValidator -S vert glsl-validation/legacy.vert
+          glslangValidator -S frag glsl-validation/legacy.frag
+          glslangValidator -S frag glsl-validation/legacy_palette.frag
+          glslangValidator -S vert glsl-validation/expanded.vert
+          glslangValidator -S frag glsl-validation/expanded.frag
+      - name: Real GPU rendering test - 24 motors and palettes
+        run: |
+          sudo apt-get install -y -qq libegl1-mesa-dev libepoxy-dev libgl1-mesa-dev
+          g++ -std=c++17 -O2 tools/render_gpu_smoke.cpp -o /tmp/n33-vj-render-smoke -lEGL -lepoxy -lGL
+          EGL_PLATFORM=surfaceless LIBGL_ALWAYS_SOFTWARE=1 /tmp/n33-vj-render-smoke
   build:
     needs: verify
     runs-on: windows-latest
@@ -52,6 +62,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $target | Out-Null
           Copy-Item VJGenerative.cpp "$target/VJGenerative.cpp" -Force
           Copy-Item shaders.h "$target/shaders.h" -Force
+          Copy-Item shaders_expansion.h "$target/shaders_expansion.h" -Force
           Copy-Item build/windows/VJGenerativeV1.vcxproj ffgl/build/windows/VJGenerativeV1.vcxproj -Force
           if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
           if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
@@ -68,17 +79,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV1.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeV1.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeUnified.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeUnified.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeV1.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeUnified.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeV1.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeUnified.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: VJGenerative-V1.0.1-Windows-x64
-          path: artifact/VJGenerativeV1.dll
+          name: N33-VJ-Unified-V1.3-Windows-x64
+          path: artifact/VJGenerativeUnified.dll
           if-no-files-found: error
