@@ -1,12 +1,13 @@
-name: Build N33 VJ Unified V1.3
+name: Build N33 VJ V1.4.1 Button Rows and Palettes
 
 on:
   push:
-    branches: [main, 'fix/v1-3-unified-engine-palette']
+    branches: [main, 'feature/v1-4-paletas-alfabeticas']
     paths:
       - 'VJGenerative.cpp'
       - 'shaders.h'
       - 'shaders_expansion.h'
+      - 'palettes_extra.h'
       - 'tools/validate_unified.py'
       - 'tools/render_gpu_smoke.cpp'
       - 'build/windows/VJGenerativeV1.vcxproj'
@@ -63,6 +64,7 @@ jobs:
           Copy-Item VJGenerative.cpp "$target/VJGenerative.cpp" -Force
           Copy-Item shaders.h "$target/shaders.h" -Force
           Copy-Item shaders_expansion.h "$target/shaders_expansion.h" -Force
+          Copy-Item palettes_extra.h "$target/palettes_extra.h" -Force
           Copy-Item build/windows/VJGenerativeV1.vcxproj ffgl/build/windows/VJGenerativeV1.vcxproj -Force
           if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
           if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
@@ -79,17 +81,17 @@ jobs:
       - name: Validate and stage DLL
         shell: pwsh
         run: |
-          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeUnified.dll' -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected VJGenerativeUnified.dll was not created.' }
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV141.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV141.dll was not created.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeUnified.dll -Force
+          Copy-Item $dll.FullName artifact/VJGenerativeV141.dll -Force
           Write-Host "DLL: $($dll.FullName)"
           Write-Host "Bytes: $($dll.Length)"
-          Get-FileHash artifact/VJGenerativeUnified.dll -Algorithm SHA256 | Format-List
+          Get-FileHash artifact/VJGenerativeV141.dll -Algorithm SHA256 | Format-List
 
       - name: Upload Windows x64 DLL
         uses: actions/upload-artifact@v4
         with:
-          name: N33-VJ-Unified-V1.3-Windows-x64
-          path: artifact/VJGenerativeUnified.dll
+          name: N33-VJ-V1.4.1-Windows-x64
+          path: artifact/VJGenerativeV141.dll
           if-no-files-found: error
