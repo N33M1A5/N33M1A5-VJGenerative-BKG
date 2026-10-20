@@ -134,7 +134,7 @@ int main(){
   if(wavePaletteChange<.65)throw std::runtime_error("New VJ presets do not change Particle Wave");
   // Test the five curated premium motors AND Particle Wave against the real OpenGL rasterizer.
   const int premiumIds[]={1,18,19,20,21,22};
-  const std::string premiumNames[]={"ParticleWave","CatedralLuz","ChromeTide","EnergyRift","InfinityCubes","NovaPulse"};
+  const std::string premiumNames[]={"ParticleWave","Arquitetura","ChromeFlow","ElectricStorm","GoldenFan","StageRays"};
   std::system("mkdir -p preview");
   for(int idx=0;idx<6;idx++){
     auto img=draw(expanded,vao,premiumIds[idx],0,5.f,16); // Cyberpunk palette
