@@ -1,0 +1,82 @@
+name: V1.6 LAB previews and isolated Windows DLL
+on:
+  push:
+    branches: ['feature/v1-6-storyloop-quality']
+    paths: ['prototypes/**', 'src/v16/**', 'tools/**', 'build/windows/VJGenerativeV16.vcxproj', '.github/workflows/prototypes.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: resolume/ffgl
+          ref: 5b6e07840277df9ec35a228b9eb067636316350f
+          path: ffgl
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install software OpenGL and video tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libegl1 libgl1-mesa-dri libglew-dev ffmpeg fonts-dejavu-core
+          pip install -r prototypes/gate_a/requirements.txt
+      - name: Verify stable engines and generated shader sources
+        run: |
+          python tools/validate_unified.py
+          python tools/embed_gate_a.py
+          git diff --exit-code -- src/v16/generated_shaders.h
+          g++ -std=c++17 -fsyntax-only -DGLEW_NO_GLU -I. -Iffgl/source/lib -Iffgl/deps/glew-2.1.0/include src/v16/VJGenerativeV16.cpp
+      - name: Exercise actual C++ renderer and host state restoration
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: |
+          g++ -std=c++17 -O2 -shared -fPIC -DGLEW_NO_GLU -I. -Iffgl/source/lib -Iffgl/deps/glew-2.1.0/include tools/story_pipeline_smoke.cpp ffgl/source/lib/ffglex/FFGLShader.cpp ffgl/source/lib/ffglex/FFGLUtilities.cpp ffgl/source/lib/ffgl/FFGLLog.cpp -lGLEW -lGL -o /tmp/vj_story_pipeline.so
+          python tools/validate_story_pipeline.py /tmp/vj_story_pipeline.so
+      - name: Compile, render, validate controls and produce preview movies
+        env:
+          LIBGL_ALWAYS_SOFTWARE: '1'
+        run: python tools/render_gate_a.py --video
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VJ-Generative-V1.6-Previews-and-Tests
+          path: previews/gate_a/
+          if-no-files-found: error
+  windows:
+    needs: render
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: resolume/ffgl
+          ref: 5b6e07840277df9ec35a228b9eb067636316350f
+          path: ffgl
+      - name: Prepare isolated V1.6 LAB source
+        shell: pwsh
+        run: |
+          $target = 'ffgl/source/plugins/VJGenerativeV1'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Copy-Item src/v16/* $target -Force
+          Copy-Item shaders.h,shaders_expansion.h,palettes_extra.h $target -Force
+          Copy-Item build/windows/VJGenerativeV16.vcxproj ffgl/build/windows/VJGenerativeV16.vcxproj -Force
+      - uses: microsoft/setup-msbuild@v2
+      - name: Build Windows x64 development plugin
+        shell: pwsh
+        run: |
+          msbuild ffgl/build/windows/VJGenerativeV16.vcxproj /m /t:Build /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed.' }
+          $dll = Get-ChildItem ffgl -Filter VJGenerativeV16Lab.dll -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected V1.6 LAB DLL missing.' }
+          New-Item -ItemType Directory -Force -Path artifact | Out-Null
+          Copy-Item $dll.FullName artifact/VJGenerativeV16Lab.dll
+          Copy-Item docs/V1_6_LAB.md artifact/LEIA_ME.md
+          Get-FileHash artifact/VJGenerativeV16Lab.dll -Algorithm SHA256 | Format-List
+      - uses: actions/upload-artifact@v4
+        with:
+          name: N33-VJ-V1.6-LAB-Windows-x64
+          path: artifact/
+          if-no-files-found: error

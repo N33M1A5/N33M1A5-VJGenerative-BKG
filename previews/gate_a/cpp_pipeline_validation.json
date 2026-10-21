@@ -1,0 +1,28 @@
+{
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "pipeline": "actual C++ StoryPipeline, EGL test host",
+  "resolume_tested": false,
+  "engines": {
+    "0": {
+      "(320, 180)": "nonblack; GL state restored",
+      "(640, 192)": "nonblack; GL state restored",
+      "(180, 320)": "nonblack; GL state restored",
+      "palettes": 36,
+      "rgba_modes": 3
+    },
+    "1": {
+      "(320, 180)": "nonblack; GL state restored",
+      "(640, 192)": "nonblack; GL state restored",
+      "(180, 320)": "nonblack; GL state restored",
+      "palettes": 36,
+      "rgba_modes": 3
+    },
+    "2": {
+      "(320, 180)": "nonblack; GL state restored",
+      "(640, 192)": "nonblack; GL state restored",
+      "(180, 320)": "nonblack; GL state restored",
+      "palettes": 36,
+      "rgba_modes": 3
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # N33M1A5 VJ Generative — padrão Story Loop / Motion Backgrounds
 
-**Status:** especificação de produto e direção artística aprovada como referência; **nenhum novo motor compilado nesta branch ainda**. A prioridade passa a ser QUALIDADE cinematográfica, não quantidade de shaders.
+**Status em 21/10/2026:** três protótipos GLSL compilados, renderizados e integrados ao código V1.6 LAB, disponíveis em [Gate A](../prototypes/gate_a/README.md). Build Windows e validação no Resolume têm estados próprios; consultar [V1.6 LAB](V1_6_LAB.md). O [catálogo atualizado](REFERENCIAS_STORYLOOP_ATUALIZADAS.md) registra o escopo confirmado de **82 motores: 7 preservados + 75 novos, um por URL única**. Os 22 motores abaixo documentam apenas o escopo histórico, não uma contagem de implementações concluídas.
 
 ## Materiais pesquisados
 
@@ -39,7 +39,7 @@ Os links individuais abaixo foram fornecidos pelo operador. Quando o item não p
 | New Vision 1 | https://storyloop.com/downloads/new-vision-1-2/ | Construir a identidade específica somente após cotejar prévia visual |
 | New Vision 6 | https://storyloop.com/downloads/new-vision-6-2/ | Contraste técnico/estético próprio em relação ao New Vision 1 |
 | Pentecost Blaze 1 | https://storyloop.com/downloads/pentecost-blaze-1/ | Chamas orgânicas, brasas, glow e distorção térmica, sem vídeos embutidos |
-| Spotlight 1 | https://storyloop.com/downloads/spotlight_1/ | Cone volumétrico, penumbra, falloff de luz realista e feixe móvel |
+| Spotlight 1 | https://storyloop.com/downloads/spotlight_1/ | Vidro canelado vertical com luzes vermelhas, âmbar e teal por trás; thumbnail oficial da coleção Glass inspecionada. Corrige a interpretação inicial de feixe de palco. |
 | Stained Glass Sacred Bubble Gum | https://storyloop.com/downloads/stained_glass_sacred_bubble_gum_prores-2/ | Vitrais luminosos policromáticos, juntas escuras, luz transmitida |
 | TRIR Visual4K 15 Full | https://storyloop.com/downloads/trir-visual4k-15-full/ | Em validação de prévia; identidade visual independente, sem inferir composição |
 | Walls — Names of God Line Add 2 | https://storyloop.com/downloads/_-walls-names-of-god_line-add_2/ | Background de parede/textura e **texto editável real** via parâmetro FFGL de texto, sem texto rasterizado fixo |

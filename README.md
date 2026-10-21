@@ -2,6 +2,16 @@
 
 Plugin **FFGL Source nativo para Resolume Arena/Avenue**, criado a partir dos arquivos fornecidos pelo autor.
 
+## V1.6 — expansão em desenvolvimento
+
+Esta branch contém os sete motores existentes e três novos motores integrados ao código da DLL de desenvolvimento V1.6 LAB.
+
+- [Protótipos, vídeos e validação OpenGL](prototypes/gate_a/README.md)
+- [Escopo confirmado: 82 motores (7 existentes + 75 novos)](docs/REFERENCIAS_STORYLOOP_ATUALIZADAS.md)
+- [Especificação e etapas de integração](docs/STORYLOOP_22_MOTORES_PADRAO_CINEMATOGRAFICO.md)
+
+[Instalação e limites da V1.6 LAB](docs/V1_6_LAB.md). A DLL de teste é disponibilizada pelo workflow após compilação e testes bem-sucedidos. As instruções abaixo descrevem a base histórica.
+
 ## V1 — Base independente
 
 - **6 motores:** Névoa, Túnel, Lasers, Células, Aurora e Orbes.
