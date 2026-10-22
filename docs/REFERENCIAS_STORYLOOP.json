@@ -15,736 +15,961 @@
       "name": "Awakening B_1",
       "url": "https://storyloop.com/downloads/awakening-b_1-2/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Sunrise/horizonte luminoso, volumetric rays e ascensão suave, a validar com preview",
       "engine_id": 8,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/008_awakening.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Chroma Blur 13",
       "url": "https://storyloop.com/downloads/chroma_blur_13/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Cores difusas com depth of field, cromaticidade e foco lento, sem ruído visual",
       "engine_id": 9,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/009_chroma_blur_13.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Ethereal H Finished",
       "url": "https://storyloop.com/downloads/ethereal-h_finished/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção Ethereal: formas difusas de luz e refrações; prévia do item ainda não inspecionada.",
       "engine_id": 10,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/010_ethereal.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Fair Lights 2",
       "url": "https://storyloop.com/downloads/fair-lights-2-2/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Camadas de partículas de luz e rastros de profundidade, sem confundir com Particle Wave",
       "engine_id": 11,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/011_fair_lights_2.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Flow 18",
       "url": "https://storyloop.com/downloads/flow-18/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Fluxos contínuos macios e camadas de fitas com iluminação rica",
       "engine_id": 12,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/012_flow_18.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Flow Dark Glass",
       "url": "https://storyloop.com/downloads/flow-dark-glass/",
       "type": "item",
-      "status": "prototipo_gate_a",
+      "status": "validado_operador",
       "notes": "Formas de vidro escuro, refrações suaves, highlights e fresnel",
       "engine_id": 13,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "prototypes/gate_a/flow_dark_glass.frag",
+      "gl_tested": true,
+      "resolume_approved": true
     },
     {
       "name": "Flow RMX Glass 3",
       "url": "https://storyloop.com/downloads/flow-rmx-glass-3/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Vidro mais dinâmico, distorção facetada e reflexos cromáticos",
       "engine_id": 14,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/014_flow_rmx_glass.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Lunar Drift 2A",
       "url": "https://storyloop.com/downloads/lunar-drift-2a-2/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Camadas de luz fria, profundidade, lentidão e partículas atmosféricas",
       "engine_id": 15,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/015_lunar_drift.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "New Vision 1",
       "url": "https://storyloop.com/downloads/new-vision-1-2/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção New Vision: barras luminosas em padrões de equalizador e gradientes; composição do item 1 ainda requer inspeção.",
       "engine_id": 16,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/016_new_vision_1.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "New Vision 6",
       "url": "https://storyloop.com/downloads/new-vision-6-2/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Contraste técnico/estético próprio em relação ao New Vision 1",
       "engine_id": 17,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/017_new_vision_6.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Pentecost Blaze 1",
       "url": "https://storyloop.com/downloads/pentecost-blaze-1/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Chamas orgânicas, brasas, glow e distorção térmica, sem vídeos embutidos",
       "engine_id": 18,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/018_pentecost_blaze_1.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Spotlight 1",
       "url": "https://storyloop.com/downloads/spotlight_1/",
       "type": "item",
-      "status": "prototipo_gate_a",
+      "status": "validado_operador",
       "notes": "Thumbnail oficial inspecionada: coleção Glass, vidro canelado vertical, luz vermelha/âmbar/teal, fundo escuro. Corrige a interpretação antiga de cone volumétrico.",
       "engine_id": 19,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "prototypes/gate_a/spotlight.frag",
+      "gl_tested": true,
+      "resolume_approved": true
     },
     {
       "name": "Stained Glass Sacred Bubble Gum",
       "url": "https://storyloop.com/downloads/stained_glass_sacred_bubble_gum_prores-2/",
       "type": "item",
-      "status": "prototipo_gate_a",
-      "notes": "Vitrais luminosos policromáticos, juntas escuras, luz transmitida",
+      "status": "implementado_aguarda_validacao_visual",
+      "notes": "Refeito com janelas em arco ogival, montantes, chumbo e vidro iluminado; removida a composição radial de caleidoscópio.",
       "engine_id": 20,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "prototypes/gate_a/stained_glass.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "TRIR Visual4K 15 Full",
       "url": "https://storyloop.com/downloads/trir-visual4k-15-full/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Em validação de prévia; identidade visual independente, sem inferir composição",
       "engine_id": 21,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/021_trir.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Walls — Names of God Line Add 2",
       "url": "https://storyloop.com/downloads/_-walls-names-of-god_line-add_2/",
       "type": "item",
-      "status": "aguarda_estudo_visual",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Background de parede/textura e **texto editável real** via parâmetro FFGL de texto, sem texto rasterizado fixo",
       "engine_id": 22,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/022_walls_names.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Chroma Blur",
       "url": "https://storyloop.com/downloads/chroma-blur/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Desfoques coloridos em movimento; coleção inclui Chroma Blur 13.",
       "includes_existing": "chroma_blur_13",
       "engine_id": 23,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/023_chroma_blur.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Gradient Walls",
       "url": "https://storyloop.com/downloads/gradient-walls/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Gradientes estáticos com grão; movimento deve ser opcional para manter a referência.",
       "includes_existing": null,
       "engine_id": 24,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/024_gradient_walls.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Dispersion",
       "url": "https://storyloop.com/downloads/dispersion/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Rastros coloridos suaves; coleção com Rays, Time Warp, Radial, Stripes, Prism e Sydney.",
       "includes_existing": null,
       "engine_id": 25,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/025_dispersion.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Pentecost Blaze",
       "url": "https://storyloop.com/downloads/pentecost-blaze-service-pack/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Formas de chama sob textura pictórica; inclui Pentecost Blaze 1.",
       "includes_existing": "pentecost-blaze-1",
       "engine_id": 26,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/026_pentecost_blaze.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Grainyents: Prismatic",
       "url": "https://storyloop.com/downloads/grainyents-prismatic/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Gradientes espectrais, luz difusa e grão.",
       "includes_existing": null,
       "engine_id": 27,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/027_grainyents_prismatic.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Bitmap",
       "url": "https://storyloop.com/downloads/bitmap-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Mosaicos de quadrados luminosos; cores Amber, Blue, Mono e Purple são variações, não quatro algoritmos novos.",
       "includes_existing": null,
       "engine_id": 28,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/028_bitmap.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Computer Noise",
       "url": "https://storyloop.com/downloads/computer-noise/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Ruído retrô de computador, glitches e estática.",
       "includes_existing": null,
       "engine_id": 29,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/029_computer_noise.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Surface",
       "url": "https://storyloop.com/downloads/surface-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Refração prismática suave e reflexos em superfícies vítreas.",
       "includes_existing": null,
       "engine_id": 30,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/030_surface.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Color Haze",
       "url": "https://storyloop.com/downloads/color-haze/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Fundos de movimento sutil; distinguir os motions base dos remixes tipográficos e geométricos.",
       "includes_existing": null,
       "engine_id": 31,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/031_color_haze.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Genesis",
       "url": "https://storyloop.com/downloads/genesis-worship-visuals/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção heterogênea sobre criação; itens individuais ainda precisam de estudo visual.",
       "includes_existing": null,
       "engine_id": 32,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/032_genesis.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Glowstream",
       "url": "https://storyloop.com/downloads/glowstream-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Fios de luz convergindo e expandindo em fundo escuro; descrição confirmada no resultado oficial de busca.",
       "includes_existing": null,
       "engine_id": 33,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/033_glowstream.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Mirage",
       "url": "https://storyloop.com/downloads/mirage/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Gradientes fluidos coloridos com textura granulada.",
       "includes_existing": null,
       "engine_id": 34,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/034_mirage.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Color Steps",
       "url": "https://storyloop.com/downloads/color-steps/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Padrões ondulados de cores intensas com movimento geométrico sutil.",
       "includes_existing": null,
       "engine_id": 35,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/035_color_steps.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Chroma",
       "url": "https://storyloop.com/downloads/chroma/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Loops coloridos em duas linhas: dinâmica e suave; separado de Chroma Blur.",
       "includes_existing": null,
       "engine_id": 36,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/036_chroma.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Grainyents: Expressions",
       "url": "https://storyloop.com/downloads/grainyents-expressions/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Fundos coloridos com granulação; separado de Grainyents: Prismatic.",
       "includes_existing": null,
       "engine_id": 37,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/037_grainyents_expressions.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Power",
       "url": "https://storyloop.com/downloads/power-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Explosões de luz, flares e rastros; algumas variantes incluem silhuetas de cruz.",
       "includes_existing": null,
       "engine_id": 38,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/038_power.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "CRTVERSE",
       "url": "https://storyloop.com/downloads/crtverse-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Texturas e glitch CRT deformados no espaço 3D.",
       "includes_existing": null,
       "engine_id": 39,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/039_crtverse.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Clean",
       "url": "https://storyloop.com/downloads/clean-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Cores iridescentes suaves, versões Bright e Dark.",
       "includes_existing": null,
       "engine_id": 40,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/040_clean.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Easter Gradient",
       "url": "https://storyloop.com/downloads/easter-gradient/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "URL recebida concatenada com Clean; separada. Conteúdo visual específico ainda precisa de confirmação.",
       "includes_existing": null,
       "engine_id": 41,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/041_easter_gradient.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Fair Lights",
       "url": "https://storyloop.com/downloads/fair-lights/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Bokeh de luzes de parque desfocadas; coleção inclui Fair Lights 2.",
       "includes_existing": "fair-lights-2-2",
       "engine_id": 42,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/042_fair_lights.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Subtle Light",
       "url": "https://storyloop.com/downloads/subtle-light/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Vazamentos sutis de luz que lembram vitrais.",
       "includes_existing": null,
       "engine_id": 43,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/043_subtle_light.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Terrascapes",
       "url": "https://storyloop.com/downloads/terrascapes/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Tinta fluida em evolução com aparência topográfica.",
       "includes_existing": null,
       "engine_id": 44,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/044_terrascapes.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Aurora — Visual.Church",
       "url": "https://storyloop.com/downloads/aurora-visual-church/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Padrões de luz em formações suaves; motor distinto da Aurora original.",
       "includes_existing": null,
       "engine_id": 45,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/045_aurora_visual_church.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Prismatic",
       "url": "https://storyloop.com/downloads/prismatic-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Movimentos prismáticos espirais; descrição confirmada no resultado oficial de busca.",
       "includes_existing": null,
       "engine_id": 46,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/046_prismatic.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Gravity",
       "url": "https://storyloop.com/downloads/gravity/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Movimento por nebulosas espaciais; descrição confirmada no resultado oficial de busca.",
       "includes_existing": null,
       "engine_id": 47,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/047_gravity.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Glitter Sparks",
       "url": "https://storyloop.com/downloads/glitter-sparks/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Cintilações de glitter em movimento circular.",
       "includes_existing": null,
       "engine_id": 48,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/048_glitter_sparks.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Into The Mist",
       "url": "https://storyloop.com/downloads/into-the-mist-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Filmagem de árvores e montanhas sob neblina; aproximação procedural exigirá cenário, não só um shader de fumaça.",
       "includes_existing": null,
       "engine_id": 49,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/049_into_mist.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Dusk to Dawn",
       "url": "https://storyloop.com/downloads/dusk-to-dawn-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Gradientes suaves inspirados na iluminação do amanhecer e anoitecer.",
       "includes_existing": null,
       "engine_id": 50,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/050_dusk_dawn.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "VJ Loops Vol 43",
       "url": "https://storyloop.com/downloads/vj-loops-vol-43/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Seleção de alta energia de Erica Anderson; descrição da coleção consultada em busca oficial, itens ainda sem inspeção.",
       "includes_existing": null,
       "engine_id": 51,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/051_vj_vol43.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "He Will Be Called",
       "url": "https://storyloop.com/downloads/he-will-be-called/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Fundos astronômicos de Natal; preservar identificação da coleção.",
       "includes_existing": null,
       "engine_id": 52,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/052_he_will_be_called.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Christmas Glow",
       "url": "https://storyloop.com/downloads/christmas-glow/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção natalina de luzes cintilantes; descrição oficial consultada via busca. Prévia visual pendente.",
       "includes_existing": null,
       "engine_id": 53,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/053_christmas_glow.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Gradient Moves",
       "url": "https://storyloop.com/downloads/gradient-moves/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Gradientes luminosos coloridos em movimento.",
       "includes_existing": null,
       "engine_id": 54,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/054_gradient_moves.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Solar Energy",
       "url": "https://storyloop.com/downloads/solar-energy/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Texturas que remetem à superfície do Sol; link repetido contado uma vez.",
       "includes_existing": null,
       "engine_id": 55,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/055_solar_energy.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Soft Bokeh",
       "url": "https://storyloop.com/downloads/soft-bokeh/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Bokeh suave; coleção com composições calmas e dinâmicas.",
       "includes_existing": null,
       "engine_id": 56,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/056_soft_bokeh.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Glass Form",
       "url": "https://storyloop.com/downloads/glass-form-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Tons quentes e frios atrás de reflexos geométricos de vidro; descrição oficial consultada via busca.",
       "includes_existing": null,
       "engine_id": 57,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/057_glass_form.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Noise Textures Vol 2",
       "url": "https://storyloop.com/downloads/noise-textures-2/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Texturas animadas de ruído e grão com estrobo.",
       "includes_existing": null,
       "engine_id": 58,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/058_noise_textures.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Neon Dream",
       "url": "https://storyloop.com/downloads/neon-dream/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção de visuais vibrantes; itens particulares ainda precisam de inspeção.",
       "includes_existing": null,
       "engine_id": 59,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/059_neon_dream.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Let the Incense Rise",
       "url": "https://storyloop.com/downloads/let-the-incense-rise-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Nuvens e fumaça ascendentes, em tons coloridos; descrição oficial consultada via busca.",
       "includes_existing": null,
       "engine_id": 60,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/060_incense_rise.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Pixel Sort Vol 1",
       "url": "https://storyloop.com/downloads/pixel-sort-vol-1/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Pixel sorting de gradientes vermelhos e azuis; descrição oficial consultada via busca.",
       "includes_existing": null,
       "engine_id": 61,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/061_pixel_sort.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Expanse Remix",
       "url": "https://storyloop.com/downloads/expanse-remix/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Loops de água reinterpretados; descrição oficial consultada via busca.",
       "includes_existing": null,
       "engine_id": 62,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/062_expanse_remix.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Unsealed",
       "url": "https://storyloop.com/downloads/unsealed-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Padrões luminosos e superexpostos, cruzes e sobreposição digital.",
       "includes_existing": null,
       "engine_id": 63,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/063_unsealed.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "VJ Loops Vol 65",
       "url": "https://storyloop.com/downloads/vj-loops-vol-65/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção de alta energia de Erica Anderson; 31 itens listados, ainda sem inspeção individual.",
       "includes_existing": null,
       "engine_id": 64,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/064_vj_vol65.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Wild Water",
       "url": "https://storyloop.com/downloads/wild-water-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Texturas aquáticas surreais e redemoinhos.",
       "includes_existing": null,
       "engine_id": 65,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/065_wild_water.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Transcendence",
       "url": "https://storyloop.com/downloads/transcendence/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Espaços e padrões cromáticos, reflexos iridescentes e tons retrô de pôr do sol.",
       "includes_existing": null,
       "engine_id": 66,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/066_transcendence.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Duplicator",
       "url": "https://storyloop.com/downloads/duplicator/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Página registrada; coleção com 25 motions confirmada via busca. Identidade visual ainda não inspecionada.",
       "includes_existing": null,
       "engine_id": 67,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/067_duplicator.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Signal",
       "url": "https://storyloop.com/downloads/signal-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Luzes multicoloridas cintilantes em bokeh, organizadas em linhas e trajetórias.",
       "includes_existing": null,
       "engine_id": 68,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/068_signal.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Glow Shower",
       "url": "https://storyloop.com/downloads/glow-shower/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Rastros coloridos de partículas em explosões sobre fundo escuro; descrição oficial consultada via busca.",
       "includes_existing": null,
       "engine_id": 69,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/069_glow_shower.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Spring Warp",
       "url": "https://storyloop.com/downloads/spring-warp/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Loops coloridos de movimento suave; descrição oficial consultada, movimento integral ainda não inspecionado.",
       "includes_existing": null,
       "engine_id": 70,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/070_spring_warp.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Clarity",
       "url": "https://storyloop.com/downloads/clarity-motions/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Cores vítreas iridescentes, rotação, glitch e grão; descrição oficial consultada.",
       "includes_existing": null,
       "engine_id": 71,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/071_clarity.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Stained Glass",
       "url": "https://storyloop.com/downloads/stained-glass/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção Visual.Church de vitrais suaves iridescentes; distinta de Stained Glass Sacred Bubble Gum.",
       "includes_existing": null,
       "engine_id": 72,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/072_stained_glass.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Terrain Theory",
       "url": "https://storyloop.com/downloads/terrain-theory/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Montanhas abstratas surgindo da névoa, com aparência de mundo alienígena; descrição oficial consultada via busca.",
       "includes_existing": null,
       "engine_id": 73,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/073_terrain_theory.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "CRT Shapes",
       "url": "https://storyloop.com/downloads/crt-shapes-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção de JMC Creative confirmada; identidade visual específica ainda exige inspeção.",
       "includes_existing": null,
       "engine_id": 74,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/074_crt_shapes.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Color Powder Explosion",
       "url": "https://storyloop.com/downloads/color-powder-explosion/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Filmagens de explosões de pó colorido em câmera lenta; aproximação procedural precisa reproduzir expansão e dissipação volumétrica.",
       "includes_existing": null,
       "engine_id": 75,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/075_color_powder.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Waters",
       "url": "https://storyloop.com/downloads/waters-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Coleção Visual.Church de movimentos fluidos de água; preservar identidade separada de Wild Water e River.",
       "includes_existing": null,
       "engine_id": 76,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/076_waters.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Fair Lights Vol 2",
       "url": "https://storyloop.com/downloads/fair-lights-vol-2/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Filmagens desfocadas de luzes de parques e montanhas-russas; coleção separada de Fair Lights e do item Fair Lights 2. Resultado oficial encontrado no endereço fair-lights-vol-2-2.",
       "includes_existing": null,
       "engine_id": 77,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/077_fair_lights_vol2.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Aberratic Two",
       "url": "https://storyloop.com/downloads/aberratic-two-motion-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Cores suaves em movimento giratório sobre fundo escuro; descrição oficial consultada.",
       "includes_existing": null,
       "engine_id": 78,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/078_aberratic_two.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Drift",
       "url": "https://storyloop.com/downloads/drift-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Formações subaquáticas desfocadas e texturas pictóricas em evolução, sugerindo cenas oceânicas.",
       "includes_existing": null,
       "engine_id": 79,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/079_drift.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Color Smoke",
       "url": "https://storyloop.com/downloads/free-smoke-stock-footage/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Título oficial do link: Color Smoke. Filmagens de fumaça colorida e remixes geométricos; simulação procedural ainda pendente.",
       "includes_existing": null,
       "engine_id": 80,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/080_color_smoke.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "River",
       "url": "https://storyloop.com/downloads/river/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Visuais abstratos fluidos; descrição oficial consultada via busca, composição específica ainda não inspecionada.",
       "includes_existing": null,
       "engine_id": 81,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/081_river.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     },
     {
       "name": "Spectrum",
       "url": "https://storyloop.com/downloads/spectrum-worship-backgrounds/",
       "type": "collection",
-      "status": "motor_pendente",
+      "status": "implementado_aguarda_validacao_visual",
       "notes": "Alternância estroboscópica de imagens coloridas, desenhos e padrões geométricos; descrição oficial consultada.",
       "includes_existing": null,
       "engine_id": 82,
-      "implementation_required": true
+      "implementation_required": true,
+      "shader_source": "engines/082_spectrum.frag",
+      "gl_tested": true,
+      "resolume_approved": false
     }
   ],
   "notes": [
@@ -753,9 +978,12 @@
     "Nomes e links devem ser preservados; variações de cor ou velocidade não substituem a identidade visual exigida para cada motor.",
     "Flow 18, Flow Dark Glass, Ethereal H Finished, New Vision 1 e Solar Energy repetidos foram deduplicados.",
     "Chroma Blur, Pentecost Blaze e Fair Lights continuam motores próprios, mesmo contendo itens relacionados já listados.",
-    "Três motores têm protótipos integrados ao código V1.6 LAB; 72 novos continuam pendentes e nenhum foi validado no Resolume."
+    "Os 75 motores novos estão implementados e passaram nos testes OpenGL; Spotlight 1 e Flow Dark Glass foram aprovados pelo operador. Os demais aguardam avaliação visual no Resolume."
   ],
   "scope": "Cada URL única enviada corresponde a um novo motor, inclusive coleções. Somente URLs repetidas são deduplicadas.",
   "target_new_engines": 75,
-  "target_total_engines": 82
+  "target_total_engines": 82,
+  "implemented_new_engines": 75,
+  "implemented_total_engines": 82,
+  "operator_approved_new_engines": 2
 }

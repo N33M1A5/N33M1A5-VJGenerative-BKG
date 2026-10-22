@@ -1,6 +1,6 @@
 # N33M1A5 VJ Generative — padrão Story Loop / Motion Backgrounds
 
-**Status em 21/10/2026:** três protótipos GLSL compilados, renderizados e integrados ao código V1.6 LAB, disponíveis em [Gate A](../prototypes/gate_a/README.md). Build Windows e validação no Resolume têm estados próprios; consultar [V1.6 LAB](V1_6_LAB.md). O [catálogo atualizado](REFERENCIAS_STORYLOOP_ATUALIZADAS.md) registra o escopo confirmado de **82 motores: 7 preservados + 75 novos, um por URL única**. Os 22 motores abaixo documentam apenas o escopo histórico, não uma contagem de implementações concluídas.
+**Status atual:** o escopo foi ampliado para 82 motores e está implementado na [V1.7](V1_7_ENTREGA_82.md). Spotlight 1 e Flow Dark Glass foram aprovados pelo operador. O vitral foi refeito como janelas de igreja e os demais novos motores aguardam avaliação visual. O texto abaixo preserva a especificação histórica de 22 motores. O registro atual está em [82 motores](REFERENCIAS_STORYLOOP_ATUALIZADAS.md).
 
 ## Materiais pesquisados
 

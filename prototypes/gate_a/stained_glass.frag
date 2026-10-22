@@ -1,81 +1,49 @@
-// A layered architectural rose window, entirely procedural.
-float glassCell(vec2 g,out vec2 best){
- vec2 cell=floor(g),f=fract(g);float d1=10.,d2=10.;best=cell;
- for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){
-  vec2 id=cell+vec2(x,y);
-  vec2 o=.15+.7*vec2(hash21(id),hash21(id+31.7));
-  float d=length(vec2(x,y)+o-f);
-  if(d<d1){d2=d1;d1=d;best=id;}else d2=min(d2,d);
- }
- return d2-d1;
-}
-float foil(vec2 p,float radius,float lobes){
- float a=atan(p.y,p.x),r=length(p);
- return abs(r-radius*(.82+.18*cos(a*lobes)));
+// Architectural church windows: fixed pointed arches, stone and leaded panes.
+float churchArch(vec2 p,float w,float bottom,float shoulder){
+ float side=abs(p.x)-w;
+ float crown=max(length(p-vec2(-w,shoulder)),length(p-vec2(w,shoulder)))-2.*w;
+ return max(p.y>shoulder?crown:side,bottom-p.y);
 }
 vec3 scene(){
- float t=phase();vec2 p=canvas();
- // The architecture stays anchored; light travels behind the glass.
- p*=1.15+.018*sin(t);p=rot(.008*sin(t))*p;
- float r=length(p),a=atan(p.y,p.x);
- float sectors=12.+2.*floor(symmetry*4.);
- float wedge=TAU/sectors;
- float local=mod(a+wedge*.5,wedge)-wedge*.5;
- vec2 q=vec2(sin(local)*r,cos(local)*r);
- float aa=max(fwidth(q.x),.0012);
- // Inner lancets taper to the central boss and close with pointed crowns.
- float y=clamp((q.y-.13)/.69,0.,1.);
- float width=.132*pow(max(sin(y*3.14159265),0.),.60)*(1.+.12*sin(y*9.));
- float innerD=max(abs(q.x)-width,max(.13-q.y,q.y-.82));
- float inner=1.-smoothstep(-aa,aa,innerD);
- // Long outer panels, with pointed tops, divided by heavy stone spokes.
- float oy=clamp((q.y-.90)/.95,0.,1.);
- float ow=.18*pow(max(sin(oy*3.14159265),0.),.32);
- float outerD=max(abs(q.x)-ow,max(.90-q.y,q.y-1.85));
- float outer=1.-smoothstep(-aa,aa,outerD);
-
- float edge=exp(-abs(innerD+.006)*210.)*inner+exp(-abs(outerD+.006)*180.)*outer;
- // Quatrefoils and small rose medallions occupy the masonry between lancets.
- float halfLocal=mod(a,wedge)-wedge*.5;
- vec2 lace=vec2(sin(halfLocal)*r,cos(halfLocal)*r-1.71);
- float laceA=atan(lace.y,lace.x),laceR=length(lace);
- float floralR=.17*(.82+.18*cos(laceA*6.));
- float medallion=1.-smoothstep(-aa,aa,laceR-floralR);
- float tracery=exp(-foil(lace,.12,6.)*200.)+exp(-abs(laceR-.042)*210.);
- float ribs=1.-smoothstep(.005,.010,abs(sin(laceA*3.))*laceR);
- // Smaller ornaments between the long panels and inner ring.
- vec2 smallQ=vec2(sin(halfLocal)*r,cos(halfLocal)*r-1.05);
- float smallD=foil(smallQ,.077,4.);
- float tiny=exp(-smallD*200.);
- vec2 best;vec2 mosaic=q*vec2(21.,20.)*mix(.65,1.5,detail)*mix(.75,1.2,density)+seed;
- float cell=glassCell(mosaic,best);
- float lead=smoothstep(.018,.075,cell);
- float marble=.35+.65*fbm(q*22.+seed);
- // Decorative branching leadwork is separate from the broken glass mosaic.
- float stem=abs(q.x-(.018*sin(q.y*42.)));
- float leaf=abs(abs(q.x)-.055*abs(sin(q.y*24.)));
- float botanical=min(stem,leaf);
- float veins=smoothstep(.002,.007,botanical);
- float centerMullion=smoothstep(.006,.018,abs(q.x));
- float transverse=smoothstep(.005,.015,abs(mod(q.y+.06,.25)-.125));
- float came=lead*mix(.35,1.,veins)*mix(1.,centerMullion*transverse,.70*outer);
- float field=.5+.5*sin(a*3.+r*4.5+.5*sin(t));
- vec3 glass=mix(vec3(.16,.015,.30),vec3(.62,.006,.23),field);
- float cyan=pow(.5+.5*sin(a*5.-r*4.+t),9.);
- glass=mix(glass,vec3(.015,.42,.58),cyan*.95);
- float light=.06+1.8*pow(.5+.5*cos(a*2.+t+r*2.1),9.);
- light*=.45+.55*fbm(p*2.8+vec2(cos(t),sin(t))*.8);
- float innerSpine=smoothstep(.009,.017,abs(q.x));
- float pane=inner*innerSpine+outer*.65+medallion*.28;
- vec3 c=glass*pane*came*(.16+.84*marble)*light;
- c+=glass*edge*.17*light;
- c+=glass*medallion*(tracery*.08+ribs*.013)*light;
- c+=glass*tiny*.06;
- // Strong structural shadows and a subtle, separately moving light veil.
- float boss=1.-smoothstep(.075,.10,r);c*=1.-boss;
- float ring=exp(-abs(r-.105)*240.);c+=glass*ring*.04;
- c*=.35+.65*exp(-r*r*.4);
- float veil=pow(.5+.5*cos(a*sectors+.4*sin(t)),18.)*exp(-r*.85);
- c+=glass*veil*.022*depth;
- return finishLight(c*2.4);
+ float t=phase();vec2 p=canvas();p.y+=.025*sin(t);p.x+=.008*sin(t);
+ float bayWidth=1.04;float index=floor((p.x+bayWidth*.5)/bayWidth);vec2 q=vec2(p.x-index*bayWidth,p.y);
+ float w=.43;float arch=churchArch(q,w,-1.03,.19);
+ float aa=max(fwidth(arch),.001);
+ float inside=1.-smoothstep(-aa,aa,arch);
+ float bevel=exp(-abs(arch+.018)*100.);
+ float ribs=smoothstep(.018,.027,abs(q.x-.145))*smoothstep(.018,.027,abs(q.x+.145));
+ float transom=smoothstep(.015,.024,abs(q.y+.48))*smoothstep(.014,.022,abs(q.y+.06));
+ vec2 g=q*vec2(21.,18.)*mix(.8,1.4,detail);vec2 cell=floor(g),f=fract(g),winner=cell;
+ float d1=10.,d2=10.;
+ for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){
+  vec2 id=cell+vec2(x,y);vec2 o=.15+.7*vec2(hash21(id),hash21(id+9.1));float d=length(vec2(x,y)+o-f);
+  if(d<d1){d2=d1;d1=d;winner=id;}else d2=min(d2,d);
+ }
+ float lead=smoothstep(.018,.08,d2-d1);
+ float glassTexture=.50+.50*fbm(q*34.+seed);
+ float key=hash21(winner+seed+index*17.);
+ vec3 blue=vec3(.016,.10,.34),red=vec3(.48,.012,.035),gold=vec3(.62,.29,.035);
+ vec3 tint=mix(blue,red,smoothstep(.2,.7,key));tint=mix(tint,gold,pow(key,5.));
+ float pattern=.5+.5*sin(q.y*18.+sin(q.x*23.)*.7+index);
+ tint=mix(tint,vec3(.03,.32,.39),pow(pattern,10.)*.5);
+ // Upper quatrefoil: a small ornament inside each pointed crown, not a radial scene.
+ vec2 rosette=q-vec2(0,.53);float roseD=10.;
+ for(int k=0;k<4;k++){float a=float(k)*TAU/4.;roseD=min(roseD,length(rosette-.073*vec2(cos(a),sin(a)))-.076);}
+ float rose=1.-smoothstep(-.003,.003,roseD);float rim=exp(-abs(roseD)*160.);
+ float ornamental=1.-smoothstep(.005,.014,abs(q.x-.045*sin(q.y*27.)));
+ float transmitted=.35+1.4*exp(-dot((p-vec2(.85*cos(t),.4+.2*sin(t)))*vec2(.7,.6),(p-vec2(.85*cos(t),.4+.2*sin(t)))*vec2(.7,.6)));
+ vec3 glass=tint*lead*glassTexture*ribs*transom*(1.-ornamental*.35);
+ glass=mix(glass,vec3(.34,.11,.022)*lead,.4*rose);
+ vec3 c=glass*inside*transmitted*2.;c+=tint*bevel*.24*inside;c*=1.-rim*.8;
+ // Aged stone has thickness, a pale inner bevel and very low ambient illumination.
+ float masonry=.45+.55*fbm(p*12.+seed);
+ vec3 stone=vec3(.013,.016,.023)*masonry;
+ stone+=vec3(.020,.023,.027)*exp(-max(arch,0.)*45.);
+ c+=stone*(1.-inside);
+ // Broad, oblique transmitted light veil; the structure never rotates or folds.
+ float veil=exp(-pow((p.x+p.y*.45-.65*cos(t))/.6,2.));
+ c+=vec3(.018,.025,.035)*veil*depth*.35;
+ c*=.55+.45*exp(-dot(p*vec2(.35,.2),p*vec2(.35,.2)));
+ c*=mix(.85,1.15,density);c=mix(c,vec3(dot(c,vec3(.22,.65,.13))),symmetry*.25);
+ return finishLight(c);
 }

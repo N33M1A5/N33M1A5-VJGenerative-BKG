@@ -1,13 +1,13 @@
-name: V1.6 LAB previews and isolated Windows DLL
+name: Build VJ V1.7 - 82 engines and all adjustments
 on:
   push:
     branches: ['feature/v1-6-storyloop-quality']
-    paths: ['prototypes/**', 'src/v16/**', 'tools/**', 'build/windows/VJGenerativeV16.vcxproj', '.github/workflows/prototypes.yml']
+    paths: ['engines/**', 'prototypes/**', 'src/v17/**', 'tools/**', 'build/windows/**', '.github/workflows/prototypes.yml']
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  render:
+  verify:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -19,34 +19,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install software OpenGL and video tools
+      - name: Install OpenGL, C++ and preview dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq libegl1 libgl1-mesa-dri libglew-dev ffmpeg fonts-dejavu-core
           pip install -r prototypes/gate_a/requirements.txt
-      - name: Verify stable engines and generated shader sources
+      - name: Preserve original engines and verify generated files
         run: |
           python tools/validate_unified.py
-          python tools/embed_gate_a.py
-          git diff --exit-code -- src/v16/generated_shaders.h
-          g++ -std=c++17 -fsyntax-only -DGLEW_NO_GLU -I. -Iffgl/source/lib -Iffgl/deps/glew-2.1.0/include src/v16/VJGenerativeV16.cpp
-      - name: Exercise actual C++ renderer and host state restoration
+          python tools/embed_catalog.py
+          python tools/make_v17_plugin.py
+          git diff --exit-code -- src/v17/generated_shaders.h src/v17/engine_catalog.h src/v17/VJGenerativeV17.cpp docs/ENGINE_SOURCES.json
+      - name: Native FFGL selection, UTF-8, and all 82 adjustment tests
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
         run: |
-          g++ -std=c++17 -O2 -shared -fPIC -DGLEW_NO_GLU -I. -Iffgl/source/lib -Iffgl/deps/glew-2.1.0/include tools/story_pipeline_smoke.cpp ffgl/source/lib/ffglex/FFGLShader.cpp ffgl/source/lib/ffglex/FFGLUtilities.cpp ffgl/source/lib/ffgl/FFGLLog.cpp -lGLEW -lGL -o /tmp/vj_story_pipeline.so
-          python tools/validate_story_pipeline.py /tmp/vj_story_pipeline.so
-      - name: Compile, render, validate controls and produce preview movies
+          python tools/build_native_tests.py --sdk ffgl --out /tmp/vj-native
+          python tools/validate_native_adjustments.py /tmp/vj-native/vj_native_plugin.so
+      - name: Validate 75 shaders, loops, all palettes, RGBA and LED aspect
         env:
           LIBGL_ALWAYS_SOFTWARE: '1'
-        run: python tools/render_gate_a.py --video
+        run: |
+          g++ -std=c++17 -O2 -shared -fPIC -DGLEW_NO_GLU -I. -Iffgl/source/lib -Iffgl/deps/glew-2.1.0/include tools/catalog_pipeline_smoke.cpp ffgl/source/lib/ffglex/FFGLShader.cpp ffgl/source/lib/ffglex/FFGLUtilities.cpp ffgl/source/lib/ffgl/FFGLLog.cpp -lGLEW -lGL -o /tmp/vj_catalog_pipeline.so
+          python tools/render_catalog.py
       - uses: actions/upload-artifact@v4
         with:
-          name: VJ-Generative-V1.6-Previews-and-Tests
-          path: previews/gate_a/
+          name: N33-V1.7-Verification-Frames
+          path: previews/v17/
           if-no-files-found: error
   windows:
-    needs: render
+    needs: verify
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,28 +57,40 @@ jobs:
           repository: resolume/ffgl
           ref: 5b6e07840277df9ec35a228b9eb067636316350f
           path: ffgl
-      - name: Prepare isolated V1.6 LAB source
+      - uses: actions/download-artifact@v4
+        with:
+          name: N33-V1.7-Verification-Frames
+          path: verification
+      - name: Prepare V1.7 source in the official SDK
         shell: pwsh
         run: |
           $target = 'ffgl/source/plugins/VJGenerativeV1'
           New-Item -ItemType Directory -Force -Path $target | Out-Null
-          Copy-Item src/v16/* $target -Force
+          Copy-Item src/v17/* $target -Force
           Copy-Item shaders.h,shaders_expansion.h,palettes_extra.h $target -Force
-          Copy-Item build/windows/VJGenerativeV16.vcxproj ffgl/build/windows/VJGenerativeV16.vcxproj -Force
+          Copy-Item build/windows/VJGenerativeV17.vcxproj ffgl/build/windows/VJGenerativeV17.vcxproj -Force
       - uses: microsoft/setup-msbuild@v2
-      - name: Build Windows x64 development plugin
+      - name: Verify Windows font rasterization and Portuguese accents
         shell: pwsh
         run: |
-          msbuild ffgl/build/windows/VJGenerativeV16.vcxproj /m /t:Build /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
-          if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed.' }
-          $dll = Get-ChildItem ffgl -Filter VJGenerativeV16Lab.dll -Recurse | Select-Object -First 1
-          if (-not $dll) { throw 'Expected V1.6 LAB DLL missing.' }
+          msbuild build/windows/TextAtlasTest.vcxproj /m /t:Build /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) { throw 'Windows text test build failed.' }
+          & ./font-test/TextAtlasTest.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Windows text/accents test failed.' }
+      - name: Build and stage the 82-engine Windows x64 plugin
+        shell: pwsh
+        run: |
+          msbuild ffgl/build/windows/VJGenerativeV17.vcxproj /m /t:Build /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) { throw 'Plugin build failed.' }
+          $dll = Get-ChildItem ffgl -Filter VJGenerativeV17.dll -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected V1.7 DLL missing.' }
           New-Item -ItemType Directory -Force -Path artifact | Out-Null
-          Copy-Item $dll.FullName artifact/VJGenerativeV16Lab.dll
-          Copy-Item docs/V1_6_LAB.md artifact/LEIA_ME.md
-          Get-FileHash artifact/VJGenerativeV16Lab.dll -Algorithm SHA256 | Format-List
+          Copy-Item $dll.FullName artifact/VJGenerativeV17.dll
+          Copy-Item docs/V1_7_ENTREGA_82.md artifact/LEIA_ME.md
+          Copy-Item verification/validation.json,verification/native_adjustments.json artifact/
+          Get-FileHash artifact/VJGenerativeV17.dll -Algorithm SHA256 | Format-List
       - uses: actions/upload-artifact@v4
         with:
-          name: N33-VJ-V1.6-LAB-Windows-x64
+          name: N33-VJ-V1.7-82-Motores-Windows-x64
           path: artifact/
           if-no-files-found: error

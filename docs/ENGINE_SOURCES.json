@@ -1,0 +1,452 @@
+[
+  {
+    "engine_id": 8,
+    "name": "Awakening B_1",
+    "source": "engines/008_awakening.frag",
+    "reference": "https://storyloop.com/downloads/awakening-b_1-2/"
+  },
+  {
+    "engine_id": 9,
+    "name": "Chroma Blur 13",
+    "source": "engines/009_chroma_blur_13.frag",
+    "reference": "https://storyloop.com/downloads/chroma_blur_13/"
+  },
+  {
+    "engine_id": 10,
+    "name": "Ethereal H Finished",
+    "source": "engines/010_ethereal.frag",
+    "reference": "https://storyloop.com/downloads/ethereal-h_finished/"
+  },
+  {
+    "engine_id": 11,
+    "name": "Fair Lights 2",
+    "source": "engines/011_fair_lights_2.frag",
+    "reference": "https://storyloop.com/downloads/fair-lights-2-2/"
+  },
+  {
+    "engine_id": 12,
+    "name": "Flow 18",
+    "source": "engines/012_flow_18.frag",
+    "reference": "https://storyloop.com/downloads/flow-18/"
+  },
+  {
+    "engine_id": 13,
+    "name": "Flow Dark Glass",
+    "source": "prototypes/gate_a/flow_dark_glass.frag",
+    "reference": "https://storyloop.com/downloads/flow-dark-glass/"
+  },
+  {
+    "engine_id": 14,
+    "name": "Flow RMX Glass 3",
+    "source": "engines/014_flow_rmx_glass.frag",
+    "reference": "https://storyloop.com/downloads/flow-rmx-glass-3/"
+  },
+  {
+    "engine_id": 15,
+    "name": "Lunar Drift 2A",
+    "source": "engines/015_lunar_drift.frag",
+    "reference": "https://storyloop.com/downloads/lunar-drift-2a-2/"
+  },
+  {
+    "engine_id": 16,
+    "name": "New Vision 1",
+    "source": "engines/016_new_vision_1.frag",
+    "reference": "https://storyloop.com/downloads/new-vision-1-2/"
+  },
+  {
+    "engine_id": 17,
+    "name": "New Vision 6",
+    "source": "engines/017_new_vision_6.frag",
+    "reference": "https://storyloop.com/downloads/new-vision-6-2/"
+  },
+  {
+    "engine_id": 18,
+    "name": "Pentecost Blaze 1",
+    "source": "engines/018_pentecost_blaze_1.frag",
+    "reference": "https://storyloop.com/downloads/pentecost-blaze-1/"
+  },
+  {
+    "engine_id": 19,
+    "name": "Spotlight 1",
+    "source": "prototypes/gate_a/spotlight.frag",
+    "reference": "https://storyloop.com/downloads/spotlight_1/"
+  },
+  {
+    "engine_id": 20,
+    "name": "Stained Glass Sacred Bubble Gum",
+    "source": "prototypes/gate_a/stained_glass.frag",
+    "reference": "https://storyloop.com/downloads/stained_glass_sacred_bubble_gum_prores-2/"
+  },
+  {
+    "engine_id": 21,
+    "name": "TRIR Visual4K 15 Full",
+    "source": "engines/021_trir.frag",
+    "reference": "https://storyloop.com/downloads/trir-visual4k-15-full/"
+  },
+  {
+    "engine_id": 22,
+    "name": "Walls — Names of God Line Add 2",
+    "source": "engines/022_walls_names.frag",
+    "reference": "https://storyloop.com/downloads/_-walls-names-of-god_line-add_2/"
+  },
+  {
+    "engine_id": 23,
+    "name": "Chroma Blur",
+    "source": "engines/023_chroma_blur.frag",
+    "reference": "https://storyloop.com/downloads/chroma-blur/"
+  },
+  {
+    "engine_id": 24,
+    "name": "Gradient Walls",
+    "source": "engines/024_gradient_walls.frag",
+    "reference": "https://storyloop.com/downloads/gradient-walls/"
+  },
+  {
+    "engine_id": 25,
+    "name": "Dispersion",
+    "source": "engines/025_dispersion.frag",
+    "reference": "https://storyloop.com/downloads/dispersion/"
+  },
+  {
+    "engine_id": 26,
+    "name": "Pentecost Blaze",
+    "source": "engines/026_pentecost_blaze.frag",
+    "reference": "https://storyloop.com/downloads/pentecost-blaze-service-pack/"
+  },
+  {
+    "engine_id": 27,
+    "name": "Grainyents: Prismatic",
+    "source": "engines/027_grainyents_prismatic.frag",
+    "reference": "https://storyloop.com/downloads/grainyents-prismatic/"
+  },
+  {
+    "engine_id": 28,
+    "name": "Bitmap",
+    "source": "engines/028_bitmap.frag",
+    "reference": "https://storyloop.com/downloads/bitmap-motion-backgrounds/"
+  },
+  {
+    "engine_id": 29,
+    "name": "Computer Noise",
+    "source": "engines/029_computer_noise.frag",
+    "reference": "https://storyloop.com/downloads/computer-noise/"
+  },
+  {
+    "engine_id": 30,
+    "name": "Surface",
+    "source": "engines/030_surface.frag",
+    "reference": "https://storyloop.com/downloads/surface-worship-backgrounds/"
+  },
+  {
+    "engine_id": 31,
+    "name": "Color Haze",
+    "source": "engines/031_color_haze.frag",
+    "reference": "https://storyloop.com/downloads/color-haze/"
+  },
+  {
+    "engine_id": 32,
+    "name": "Genesis",
+    "source": "engines/032_genesis.frag",
+    "reference": "https://storyloop.com/downloads/genesis-worship-visuals/"
+  },
+  {
+    "engine_id": 33,
+    "name": "Glowstream",
+    "source": "engines/033_glowstream.frag",
+    "reference": "https://storyloop.com/downloads/glowstream-motion-backgrounds/"
+  },
+  {
+    "engine_id": 34,
+    "name": "Mirage",
+    "source": "engines/034_mirage.frag",
+    "reference": "https://storyloop.com/downloads/mirage/"
+  },
+  {
+    "engine_id": 35,
+    "name": "Color Steps",
+    "source": "engines/035_color_steps.frag",
+    "reference": "https://storyloop.com/downloads/color-steps/"
+  },
+  {
+    "engine_id": 36,
+    "name": "Chroma",
+    "source": "engines/036_chroma.frag",
+    "reference": "https://storyloop.com/downloads/chroma/"
+  },
+  {
+    "engine_id": 37,
+    "name": "Grainyents: Expressions",
+    "source": "engines/037_grainyents_expressions.frag",
+    "reference": "https://storyloop.com/downloads/grainyents-expressions/"
+  },
+  {
+    "engine_id": 38,
+    "name": "Power",
+    "source": "engines/038_power.frag",
+    "reference": "https://storyloop.com/downloads/power-worship-backgrounds/"
+  },
+  {
+    "engine_id": 39,
+    "name": "CRTVERSE",
+    "source": "engines/039_crtverse.frag",
+    "reference": "https://storyloop.com/downloads/crtverse-worship-backgrounds/"
+  },
+  {
+    "engine_id": 40,
+    "name": "Clean",
+    "source": "engines/040_clean.frag",
+    "reference": "https://storyloop.com/downloads/clean-motion-backgrounds/"
+  },
+  {
+    "engine_id": 41,
+    "name": "Easter Gradient",
+    "source": "engines/041_easter_gradient.frag",
+    "reference": "https://storyloop.com/downloads/easter-gradient/"
+  },
+  {
+    "engine_id": 42,
+    "name": "Fair Lights",
+    "source": "engines/042_fair_lights.frag",
+    "reference": "https://storyloop.com/downloads/fair-lights/"
+  },
+  {
+    "engine_id": 43,
+    "name": "Subtle Light",
+    "source": "engines/043_subtle_light.frag",
+    "reference": "https://storyloop.com/downloads/subtle-light/"
+  },
+  {
+    "engine_id": 44,
+    "name": "Terrascapes",
+    "source": "engines/044_terrascapes.frag",
+    "reference": "https://storyloop.com/downloads/terrascapes/"
+  },
+  {
+    "engine_id": 45,
+    "name": "Aurora — Visual.Church",
+    "source": "engines/045_aurora_visual_church.frag",
+    "reference": "https://storyloop.com/downloads/aurora-visual-church/"
+  },
+  {
+    "engine_id": 46,
+    "name": "Prismatic",
+    "source": "engines/046_prismatic.frag",
+    "reference": "https://storyloop.com/downloads/prismatic-motion-backgrounds/"
+  },
+  {
+    "engine_id": 47,
+    "name": "Gravity",
+    "source": "engines/047_gravity.frag",
+    "reference": "https://storyloop.com/downloads/gravity/"
+  },
+  {
+    "engine_id": 48,
+    "name": "Glitter Sparks",
+    "source": "engines/048_glitter_sparks.frag",
+    "reference": "https://storyloop.com/downloads/glitter-sparks/"
+  },
+  {
+    "engine_id": 49,
+    "name": "Into The Mist",
+    "source": "engines/049_into_mist.frag",
+    "reference": "https://storyloop.com/downloads/into-the-mist-motion-backgrounds/"
+  },
+  {
+    "engine_id": 50,
+    "name": "Dusk to Dawn",
+    "source": "engines/050_dusk_dawn.frag",
+    "reference": "https://storyloop.com/downloads/dusk-to-dawn-motion-backgrounds/"
+  },
+  {
+    "engine_id": 51,
+    "name": "VJ Loops Vol 43",
+    "source": "engines/051_vj_vol43.frag",
+    "reference": "https://storyloop.com/downloads/vj-loops-vol-43/"
+  },
+  {
+    "engine_id": 52,
+    "name": "He Will Be Called",
+    "source": "engines/052_he_will_be_called.frag",
+    "reference": "https://storyloop.com/downloads/he-will-be-called/"
+  },
+  {
+    "engine_id": 53,
+    "name": "Christmas Glow",
+    "source": "engines/053_christmas_glow.frag",
+    "reference": "https://storyloop.com/downloads/christmas-glow/"
+  },
+  {
+    "engine_id": 54,
+    "name": "Gradient Moves",
+    "source": "engines/054_gradient_moves.frag",
+    "reference": "https://storyloop.com/downloads/gradient-moves/"
+  },
+  {
+    "engine_id": 55,
+    "name": "Solar Energy",
+    "source": "engines/055_solar_energy.frag",
+    "reference": "https://storyloop.com/downloads/solar-energy/"
+  },
+  {
+    "engine_id": 56,
+    "name": "Soft Bokeh",
+    "source": "engines/056_soft_bokeh.frag",
+    "reference": "https://storyloop.com/downloads/soft-bokeh/"
+  },
+  {
+    "engine_id": 57,
+    "name": "Glass Form",
+    "source": "engines/057_glass_form.frag",
+    "reference": "https://storyloop.com/downloads/glass-form-motion-backgrounds/"
+  },
+  {
+    "engine_id": 58,
+    "name": "Noise Textures Vol 2",
+    "source": "engines/058_noise_textures.frag",
+    "reference": "https://storyloop.com/downloads/noise-textures-2/"
+  },
+  {
+    "engine_id": 59,
+    "name": "Neon Dream",
+    "source": "engines/059_neon_dream.frag",
+    "reference": "https://storyloop.com/downloads/neon-dream/"
+  },
+  {
+    "engine_id": 60,
+    "name": "Let the Incense Rise",
+    "source": "engines/060_incense_rise.frag",
+    "reference": "https://storyloop.com/downloads/let-the-incense-rise-motion-backgrounds/"
+  },
+  {
+    "engine_id": 61,
+    "name": "Pixel Sort Vol 1",
+    "source": "engines/061_pixel_sort.frag",
+    "reference": "https://storyloop.com/downloads/pixel-sort-vol-1/"
+  },
+  {
+    "engine_id": 62,
+    "name": "Expanse Remix",
+    "source": "engines/062_expanse_remix.frag",
+    "reference": "https://storyloop.com/downloads/expanse-remix/"
+  },
+  {
+    "engine_id": 63,
+    "name": "Unsealed",
+    "source": "engines/063_unsealed.frag",
+    "reference": "https://storyloop.com/downloads/unsealed-worship-backgrounds/"
+  },
+  {
+    "engine_id": 64,
+    "name": "VJ Loops Vol 65",
+    "source": "engines/064_vj_vol65.frag",
+    "reference": "https://storyloop.com/downloads/vj-loops-vol-65/"
+  },
+  {
+    "engine_id": 65,
+    "name": "Wild Water",
+    "source": "engines/065_wild_water.frag",
+    "reference": "https://storyloop.com/downloads/wild-water-worship-backgrounds/"
+  },
+  {
+    "engine_id": 66,
+    "name": "Transcendence",
+    "source": "engines/066_transcendence.frag",
+    "reference": "https://storyloop.com/downloads/transcendence/"
+  },
+  {
+    "engine_id": 67,
+    "name": "Duplicator",
+    "source": "engines/067_duplicator.frag",
+    "reference": "https://storyloop.com/downloads/duplicator/"
+  },
+  {
+    "engine_id": 68,
+    "name": "Signal",
+    "source": "engines/068_signal.frag",
+    "reference": "https://storyloop.com/downloads/signal-motion-backgrounds/"
+  },
+  {
+    "engine_id": 69,
+    "name": "Glow Shower",
+    "source": "engines/069_glow_shower.frag",
+    "reference": "https://storyloop.com/downloads/glow-shower/"
+  },
+  {
+    "engine_id": 70,
+    "name": "Spring Warp",
+    "source": "engines/070_spring_warp.frag",
+    "reference": "https://storyloop.com/downloads/spring-warp/"
+  },
+  {
+    "engine_id": 71,
+    "name": "Clarity",
+    "source": "engines/071_clarity.frag",
+    "reference": "https://storyloop.com/downloads/clarity-motions/"
+  },
+  {
+    "engine_id": 72,
+    "name": "Stained Glass",
+    "source": "engines/072_stained_glass.frag",
+    "reference": "https://storyloop.com/downloads/stained-glass/"
+  },
+  {
+    "engine_id": 73,
+    "name": "Terrain Theory",
+    "source": "engines/073_terrain_theory.frag",
+    "reference": "https://storyloop.com/downloads/terrain-theory/"
+  },
+  {
+    "engine_id": 74,
+    "name": "CRT Shapes",
+    "source": "engines/074_crt_shapes.frag",
+    "reference": "https://storyloop.com/downloads/crt-shapes-motion-backgrounds/"
+  },
+  {
+    "engine_id": 75,
+    "name": "Color Powder Explosion",
+    "source": "engines/075_color_powder.frag",
+    "reference": "https://storyloop.com/downloads/color-powder-explosion/"
+  },
+  {
+    "engine_id": 76,
+    "name": "Waters",
+    "source": "engines/076_waters.frag",
+    "reference": "https://storyloop.com/downloads/waters-motion-backgrounds/"
+  },
+  {
+    "engine_id": 77,
+    "name": "Fair Lights Vol 2",
+    "source": "engines/077_fair_lights_vol2.frag",
+    "reference": "https://storyloop.com/downloads/fair-lights-vol-2/"
+  },
+  {
+    "engine_id": 78,
+    "name": "Aberratic Two",
+    "source": "engines/078_aberratic_two.frag",
+    "reference": "https://storyloop.com/downloads/aberratic-two-motion-backgrounds/"
+  },
+  {
+    "engine_id": 79,
+    "name": "Drift",
+    "source": "engines/079_drift.frag",
+    "reference": "https://storyloop.com/downloads/drift-worship-backgrounds/"
+  },
+  {
+    "engine_id": 80,
+    "name": "Color Smoke",
+    "source": "engines/080_color_smoke.frag",
+    "reference": "https://storyloop.com/downloads/free-smoke-stock-footage/"
+  },
+  {
+    "engine_id": 81,
+    "name": "River",
+    "source": "engines/081_river.frag",
+    "reference": "https://storyloop.com/downloads/river/"
+  },
+  {
+    "engine_id": 82,
+    "name": "Spectrum",
+    "source": "engines/082_spectrum.frag",
+    "reference": "https://storyloop.com/downloads/spectrum-worship-backgrounds/"
+  }
+]

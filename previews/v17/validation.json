@@ -1,0 +1,1359 @@
+{
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "pipeline": "actual C++/EGL",
+  "resolume_tested": false,
+  "expansion_engines": 75,
+  "total_engines": 82,
+  "engines": [
+    {
+      "id": 8,
+      "name": "Awakening B_1",
+      "motion_delta": 21.62421875,
+      "loop_endpoint_delta": 4.050925925925926e-05,
+      "responses": {
+        "scale": 22.45070023148148,
+        "intensity": 18.290885416666665,
+        "hue": 12.129658564814815,
+        "symmetry": 29.347274305555555,
+        "pulse": 1.0173090277777779,
+        "bpm": 4.5371701388888885
+      },
+      "seconds": 0.612,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 9,
+      "name": "Chroma Blur 13",
+      "motion_delta": 38.43298032407407,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 16.595491898148147,
+        "intensity": 21.368125,
+        "hue": 25.73579861111111,
+        "symmetry": 14.104947916666667,
+        "pulse": 1.3293113425925926,
+        "bpm": 5.873796296296296
+      },
+      "seconds": 0.62,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 10,
+      "name": "Ethereal H Finished",
+      "motion_delta": 27.751261574074075,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 15.67833912037037,
+        "intensity": 15.026371527777778,
+        "hue": 8.588385416666666,
+        "symmetry": 15.979103009259259,
+        "pulse": 0.8247280092592593,
+        "bpm": 3.7070833333333333
+      },
+      "seconds": 0.647,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 11,
+      "name": "Fair Lights 2",
+      "motion_delta": 35.10105324074074,
+      "loop_endpoint_delta": 4.050925925925926e-05,
+      "responses": {
+        "scale": 8.82353587962963,
+        "intensity": 15.883778935185186,
+        "hue": 49.17050347222222,
+        "symmetry": 39.57195023148148,
+        "pulse": 1.029826388888889,
+        "bpm": 4.583292824074074
+      },
+      "seconds": 0.522,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 12,
+      "name": "Flow 18",
+      "motion_delta": 36.95784143518519,
+      "loop_endpoint_delta": 6.944444444444444e-05,
+      "responses": {
+        "scale": 37.362118055555555,
+        "intensity": 16.026886574074073,
+        "hue": 21.495810185185185,
+        "symmetry": 32.0990625,
+        "pulse": 0.8833854166666667,
+        "bpm": 3.956753472222222
+      },
+      "seconds": 0.831,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 13,
+      "name": "Flow Dark Glass",
+      "motion_delta": 45.25983796296296,
+      "loop_endpoint_delta": 0.002991898148148148,
+      "responses": {
+        "scale": 35.540532407407404,
+        "intensity": 8.42894675925926,
+        "hue": 7.433859953703704,
+        "symmetry": 27.308975694444445,
+        "pulse": 0.7362210648148149,
+        "bpm": 3.275300925925926
+      },
+      "seconds": 0.95,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 14,
+      "name": "Flow RMX Glass 3",
+      "motion_delta": 25.659189814814816,
+      "loop_endpoint_delta": 6.36574074074074e-05,
+      "responses": {
+        "scale": 21.11505787037037,
+        "intensity": 20.405787037037037,
+        "hue": 21.04388310185185,
+        "symmetry": 21.531614583333333,
+        "pulse": 1.1376041666666667,
+        "bpm": 5.08384837962963
+      },
+      "seconds": 0.501,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 15,
+      "name": "Lunar Drift 2A",
+      "motion_delta": 26.049155092592592,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 31.565358796296298,
+        "intensity": 8.780451388888888,
+        "hue": 22.508871527777778,
+        "symmetry": 22.47945601851852,
+        "pulse": 0.3783275462962963,
+        "bpm": 1.7092650462962964
+      },
+      "seconds": 0.431,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 16,
+      "name": "New Vision 1",
+      "motion_delta": 25.132667824074073,
+      "loop_endpoint_delta": 5.787037037037037e-06,
+      "responses": {
+        "scale": 28.878813657407406,
+        "intensity": 12.718084490740742,
+        "hue": 39.4440625,
+        "symmetry": 28.63677662037037,
+        "pulse": 0.7196180555555556,
+        "bpm": 3.190625
+      },
+      "seconds": 0.431,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 17,
+      "name": "New Vision 6",
+      "motion_delta": 23.470462962962962,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 38.537702546296295,
+        "intensity": 14.028865740740741,
+        "hue": 68.09719907407407,
+        "symmetry": 22.89042824074074,
+        "pulse": 0.7987615740740741,
+        "bpm": 3.5437037037037036
+      },
+      "seconds": 0.387,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 18,
+      "name": "Pentecost Blaze 1",
+      "motion_delta": 14.202372685185185,
+      "loop_endpoint_delta": 5.787037037037037e-06,
+      "responses": {
+        "scale": 8.270896990740741,
+        "intensity": 16.132662037037036,
+        "hue": 67.96690393518519,
+        "symmetry": 8.801822916666667,
+        "pulse": 0.937042824074074,
+        "bpm": 4.089322916666666
+      },
+      "seconds": 0.912,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 19,
+      "name": "Spotlight 1",
+      "motion_delta": 30.643258101851853,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 28.904508101851853,
+        "intensity": 8.169988425925926,
+        "hue": 13.287141203703703,
+        "symmetry": 25.216782407407408,
+        "pulse": 0.29109953703703706,
+        "bpm": 1.3100694444444445
+      },
+      "seconds": 0.481,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 20,
+      "name": "Stained Glass Sacred Bubble Gum",
+      "motion_delta": 30.072008101851853,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 53.350208333333335,
+        "intensity": 20.16728009259259,
+        "hue": 31.11795138888889,
+        "symmetry": 3.843917824074074,
+        "pulse": 1.1266145833333334,
+        "bpm": 4.994473379629629
+      },
+      "seconds": 0.763,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 21,
+      "name": "TRIR Visual4K 15 Full",
+      "motion_delta": 20.45419560185185,
+      "loop_endpoint_delta": 2.3148148148148147e-05,
+      "responses": {
+        "scale": 16.823796296296297,
+        "intensity": 9.232922453703704,
+        "hue": 19.141238425925927,
+        "symmetry": 8.760457175925925,
+        "pulse": 0.5187789351851851,
+        "bpm": 2.3351273148148146
+      },
+      "seconds": 0.567,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 22,
+      "name": "Walls — Names of God Line Add 2",
+      "motion_delta": 17.502563657407407,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 24.72794560185185,
+        "intensity": 9.095387731481482,
+        "hue": 10.430462962962963,
+        "symmetry": 14.354791666666667,
+        "pulse": 0.5163541666666667,
+        "bpm": 2.3055381944444444
+      },
+      "seconds": 0.575,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 23,
+      "name": "Chroma Blur",
+      "motion_delta": 18.984959490740742,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 16.807372685185186,
+        "intensity": 22.650520833333335,
+        "hue": 24.32085648148148,
+        "symmetry": 30.134780092592592,
+        "pulse": 1.2550347222222222,
+        "bpm": 5.58318287037037
+      },
+      "seconds": 0.709,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 24,
+      "name": "Gradient Walls",
+      "motion_delta": 5.431649305555555,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 11.74988425925926,
+        "intensity": 20.39390625,
+        "hue": 41.26005787037037,
+        "symmetry": 6.620445601851852,
+        "pulse": 1.1655324074074074,
+        "bpm": 5.144079861111111
+      },
+      "seconds": 0.467,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 25,
+      "name": "Dispersion",
+      "motion_delta": 12.856782407407408,
+      "loop_endpoint_delta": 2.3148148148148147e-05,
+      "responses": {
+        "scale": 12.75277199074074,
+        "intensity": 11.64421875,
+        "hue": 12.86625,
+        "symmetry": 10.4625,
+        "pulse": 0.6213946759259259,
+        "bpm": 2.7974247685185185
+      },
+      "seconds": 0.569,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 26,
+      "name": "Pentecost Blaze",
+      "motion_delta": 30.39984375,
+      "loop_endpoint_delta": 2.3148148148148147e-05,
+      "responses": {
+        "scale": 20.196516203703705,
+        "intensity": 12.273061342592593,
+        "hue": 44.38747685185185,
+        "symmetry": 19.34480324074074,
+        "pulse": 0.6653587962962964,
+        "bpm": 2.9713194444444446
+      },
+      "seconds": 0.84,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 27,
+      "name": "Grainyents: Prismatic",
+      "motion_delta": 17.961122685185185,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 7.661903935185185,
+        "intensity": 24.651770833333334,
+        "hue": 18.577667824074073,
+        "symmetry": 16.328142361111112,
+        "pulse": 1.485486111111111,
+        "bpm": 6.5408333333333335
+      },
+      "seconds": 0.431,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 28,
+      "name": "Bitmap",
+      "motion_delta": 65.20743055555556,
+      "loop_endpoint_delta": 4.050925925925926e-05,
+      "responses": {
+        "scale": 54.11686921296296,
+        "intensity": 10.66504050925926,
+        "hue": 9.557025462962963,
+        "symmetry": 46.61505208333333,
+        "pulse": 0.5814814814814815,
+        "bpm": 2.590925925925926
+      },
+      "seconds": 0.432,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 29,
+      "name": "Computer Noise",
+      "motion_delta": 19.270613425925927,
+      "loop_endpoint_delta": 8.101851851851852e-05,
+      "responses": {
+        "scale": 21.791180555555556,
+        "intensity": 9.816400462962964,
+        "hue": 5.109866898148148,
+        "symmetry": 18.23058449074074,
+        "pulse": 0.5457349537037037,
+        "bpm": 2.4520775462962963
+      },
+      "seconds": 0.441,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 30,
+      "name": "Surface",
+      "motion_delta": 18.111377314814813,
+      "loop_endpoint_delta": 2.3148148148148147e-05,
+      "responses": {
+        "scale": 17.797216435185184,
+        "intensity": 9.533489583333333,
+        "hue": 31.62105902777778,
+        "symmetry": 14.167800925925926,
+        "pulse": 0.514525462962963,
+        "bpm": 2.3202430555555558
+      },
+      "seconds": 0.442,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 31,
+      "name": "Color Haze",
+      "motion_delta": 6.1970428240740745,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 9.203495370370371,
+        "intensity": 23.570885416666666,
+        "hue": 28.174664351851852,
+        "symmetry": 10.254299768518518,
+        "pulse": 1.307505787037037,
+        "bpm": 5.819456018518519
+      },
+      "seconds": 0.448,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 32,
+      "name": "Genesis",
+      "motion_delta": 16.37040509259259,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 22.07619791666667,
+        "intensity": 14.948402777777778,
+        "hue": 35.08277777777778,
+        "symmetry": 19.528518518518517,
+        "pulse": 0.7672222222222222,
+        "bpm": 3.4399652777777776
+      },
+      "seconds": 0.64,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 33,
+      "name": "Glowstream",
+      "motion_delta": 50.3710474537037,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 42.00497106481482,
+        "intensity": 10.785225694444444,
+        "hue": 25.06429976851852,
+        "symmetry": 29.430381944444445,
+        "pulse": 0.5428877314814815,
+        "bpm": 2.427627314814815
+      },
+      "seconds": 0.473,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 34,
+      "name": "Mirage",
+      "motion_delta": 13.351452546296295,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 15.787233796296297,
+        "intensity": 23.78189236111111,
+        "hue": 27.705324074074074,
+        "symmetry": 13.327945601851852,
+        "pulse": 1.3165509259259258,
+        "bpm": 5.880364583333333
+      },
+      "seconds": 0.634,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 35,
+      "name": "Color Steps",
+      "motion_delta": 6.74875,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 7.991336805555555,
+        "intensity": 17.62125,
+        "hue": 64.84878472222222,
+        "symmetry": 23.18728587962963,
+        "pulse": 0.9821122685185185,
+        "bpm": 4.382048611111111
+      },
+      "seconds": 0.414,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 36,
+      "name": "Chroma",
+      "motion_delta": 40.33475115740741,
+      "loop_endpoint_delta": 2.8935185185185186e-05,
+      "responses": {
+        "scale": 28.410266203703703,
+        "intensity": 21.24708912037037,
+        "hue": 36.455046296296295,
+        "symmetry": 36.83958333333333,
+        "pulse": 1.1904050925925926,
+        "bpm": 5.301684027777778
+      },
+      "seconds": 0.443,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 37,
+      "name": "Grainyents: Expressions",
+      "motion_delta": 19.880237268518517,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 9.530538194444444,
+        "intensity": 25.959403935185186,
+        "hue": 8.561290509259258,
+        "symmetry": 14.14195023148148,
+        "pulse": 1.4128530092592593,
+        "bpm": 6.285555555555556
+      },
+      "seconds": 0.653,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 38,
+      "name": "Power",
+      "motion_delta": 22.07304976851852,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 11.52927662037037,
+        "intensity": 14.774670138888888,
+        "hue": 16.31275462962963,
+        "symmetry": 21.944207175925925,
+        "pulse": 0.8025636574074074,
+        "bpm": 3.600792824074074
+      },
+      "seconds": 0.426,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 39,
+      "name": "CRTVERSE",
+      "motion_delta": 3.0154513888888888,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 3.3808449074074076,
+        "intensity": 6.77234375,
+        "hue": 13.007737268518518,
+        "symmetry": 3.4258796296296294,
+        "pulse": 0.3582523148148148,
+        "bpm": 1.631880787037037
+      },
+      "seconds": 0.474,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 40,
+      "name": "Clean",
+      "motion_delta": 2.714537037037037,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 1.969074074074074,
+        "intensity": 25.483755787037037,
+        "hue": 4.033026620370371,
+        "symmetry": 5.886302083333334,
+        "pulse": 1.5563020833333334,
+        "bpm": 6.755925925925926
+      },
+      "seconds": 0.426,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 41,
+      "name": "Easter Gradient",
+      "motion_delta": 6.758761574074074,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 4.913778935185185,
+        "intensity": 21.757395833333334,
+        "hue": 64.49294560185186,
+        "symmetry": 5.419346064814815,
+        "pulse": 1.263130787037037,
+        "bpm": 5.5322453703703705
+      },
+      "seconds": 0.428,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 42,
+      "name": "Fair Lights",
+      "motion_delta": 31.07828125,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 22.894201388888888,
+        "intensity": 19.049976851851852,
+        "hue": 33.39726273148148,
+        "symmetry": 28.708894675925926,
+        "pulse": 1.0758564814814815,
+        "bpm": 4.798055555555556
+      },
+      "seconds": 0.575,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 43,
+      "name": "Subtle Light",
+      "motion_delta": 31.740868055555556,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 19.09034722222222,
+        "intensity": 20.384403935185187,
+        "hue": 39.195341435185185,
+        "symmetry": 25.292152777777776,
+        "pulse": 1.2068981481481482,
+        "bpm": 5.353252314814815
+      },
+      "seconds": 0.436,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 44,
+      "name": "Terrascapes",
+      "motion_delta": 16.40072337962963,
+      "loop_endpoint_delta": 0.0001273148148148148,
+      "responses": {
+        "scale": 15.335271990740742,
+        "intensity": 24.879143518518518,
+        "hue": 22.767112268518517,
+        "symmetry": 14.157494212962963,
+        "pulse": 1.3836979166666667,
+        "bpm": 6.1565972222222225
+      },
+      "seconds": 0.805,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 45,
+      "name": "Aurora — Visual.Church",
+      "motion_delta": 32.040925925925926,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 10.585590277777778,
+        "intensity": 16.49328703703704,
+        "hue": 35.02925925925926,
+        "symmetry": 25.59363425925926,
+        "pulse": 0.9231365740740741,
+        "bpm": 4.121192129629629
+      },
+      "seconds": 0.614,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 46,
+      "name": "Prismatic",
+      "motion_delta": 50.00952546296296,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 31.075115740740742,
+        "intensity": 16.197372685185186,
+        "hue": 32.796533564814816,
+        "symmetry": 29.409444444444443,
+        "pulse": 0.8951099537037037,
+        "bpm": 4.006649305555555
+      },
+      "seconds": 0.495,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 47,
+      "name": "Gravity",
+      "motion_delta": 10.918952546296296,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 21.354131944444443,
+        "intensity": 16.82359375,
+        "hue": 21.758229166666666,
+        "symmetry": 16.265543981481482,
+        "pulse": 0.9082696759259259,
+        "bpm": 4.0748900462962965
+      },
+      "seconds": 0.849,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 48,
+      "name": "Glitter Sparks",
+      "motion_delta": 2.071128472222222,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 2.087390046296296,
+        "intensity": 4.876498842592593,
+        "hue": 16.237528935185185,
+        "symmetry": 1.8514178240740742,
+        "pulse": 0.26328703703703704,
+        "bpm": 1.1690277777777778
+      },
+      "seconds": 0.572,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 49,
+      "name": "Into The Mist",
+      "motion_delta": 1.88953125,
+      "loop_endpoint_delta": 5.787037037037037e-06,
+      "responses": {
+        "scale": 6.454131944444445,
+        "intensity": 26.43347222222222,
+        "hue": 8.613246527777777,
+        "symmetry": 4.014988425925926,
+        "pulse": 1.5584837962962963,
+        "bpm": 6.833119212962963
+      },
+      "seconds": 0.77,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 50,
+      "name": "Dusk to Dawn",
+      "motion_delta": 9.972042824074075,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 8.102928240740741,
+        "intensity": 14.81390625,
+        "hue": 41.44908564814815,
+        "symmetry": 3.1722511574074073,
+        "pulse": 0.8061458333333333,
+        "bpm": 3.5697569444444444
+      },
+      "seconds": 0.427,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 51,
+      "name": "VJ Loops Vol 43",
+      "motion_delta": 39.507980324074076,
+      "loop_endpoint_delta": 5.787037037037037e-05,
+      "responses": {
+        "scale": 41.776487268518515,
+        "intensity": 17.41166087962963,
+        "hue": 39.339681712962964,
+        "symmetry": 31.629068287037036,
+        "pulse": 0.9782523148148148,
+        "bpm": 4.35162037037037
+      },
+      "seconds": 0.503,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 52,
+      "name": "He Will Be Called",
+      "motion_delta": 7.540896990740741,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 10.79228587962963,
+        "intensity": 13.846741898148148,
+        "hue": 6.39974537037037,
+        "symmetry": 9.241898148148149,
+        "pulse": 0.7335300925925926,
+        "bpm": 3.3102488425925927
+      },
+      "seconds": 0.748,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 53,
+      "name": "Christmas Glow",
+      "motion_delta": 9.307760416666667,
+      "loop_endpoint_delta": 5.787037037037037e-06,
+      "responses": {
+        "scale": 12.778107638888889,
+        "intensity": 16.521898148148146,
+        "hue": 22.556880787037038,
+        "symmetry": 10.592905092592593,
+        "pulse": 0.871730324074074,
+        "bpm": 3.919959490740741
+      },
+      "seconds": 0.52,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 54,
+      "name": "Gradient Moves",
+      "motion_delta": 30.69587962962963,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 18.728802083333335,
+        "intensity": 21.915578703703705,
+        "hue": 72.34923032407407,
+        "symmetry": 25.889305555555556,
+        "pulse": 1.2603298611111111,
+        "bpm": 5.499131944444445
+      },
+      "seconds": 0.51,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 55,
+      "name": "Solar Energy",
+      "motion_delta": 22.61265625,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 21.488292824074072,
+        "intensity": 18.524131944444445,
+        "hue": 46.868171296296296,
+        "symmetry": 17.692586805555557,
+        "pulse": 1.0409375,
+        "bpm": 4.614751157407407
+      },
+      "seconds": 1.164,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 56,
+      "name": "Soft Bokeh",
+      "motion_delta": 19.52425925925926,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 24.51908564814815,
+        "intensity": 12.063721064814814,
+        "hue": 18.538917824074073,
+        "symmetry": 18.020266203703702,
+        "pulse": 0.6520196759259259,
+        "bpm": 2.949826388888889
+      },
+      "seconds": 0.66,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 57,
+      "name": "Glass Form",
+      "motion_delta": 16.640063657407406,
+      "loop_endpoint_delta": 5.787037037037037e-06,
+      "responses": {
+        "scale": 16.476689814814815,
+        "intensity": 8.470387731481482,
+        "hue": 6.4696643518518515,
+        "symmetry": 16.425399305555555,
+        "pulse": 0.4489699074074074,
+        "bpm": 2.0192592592592593
+      },
+      "seconds": 0.446,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 58,
+      "name": "Noise Textures Vol 2",
+      "motion_delta": 8.946684027777778,
+      "loop_endpoint_delta": 0.0008333333333333334,
+      "responses": {
+        "scale": 24.845399305555556,
+        "intensity": 24.354913194444446,
+        "hue": 11.311533564814814,
+        "symmetry": 24.66888888888889,
+        "pulse": 1.5027083333333333,
+        "bpm": 6.509809027777778
+      },
+      "seconds": 0.784,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 59,
+      "name": "Neon Dream",
+      "motion_delta": 18.612708333333334,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 28.418645833333333,
+        "intensity": 21.984988425925927,
+        "hue": 28.296388888888888,
+        "symmetry": 24.148582175925927,
+        "pulse": 1.2462037037037037,
+        "bpm": 5.524444444444445
+      },
+      "seconds": 0.665,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 60,
+      "name": "Let the Incense Rise",
+      "motion_delta": 9.110341435185186,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 5.728894675925926,
+        "intensity": 26.675225694444446,
+        "hue": 5.5278935185185185,
+        "symmetry": 5.849560185185185,
+        "pulse": 1.5471643518518519,
+        "bpm": 6.813478009259259
+      },
+      "seconds": 1.197,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 61,
+      "name": "Pixel Sort Vol 1",
+      "motion_delta": 18.80779513888889,
+      "loop_endpoint_delta": 1.1574074074074073e-05,
+      "responses": {
+        "scale": 17.402233796296297,
+        "intensity": 17.09353009259259,
+        "hue": 56.4368287037037,
+        "symmetry": 21.52520833333333,
+        "pulse": 0.9659085648148148,
+        "bpm": 4.289866898148148
+      },
+      "seconds": 0.463,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 62,
+      "name": "Expanse Remix",
+      "motion_delta": 10.612100694444445,
+      "loop_endpoint_delta": 5.208333333333334e-05,
+      "responses": {
+        "scale": 12.537054398148149,
+        "intensity": 3.5111689814814815,
+        "hue": 10.231516203703704,
+        "symmetry": 11.389623842592593,
+        "pulse": 0.19257523148148148,
+        "bpm": 0.8675231481481481
+      },
+      "seconds": 0.598,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 63,
+      "name": "Unsealed",
+      "motion_delta": 8.007922453703705,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 19.02529513888889,
+        "intensity": 9.298981481481482,
+        "hue": 9.647818287037037,
+        "symmetry": 24.04273726851852,
+        "pulse": 0.5364351851851852,
+        "bpm": 2.3781712962962964
+      },
+      "seconds": 0.393,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 64,
+      "name": "VJ Loops Vol 65",
+      "motion_delta": 16.109537037037036,
+      "loop_endpoint_delta": 8.680555555555556e-05,
+      "responses": {
+        "scale": 7.913912037037037,
+        "intensity": 12.283414351851851,
+        "hue": 28.36511574074074,
+        "symmetry": 8.180133101851851,
+        "pulse": 0.6706828703703703,
+        "bpm": 3.0188888888888887
+      },
+      "seconds": 0.518,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 65,
+      "name": "Wild Water",
+      "motion_delta": 13.285503472222222,
+      "loop_endpoint_delta": 3.472222222222222e-05,
+      "responses": {
+        "scale": 12.881608796296296,
+        "intensity": 20.79847800925926,
+        "hue": 76.1670775462963,
+        "symmetry": 10.895405092592593,
+        "pulse": 1.1936689814814814,
+        "bpm": 5.279299768518518
+      },
+      "seconds": 0.65,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 66,
+      "name": "Transcendence",
+      "motion_delta": 10.062372685185185,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 11.033611111111112,
+        "intensity": 6.556197916666667,
+        "hue": 16.60829861111111,
+        "symmetry": 6.2486400462962965,
+        "pulse": 0.3602199074074074,
+        "bpm": 1.617199074074074
+      },
+      "seconds": 0.502,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 67,
+      "name": "Duplicator",
+      "motion_delta": 82.98215277777778,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 63.99310763888889,
+        "intensity": 15.2659375,
+        "hue": 7.32870949074074,
+        "symmetry": 59.78578125,
+        "pulse": 0.7313715277777778,
+        "bpm": 3.1708506944444443
+      },
+      "seconds": 0.898,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 68,
+      "name": "Signal",
+      "motion_delta": 7.147089120370371,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 7.346493055555555,
+        "intensity": 7.095225694444444,
+        "hue": 9.508252314814815,
+        "symmetry": 7.362303240740741,
+        "pulse": 0.37778935185185186,
+        "bpm": 1.7097164351851852
+      },
+      "seconds": 0.541,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 69,
+      "name": "Glow Shower",
+      "motion_delta": 29.99509837962963,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 23.005381944444444,
+        "intensity": 9.74333912037037,
+        "hue": 23.107008101851854,
+        "symmetry": 23.68833912037037,
+        "pulse": 0.5203530092592593,
+        "bpm": 2.338287037037037
+      },
+      "seconds": 0.901,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 70,
+      "name": "Spring Warp",
+      "motion_delta": 5.146574074074074,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 3.4787905092592593,
+        "intensity": 20.853842592592592,
+        "hue": 58.92357638888889,
+        "symmetry": 8.587800925925926,
+        "pulse": 1.232667824074074,
+        "bpm": 5.371371527777778
+      },
+      "seconds": 0.424,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 71,
+      "name": "Clarity",
+      "motion_delta": 38.35145833333333,
+      "loop_endpoint_delta": 2.3148148148148147e-05,
+      "responses": {
+        "scale": 36.36303819444444,
+        "intensity": 17.494942129629628,
+        "hue": 24.35903935185185,
+        "symmetry": 29.140104166666667,
+        "pulse": 0.9685706018518518,
+        "bpm": 4.332633101851852
+      },
+      "seconds": 0.631,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 72,
+      "name": "Stained Glass",
+      "motion_delta": 19.543396990740742,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 17.964091435185185,
+        "intensity": 16.04668402777778,
+        "hue": 26.202332175925925,
+        "symmetry": 24.749074074074073,
+        "pulse": 0.8558680555555556,
+        "bpm": 3.8518981481481482
+      },
+      "seconds": 0.61,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 73,
+      "name": "Terrain Theory",
+      "motion_delta": 5.562974537037037,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 3.1041898148148146,
+        "intensity": 12.948802083333334,
+        "hue": 16.241689814814816,
+        "symmetry": 2.386585648148148,
+        "pulse": 0.686875,
+        "bpm": 3.101238425925926
+      },
+      "seconds": 0.783,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 74,
+      "name": "CRT Shapes",
+      "motion_delta": 3.6622511574074075,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 16.67303240740741,
+        "intensity": 7.537141203703704,
+        "hue": 2.5161516203703704,
+        "symmetry": 21.32496527777778,
+        "pulse": 0.4101909722222222,
+        "bpm": 1.8099131944444444
+      },
+      "seconds": 0.395,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 75,
+      "name": "Color Powder Explosion",
+      "motion_delta": 46.462482638888886,
+      "loop_endpoint_delta": 5.787037037037037e-06,
+      "responses": {
+        "scale": 31.216707175925926,
+        "intensity": 15.165625,
+        "hue": 39.07616319444445,
+        "symmetry": 44.37311921296296,
+        "pulse": 0.57265625,
+        "bpm": 2.5608333333333335
+      },
+      "seconds": 1.028,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 76,
+      "name": "Waters",
+      "motion_delta": 2.321383101851852,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 1.5166666666666666,
+        "intensity": 13.166840277777778,
+        "hue": 38.84381365740741,
+        "symmetry": 2.4794039351851853,
+        "pulse": 0.7020543981481482,
+        "bpm": 3.1635416666666667
+      },
+      "seconds": 0.608,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 77,
+      "name": "Fair Lights Vol 2",
+      "motion_delta": 33.91741319444444,
+      "loop_endpoint_delta": 3.472222222222222e-05,
+      "responses": {
+        "scale": 24.086261574074076,
+        "intensity": 21.53934027777778,
+        "hue": 33.67287037037037,
+        "symmetry": 30.28338541666667,
+        "pulse": 1.2125810185185186,
+        "bpm": 5.392378472222222
+      },
+      "seconds": 0.438,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 78,
+      "name": "Aberratic Two",
+      "motion_delta": 19.36035300925926,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 17.96059027777778,
+        "intensity": 11.090752314814814,
+        "hue": 16.770081018518518,
+        "symmetry": 14.56578125,
+        "pulse": 0.5562615740740741,
+        "bpm": 2.5059953703703703
+      },
+      "seconds": 0.847,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 79,
+      "name": "Drift",
+      "motion_delta": 12.673668981481482,
+      "loop_endpoint_delta": 2.3148148148148147e-05,
+      "responses": {
+        "scale": 10.203130787037036,
+        "intensity": 26.018194444444443,
+        "hue": 16.911967592592593,
+        "symmetry": 9.812789351851851,
+        "pulse": 1.543275462962963,
+        "bpm": 6.762170138888889
+      },
+      "seconds": 0.749,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 80,
+      "name": "Color Smoke",
+      "motion_delta": 22.420376157407407,
+      "loop_endpoint_delta": 1.736111111111111e-05,
+      "responses": {
+        "scale": 20.447621527777777,
+        "intensity": 14.985896990740741,
+        "hue": 29.62162037037037,
+        "symmetry": 33.45286458333333,
+        "pulse": 0.77953125,
+        "bpm": 3.4943229166666665
+      },
+      "seconds": 1.223,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 81,
+      "name": "River",
+      "motion_delta": 9.564988425925925,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 24.357523148148147,
+        "intensity": 13.348576388888889,
+        "hue": 15.586278935185184,
+        "symmetry": 41.219913194444445,
+        "pulse": 0.7490162037037037,
+        "bpm": 3.3305381944444443
+      },
+      "seconds": 0.601,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    },
+    {
+      "id": 82,
+      "name": "Spectrum",
+      "motion_delta": 26.124068287037037,
+      "loop_endpoint_delta": 0.0,
+      "responses": {
+        "scale": 26.66652199074074,
+        "intensity": 13.566950231481481,
+        "hue": 29.105734953703703,
+        "symmetry": 23.37940972222222,
+        "pulse": 0.7521180555555556,
+        "bpm": 3.3760358796296295
+      },
+      "seconds": 0.599,
+      "palettes_checked": 36,
+      "rgba_modes_checked": 3,
+      "viewport_shapes_checked": 3
+    }
+  ]
+}
