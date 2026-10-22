@@ -1,6 +1,15 @@
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
+#ifdef _WIN32
+// Reproduce the SDK's restricted first include before loading TextAtlas.
+#define NOMINMAX
+#define NOUSER
+#define NONLS
+#include <windows.h>
+#undef NOUSER
+#undef NONLS
+#endif
 #include "src/v17/TextAtlas.h"
 #include <cassert>
 #include <iostream>

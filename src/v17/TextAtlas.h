@@ -7,6 +7,10 @@
 #include <algorithm>
 #ifdef _WIN32
 #include <windows.h>
+// FFGL first loads windows.h with NOUSER/NONLS, then undefines them.
+// Its include guard prevents a later windows.h from restoring these APIs.
+#include <winnls.h>
+#include <winuser.h>
 #endif
 // Rasterize with the operating system font. No third-party font files are shipped.
 struct TextAtlas {
