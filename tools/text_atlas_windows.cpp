@@ -1,16 +1,9 @@
 #ifdef NDEBUG
 #undef NDEBUG
 #endif
-#ifdef _WIN32
-// Reproduce the SDK's restricted first include before loading TextAtlas.
-#define NOMINMAX
-#define NOUSER
-#define NONLS
-#include <windows.h>
-#undef NOUSER
-#undef NONLS
-#endif
 #include "src/v17/TextAtlas.h"
+// Match the production plugin's include order with the actual official SDK.
+#include "FFGLSDK.h"
 #include <cassert>
 #include <iostream>
 int main(){

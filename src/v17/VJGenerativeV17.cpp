@@ -1,3 +1,4 @@
+#include "TextAtlas.h" // Windows text APIs must precede FFGL
 #include "FFGLSDK.h"
 #include "shaders.h" // IMMUTABLE V1.0.1 shader
 #include "shaders_expansion.h"

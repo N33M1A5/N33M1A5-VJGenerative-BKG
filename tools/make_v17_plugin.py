@@ -1,6 +1,8 @@
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 s=(ROOT/'VJGenerative.cpp').read_text().replace('#include "palettes_extra.h"','#include "palettes_extra.h"\n#include "StoryPipeline.h"')
+# Load the complete Windows text APIs before FFGL suppresses their declarations.
+s=s.replace('#include "FFGLSDK.h"','#include "TextAtlas.h" // Windows text APIs must precede FFGL\n#include "FFGLSDK.h"',1)
 s=s.replace('P_PALETTE,','P_MOTOR_ROW_FIRST, P_MOTOR_ROW_LAST=P_MOTOR_ROW_FIRST+11,\n\tP_PALETTE,',1)
 s=s.replace('P_COUNT\n','P_TEXT, P_TEXT_SIZE, P_TEXT_X, P_TEXT_Y, P_TEXT_LAYOUT,\n    P_LOOP, P_QUALITY, P_COLOR_SOURCE, P_ACTIVE_ENGINE,\n\tP_COUNT\n')
 s=s.replace('    char display[32] = {};','    char display[96] = {};\n    StoryPipeline story;\n    int activeEngine=0;\n    std::string editableText="JESUS\\nREI DOS REIS\\nSENHOR DOS SENHORES";')
