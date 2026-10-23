@@ -87,7 +87,11 @@ s=s.replace('ALL 24 engines','all 82 engines').replace('class VJGenerative','cla
 # Shared adjustment controls and deterministic clock seam for the native test host.
 s=s.replace('P_DETAIL, P_DEPTH, P_DENSITY, P_DIRECTION','P_DETAIL, P_DEPTH, P_DENSITY, P_ORIENTATION, P_DIRECTION')
 s=s.replace('    SetParamInfof(P_DIRECTION,"Inverter Movimento",FF_TYPE_BOOLEAN);','    SetParamInfof(P_ORIENTATION,"Direcao 0-360",FF_TYPE_STANDARD);\n    SetParamInfof(P_DIRECTION,"Inverter Movimento",FF_TYPE_BOOLEAN);')
-s=s.replace('    SetParamGroup(P_GPU_TEST,"DIAGNOSTICO");','    SetParamGroup(P_GPU_TEST,"DIAGNOSTICO");\n    for(unsigned i=P_PALETTE;i<P_ACTIVE_ENGINE;i++)SetParamGroup(i,"AJUSTES");\n    syncControlVisibility(false);')
+s=s.replace('    SetParamGroup(P_GPU_TEST,"DIAGNOSTICO");','    SetParamGroup(P_GPU_TEST,"DIAGNOSTICO");\n    // Final compact operator layout: Motors -> Palettes -> RGBA -> General.
+    SetParamGroup(P_ENGINE,"MOTORES");
+    SetParamGroup(P_PALETTE,"PALETAS");
+    for(unsigned i=P_COLOR_MODE;i<=P_B_ALPHA;i++)SetParamGroup(i,"CONTROLE RGBA");
+    for(unsigned i=P_SPEED;i<P_ACTIVE_ENGINE;i++)SetParamGroup(i,"CONTROLES GERAIS");\n    syncControlVisibility(false);')
 s=s.replace('    int activeEngine=0;','    int activeEngine=0;\n    std::chrono::steady_clock::time_point (*clockNow)()=&std::chrono::steady_clock::now;\n    void syncControlVisibility(bool notify);')
 s=s.replace('private:\n','''#ifdef VJ_TEST_HOST
     void testClock(std::chrono::steady_clock::time_point (*fn)()){clockNow=fn;time=0;beats=0;started=false;}
