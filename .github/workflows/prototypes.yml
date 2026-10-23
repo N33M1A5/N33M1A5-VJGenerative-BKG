@@ -1,4 +1,5 @@
 name: Build VJ V1.7 - 82 engines and all adjustments
+# Unified motor control: single V1.0-style selection for all 82 engines.
 on:
   push:
     branches: ['feature/v1-6-storyloop-quality', 'feature/v1-7-all-engines-alphabetical']
