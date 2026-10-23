@@ -120,4 +120,41 @@ s=s[:pos]+'''void VJGenerative::syncControlVisibility(bool notify){
 }
 
 '''+s[pos:]
+
+# Use the V1.0 interaction model: one native motor control containing every engine.
+s=s.replace('''    // One authoritative selection, exposed as fourteen native button rows.
+    for(int row=0;row<kMotorRows;row++){
+       unsigned param=row==0?P_ENGINE:(row==1?P_EXTRA_MOTOR:P_MOTOR_ROW_FIRST+row-2);
+       int begin=row*6,count=std::min(6,kTotalEngines-begin);char label[32];
+       std::snprintf(label,sizeof(label),"Motor %02d-%02d",begin+1,begin+count);
+       SetOptionParamInfo(param,label,count,0.f);
+       for(int j=0;j<count;j++){int id=kMotorUIOrder[begin+j];SetParamElementInfo(param,j,kMotorLabels[id],(float)id);}
+       SetParamGroup(param,"MOTORES");
+    }
+''','''    // One native V1.0-style control, with all 82 engines as individual options.
+    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
+    for(int i=0;i<kTotalEngines;i++){
+       int id=kMotorUIOrder[i];
+       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
+    }
+    SetParamGroup(P_ENGINE,"MOTORES");
+''')
+s=s.replace('''    int row=index==P_ENGINE?0:(index==P_EXTRA_MOTOR?1:((index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST)?(int)(index-P_MOTOR_ROW_FIRST+2):-1));
+    if(row>=0){
+       int requested=(int)std::lround(value);
+       for(int j=row*6;j<std::min(kTotalEngines,row*6+6);j++)if(kMotorUIOrder[j]==requested){if(activeEngine!=requested){activeEngine=requested;syncControlVisibility(true);}params[P_ACTIVE_ENGINE]=(float)activeEngine/(kTotalEngines-1);break;}
+       return FF_SUCCESS;
+    }
+''','''    if(index==P_ENGINE){
+       int requested=(int)std::lround(value);
+       if(requested>=0&&requested<kTotalEngines){
+          if(activeEngine!=requested){activeEngine=requested;syncControlVisibility(true);}
+          params[P_ACTIVE_ENGINE]=(float)activeEngine/(kTotalEngines-1);
+       }
+       return FF_SUCCESS;
+    }
+''')
+s=s.replace('''if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return (float)activeEngine;''','''if(index==P_ENGINE)return (float)activeEngine;''')
+s=s.replace('''if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return const_cast<char*>(kMotorNames[activeEngine]);''','''if(index==P_ENGINE)return const_cast<char*>(kMotorNames[activeEngine]);''')
+
 (ROOT/'src/v17/VJGenerativeV17.cpp').write_text(s)
