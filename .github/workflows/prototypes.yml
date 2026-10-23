@@ -27,7 +27,7 @@ jobs:
           pip install -r prototypes/gate_a/requirements.txt
       - name: Preserve original engines and verify generated files
         run: |
-          python tools/validate_unified.py
+          python tools/validate_v17.py
           python tools/embed_catalog.py
           python tools/make_v17_plugin.py
           git diff --exit-code -- src/v17/generated_shaders.h src/v17/engine_catalog.h src/v17/VJGenerativeV17.cpp docs/ENGINE_SOURCES.json
