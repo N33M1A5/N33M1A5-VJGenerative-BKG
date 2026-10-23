@@ -11,7 +11,7 @@ Esta versão reúne os sete motores existentes e os 75 motores correspondentes a
 
 ## Motores em botões
 
-O grupo **MOTORES** contém 14 faixas de no máximo seis opções FFGL nativas. A seleção é única entre as faixas. Os seis clássicos, Particle Wave, Flow Dark Glass e Spotlight 1 aparecem primeiro; o vitral corrigido vem em seguida e os demais são organizados por nome. Alguns rótulos são abreviados para caber nos botões; o nome completo aparece no valor de exibição do controle.
+O grupo **MOTORES** contém 14 faixas de no máximo seis opções FFGL nativas. A seleção é única entre as faixas. Todos os 82 motores aparecem como botões, em ordem alfabética pelo nome completo. Spotlight 1, Flow Dark Glass e Stained Glass Sacred Bubble Gum permanecem incluídos; a ordenação não altera os identificadores internos dos motores. Alguns rótulos são abreviados para caber nos botões; o nome completo aparece no valor de exibição do controle.
 
 A aparência final dos controles é desenhada pelo Resolume. O código usa o mesmo tipo de opção dos botões já aprovados, limitado a seis por faixa; não há um parâmetro com uma lista de 82 opções.
 
