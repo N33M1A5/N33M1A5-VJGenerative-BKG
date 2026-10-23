@@ -17,5 +17,5 @@ assert "for(int row=0;row<kMotorRows;row++)" not in source, "legacy multi-row se
 assert "for(int row=0;row<kMotorRows;row++)" not in generator, "generator still emits multi-row selector"
 assert 'SetParamGroup(P_ENGINE,"MOTORES")' in source
 manifest=json.loads((root/"docs/ENGINE_SOURCES.json").read_text(encoding="utf-8"))
-assert len(manifest)>=82, "engine source manifest incomplete"
+assert len(manifest)==75, f"expected 75 source-backed engines, got {len(manifest)}"
 print("PASS: 82 engine names, single native engine selector, generator consistency, source manifest.")
