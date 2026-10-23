@@ -14,15 +14,13 @@ s=s.replace('    params[P_CANVAS]=0.f;','''    params[P_LOOP]=16.f/116.f;params[
     params[P_ACTIVE_ENGINE]=0.f;
     params[P_CANVAS]=0.f;''')
 a=s.index('    // One short FFGL OPTION row');b=s.index('    SetOptionParamInfo(P_PALETTE',a)
-s=s[:a]+'''    // One authoritative selection, exposed as fourteen native button rows.
-    for(int row=0;row<kMotorRows;row++){
-       unsigned param=row==0?P_ENGINE:(row==1?P_EXTRA_MOTOR:P_MOTOR_ROW_FIRST+row-2);
-       int begin=row*6,count=std::min(6,kTotalEngines-begin);char label[32];
-       std::snprintf(label,sizeof(label),"Motor %02d-%02d",begin+1,begin+count);
-       SetOptionParamInfo(param,label,count,0.f);
-       for(int j=0;j<count;j++){int id=kMotorUIOrder[begin+j];SetParamElementInfo(param,j,kMotorLabels[id],(float)id);}
-       SetParamGroup(param,"MOTORES");
+s=s[:a]+'''    // One native V1.0-style control with all 82 engines as options.
+    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
+    for(int i=0;i<kTotalEngines;i++){
+       int id=kMotorUIOrder[i];
+       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
     }
+    SetParamGroup(P_ENGINE,"MOTORES");
 
 '''+s[b:]
 needle='    SetParamInfof(P_GPU_TEST,"Teste de Shader GPU",FF_TYPE_BOOLEAN);'
