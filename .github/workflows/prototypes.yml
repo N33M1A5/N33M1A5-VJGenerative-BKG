@@ -1,7 +1,7 @@
 name: Build VJ V1.7 - 82 engines and all adjustments
 on:
   push:
-    branches: ['feature/v1-6-storyloop-quality']
+    branches: ['feature/v1-6-storyloop-quality', 'feature/v1-7-all-engines-alphabetical']
     paths: ['engines/**', 'prototypes/**', 'src/v17/**', 'tools/**', 'build/windows/**', '.github/workflows/prototypes.yml']
   workflow_dispatch:
 permissions:
