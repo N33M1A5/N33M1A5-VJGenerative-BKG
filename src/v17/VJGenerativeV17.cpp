@@ -238,7 +238,11 @@ VJGenerative::VJGenerative()
     SetParamInfof(P_ACTIVE_ENGINE,"Engine State",FF_TYPE_STANDARD);SetParamVisibility(P_ACTIVE_ENGINE,false,false);
     SetParamInfof(P_GPU_TEST,"Teste de Shader GPU",FF_TYPE_BOOLEAN);
     SetParamGroup(P_GPU_TEST,"DIAGNOSTICO");
-    for(unsigned i=P_PALETTE;i<P_ACTIVE_ENGINE;i++)SetParamGroup(i,"AJUSTES");
+    // Final compact operator layout: Motors -> Palettes -> RGBA -> General.
+    SetParamGroup(P_ENGINE,"MOTORES");
+    SetParamGroup(P_PALETTE,"PALETAS");
+    for(unsigned i=P_COLOR_MODE;i<=P_B_ALPHA;i++)SetParamGroup(i,"CONTROLE RGBA");
+    for(unsigned i=P_SPEED;i<P_ACTIVE_ENGINE;i++)SetParamGroup(i,"CONTROLES GERAIS");
     syncControlVisibility(false);
 }
 FFResult VJGenerative::InitGL(const FFGLViewportStruct* vp)
