@@ -170,15 +170,13 @@ VJGenerative::VJGenerative()
     params[P_CUSTOM_W]=(1920.f-128.f)/8064.f;
     params[P_CUSTOM_H]=(1080.f-128.f)/8064.f; params[P_GPU_TEST]=0.f;
 
-    // One authoritative selection, exposed as fourteen native button rows.
-    for(int row=0;row<kMotorRows;row++){
-       unsigned param=row==0?P_ENGINE:(row==1?P_EXTRA_MOTOR:P_MOTOR_ROW_FIRST+row-2);
-       int begin=row*6,count=std::min(6,kTotalEngines-begin);char label[32];
-       std::snprintf(label,sizeof(label),"Motor %02d-%02d",begin+1,begin+count);
-       SetOptionParamInfo(param,label,count,0.f);
-       for(int j=0;j<count;j++){int id=kMotorUIOrder[begin+j];SetParamElementInfo(param,j,kMotorLabels[id],(float)id);}
-       SetParamGroup(param,"MOTORES");
+    // One native V1.0-style control, with all 82 engines as individual options.
+    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
+    for(int i=0;i<kTotalEngines;i++){
+       int id=kMotorUIOrder[i];
+       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
     }
+    SetParamGroup(P_ENGINE,"MOTORES");
 
     SetOptionParamInfo(P_PALETTE,"Paleta",kNumPalettes,(float)kDefaultPaletteIndex);
     for(int i=0;i<kNumPalettes;i++)
@@ -360,10 +358,12 @@ FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 {
 	if( index >= P_COUNT ) return FF_FAIL;
     if(!std::isfinite(value))return FF_FAIL;
-    int row=index==P_ENGINE?0:(index==P_EXTRA_MOTOR?1:((index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST)?(int)(index-P_MOTOR_ROW_FIRST+2):-1));
-    if(row>=0){
+    if(index==P_ENGINE){
        int requested=(int)std::lround(value);
-       for(int j=row*6;j<std::min(kTotalEngines,row*6+6);j++)if(kMotorUIOrder[j]==requested){if(activeEngine!=requested){activeEngine=requested;syncControlVisibility(true);}params[P_ACTIVE_ENGINE]=(float)activeEngine/(kTotalEngines-1);break;}
+       if(requested>=0&&requested<kTotalEngines){
+          if(activeEngine!=requested){activeEngine=requested;syncControlVisibility(true);}
+          params[P_ACTIVE_ENGINE]=(float)activeEngine/(kTotalEngines-1);
+       }
        return FF_SUCCESS;
     }
     if(index==P_ACTIVE_ENGINE){activeEngine=(int)std::lround(std::max(0.f,std::min(1.f,value))*(kTotalEngines-1));params[index]=(float)activeEngine/(kTotalEngines-1);syncControlVisibility(true);return FF_SUCCESS;}
@@ -377,13 +377,13 @@ FFResult VJGenerative::SetFloatParameter( unsigned int index, float value )
 
 float VJGenerative::GetFloatParameter( unsigned int index )
 {
-	if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return (float)activeEngine;
+	if(index==P_ENGINE)return (float)activeEngine;
     return index < P_COUNT ? params[ index ] : 0.0f;
 }
 
 char* VJGenerative::GetParameterDisplay(unsigned int index)
 {
-   if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return const_cast<char*>(kMotorNames[activeEngine]);
+   if(index==P_ENGINE)return const_cast<char*>(kMotorNames[activeEngine]);
    if(index==P_ORIENTATION){std::snprintf(display,sizeof(display),"%.0f graus",360.f*params[index]);return display;}
    if(index==P_LOOP){std::snprintf(display,sizeof(display),"%.1f s",4.f+116.f*params[index]);return display;}
    if(index==P_CUSTOM_W || index==P_CUSTOM_H){
