@@ -64,7 +64,7 @@ labels=[]
 for i,name in enumerate(names):
  label=short.get(i,unicodedata.normalize('NFKD',name).encode('ascii','ignore').decode().replace('Grainyents: ','Grainy ').replace('Motion Backgrounds','').replace('Worship Backgrounds','').replace('Visual.Church','VC').replace('TRIR Visual4K 15 Full','TRIR 15').replace('Walls  Names of God Line Add 2','Walls Texto').strip())
  labels.append(label[:14])
-metadata='#pragma once\nstatic constexpr int kTotalEngines=82,kMotorRows=14;\n'
+metadata='#pragma once\nstatic constexpr int kTotalEngines=82,kMotorRows=1;\n'
 metadata+='static const int kMotorUIOrder[]={'+','.join(map(str,order))+'};\n'
 metadata+='static const char* const kMotorNames[]={'+','.join(json.dumps(x,ensure_ascii=True) for x in names)+'};\n'
 metadata+='static const char* const kMotorLabels[]={'+','.join(json.dumps(x,ensure_ascii=True) for x in labels)+'};\n'
