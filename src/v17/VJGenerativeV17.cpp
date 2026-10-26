@@ -15,8 +15,6 @@ using namespace ffglex;
 enum Param
 {
 	P_ENGINE,
-    P_EXTRA_MOTOR, // second native FFGL option row: Classic or Particle Wave
-	P_MOTOR_ROW_FIRST, P_MOTOR_ROW_LAST=P_MOTOR_ROW_FIRST+11,
 	P_PALETTE,
     P_COLOR_MODE, P_COLOR_BLEND, P_COLOR_MIX,
     P_A_R, P_A_G, P_A_B, P_A_ALPHA,
@@ -154,7 +152,7 @@ VJGenerative::VJGenerative()
     SetMaxInputs(0);
 
     // Defaults FIRST. SetParamInfof() reads GetFloatParameter() during registration.
-    params[P_ENGINE]=0.f; params[P_EXTRA_MOTOR]=0.f; params[P_PALETTE]=(float)kDefaultPaletteIndex;
+    params[P_ENGINE]=0.f; params[P_PALETTE]=(float)kDefaultPaletteIndex;
     params[P_COLOR_MODE]=0.f; params[P_COLOR_BLEND]=0.f; params[P_COLOR_MIX]=.5f;
     params[P_A_R]=1.f; params[P_A_G]=0.f; params[P_A_B]=0.f; params[P_A_ALPHA]=1.f;
     params[P_B_R]=0.f; params[P_B_G]=0.f; params[P_B_B]=1.f; params[P_B_ALPHA]=1.f;
@@ -170,17 +168,13 @@ VJGenerative::VJGenerative()
     params[P_CUSTOM_W]=(1920.f-128.f)/8064.f;
     params[P_CUSTOM_H]=(1080.f-128.f)/8064.f; params[P_GPU_TEST]=0.f;
 
-    // Unified motor area: native FFGL option rows, all grouped together like V1.0.
-    for(int row=0;row<kMotorRows;row++){
-       unsigned p=row==0?P_ENGINE:(row==1?P_EXTRA_MOTOR:P_MOTOR_ROW_FIRST+row-2);
-       int first=row*6, count=std::min(6,kTotalEngines-first);
-       SetOptionParamInfo(p,"Motores",count,0.f);
-       for(int j=0;j<count;j++){
-          int id=kMotorUIOrder[first+j];
-          SetParamElementInfo(p,j,kMotorLabels[id],(float)id);
-       }
-       SetParamGroup(p,"MOTORES");
+    // One native selector for all 82 engines, in the shared V1.0 motor area.
+    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
+    for(int i=0;i<kTotalEngines;i++){
+       int id=kMotorUIOrder[i];
+       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
     }
+    SetParamGroup(P_ENGINE,"MOTORES");
 
     SetOptionParamInfo(P_PALETTE,"Paleta",kNumPalettes,(float)kDefaultPaletteIndex);
     for(int i=0;i<kNumPalettes;i++)
