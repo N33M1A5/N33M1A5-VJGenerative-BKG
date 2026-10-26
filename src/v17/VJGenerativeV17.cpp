@@ -170,7 +170,7 @@ VJGenerative::VJGenerative()
     params[P_CUSTOM_W]=(1920.f-128.f)/8064.f;
     params[P_CUSTOM_H]=(1080.f-128.f)/8064.f; params[P_GPU_TEST]=0.f;
 
-    // One native V1.0-style control, with all 82 engines as individual options.
+    // One native V1.0-style control with all 82 engines as options.
     SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
     for(int i=0;i<kTotalEngines;i++){
        int id=kMotorUIOrder[i];
