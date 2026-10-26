@@ -119,15 +119,7 @@ s=s[:pos]+'''void VJGenerative::syncControlVisibility(bool notify){
 
 '''+s[pos:]
 
-# Use the V1.0 interaction model: one native motor control containing every engine.
-s=s.replace('''    // One native V1.0-style control, with all 82 engines as individual options.
-    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
-    for(int i=0;i<kTotalEngines;i++){
-       int id=kMotorUIOrder[i];
-       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
-    }
-    SetParamGroup(P_ENGINE,"MOTORES");
-''')
+# The single P_ENGINE option control is created directly above; no extra replacement needed.
 s=s.replace('''    int row=index==P_ENGINE?0:(index==P_EXTRA_MOTOR?1:((index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST)?(int)(index-P_MOTOR_ROW_FIRST+2):-1));
     if(row>=0){
        int requested=(int)std::lround(value);
