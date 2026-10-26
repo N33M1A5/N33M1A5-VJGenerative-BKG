@@ -283,7 +283,7 @@ FFResult VJGenerative::ProcessOpenGL(ProcessOpenGLStruct* pGL)
     const double speed=params[P_SPEED]*2.0;
     time+=dt*speed*(params[P_DIRECTION]>=.5f?-1.0:1.0);
     const double bpm=60.0+params[P_BPM]*120.0;
-    beats+=dt*bpm/60.0*(params[P_DIRECTION]>=.5f?-1.0:1.0);
+    beats+=dt*bpm/60.0*speed*(params[P_DIRECTION]>=.5f?-1.0:1.0);
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
