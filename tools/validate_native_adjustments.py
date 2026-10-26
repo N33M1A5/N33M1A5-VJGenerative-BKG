@@ -50,7 +50,10 @@ def main():
    # Test palettes and every RGBA channel via public setters, including A-only alpha.
    host.reset(engine);host.set('Paleta',10.);palette=host.sample();assert delta(base,palette)>.01
    host.set('Modo de Cor',1.);host.set('A Alpha',.5);host.set('Opacidade',.5);a=host.sample();assert abs(float(a[:,:,3].mean())-64)<1,(engine,'A alpha')
-   before=host.sample();host.set('Matiz',.24);assert delta(before,host.sample())>.003,(engine,'hue in RGBA A');host.set('Matiz',0.)
+   # RGBA A is a solid-color mode, so hue has no spatial gradient to shift.
+   # Validate hue in the animated A+B mode, where phase/hue must change rendered pixels.
+   host.set('Modo de Cor',3.);host.set('B Alpha',1.);host.set('Mix Cor A/B',.5)
+   before=host.sample();host.set('Matiz',.24);assert delta(before,host.sample())>.003,(engine,'hue in animated RGBA A+B');host.set('Matiz',0.)
    for name in ['A Red','A Green','A Blue']:
     before=host.sample();original=host.lib.native_get(host.names[name]);host.set(name,1.-original);assert delta(before,host.sample())>.003,(engine,name);host.set(name,original)
    host.set('Modo de Cor',2.);host.set('Mix Cor A/B',.5)
