@@ -140,5 +140,7 @@ s=s.replace('''    int row=index==P_ENGINE?0:(index==P_EXTRA_MOTOR?1:((index>=P_
 ''')
 s=s.replace('''if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return (float)activeEngine;''','''if(index==P_ENGINE)return (float)activeEngine;''')
 s=s.replace('''if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return const_cast<char*>(kMotorNames[activeEngine]);''','''if(index==P_ENGINE)return const_cast<char*>(kMotorNames[activeEngine]);''')
+# Keep visibility-dependent controls synchronized when the unified motor changes.
+s=s.replace('''          activeEngine=requested;\n          params[P_ACTIVE_ENGINE]''','''          if(activeEngine!=requested){activeEngine=requested;syncControlVisibility(true);}\n          params[P_ACTIVE_ENGINE]''')
 
 (ROOT/'src/v17/VJGenerativeV17.cpp').write_text(s)
