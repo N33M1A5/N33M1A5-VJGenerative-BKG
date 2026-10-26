@@ -3,28 +3,25 @@ ROOT=Path(__file__).resolve().parents[1]
 s=(ROOT/'VJGenerative.cpp').read_text().replace('#include "palettes_extra.h"','#include "palettes_extra.h"\n#include "StoryPipeline.h"')
 # Load the complete Windows text APIs before FFGL suppresses their declarations.
 s=s.replace('#include "FFGLSDK.h"','#include "TextAtlas.h" // Windows text APIs must precede FFGL\n#include "FFGLSDK.h"',1)
-s=s.replace('P_PALETTE,','P_MOTOR_ROW_FIRST, P_MOTOR_ROW_LAST=P_MOTOR_ROW_FIRST+11,\n\tP_PALETTE,',1)
+s=s.replace('    P_EXTRA_MOTOR, // second native FFGL option row: Classic or Particle Wave\n','')
 s=s.replace('P_COUNT\n','P_TEXT, P_TEXT_SIZE, P_TEXT_X, P_TEXT_Y, P_TEXT_LAYOUT,\n    P_LOOP, P_QUALITY, P_COLOR_SOURCE, P_ACTIVE_ENGINE,\n\tP_COUNT\n')
 s=s.replace('    char display[32] = {};','    char display[96] = {};\n    StoryPipeline story;\n    int activeEngine=0;\n    std::string editableText="JESUS\\nREI DOS REIS\\nSENHOR DOS SENHORES";')
 s=s.replace('char* GetParameterDisplay(unsigned int index) override;','''char* GetParameterDisplay(unsigned int index) override;
     FFResult SetTextParameter(unsigned int index,const char* value) override;
     char* GetTextParameter(unsigned int index) override;''')
+s=s.replace('    params[P_ENGINE]=0.f; params[P_EXTRA_MOTOR]=0.f; params[P_PALETTE]=','    params[P_ENGINE]=0.f; params[P_PALETTE]=')
 s=s.replace('    params[P_CANVAS]=0.f;','''    params[P_LOOP]=16.f/116.f;params[P_QUALITY]=1.f;params[P_COLOR_SOURCE]=0.f;
     params[P_TEXT_SIZE]=.5f;params[P_TEXT_X]=.5f;params[P_TEXT_Y]=.5f;params[P_TEXT_LAYOUT]=1.f;
     params[P_ACTIVE_ENGINE]=0.f;
     params[P_CANVAS]=0.f;''')
 a=s.index('    // One short FFGL OPTION row');b=s.index('    SetOptionParamInfo(P_PALETTE',a)
-s=s[:a]+'''    // Unified motor area: native FFGL option rows, all grouped together like V1.0.
-    for(int row=0;row<kMotorRows;row++){
-       unsigned p=row==0?P_ENGINE:(row==1?P_EXTRA_MOTOR:P_MOTOR_ROW_FIRST+row-2);
-       int first=row*6, count=std::min(6,kTotalEngines-first);
-       SetOptionParamInfo(p,"Motores",count,0.f);
-       for(int j=0;j<count;j++){
-          int id=kMotorUIOrder[first+j];
-          SetParamElementInfo(p,j,kMotorLabels[id],(float)id);
-       }
-       SetParamGroup(p,"MOTORES");
+s=s[:a]+'''    // One native selector for all 82 engines, in the shared V1.0 motor area.
+    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
+    for(int i=0;i<kTotalEngines;i++){
+       int id=kMotorUIOrder[i];
+       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
     }
+    SetParamGroup(P_ENGINE,"MOTORES");
 
 '''+s[b:]
 needle='    SetParamInfof(P_GPU_TEST,"Teste de Shader GPU",FF_TYPE_BOOLEAN);'
@@ -63,19 +60,21 @@ s=s.replace(needle,'''    if(activeEngine>=7){
 '''+needle)
 s=s.replace('active->Set("uEngine",params[P_ENGINE]);','active->Set("uEngine",(float)motor);')
 a=s.index('    if(index==P_ENGINE){',s.index('FFResult VJGenerative::SetFloatParameter'));b=s.index('    else if(index==P_COLOR_MODE',a)
-s=s[:a]+'''    int row=index==P_ENGINE?0:(index==P_EXTRA_MOTOR?1:((index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST)?(int)(index-P_MOTOR_ROW_FIRST+2):-1));
-    if(row>=0){
+s=s[:a]+'''    if(index==P_ENGINE){
        int requested=(int)std::lround(value);
-       for(int j=row*6;j<std::min(kTotalEngines,row*6+6);j++)if(kMotorUIOrder[j]==requested){activeEngine=requested;params[P_ACTIVE_ENGINE]=(float)activeEngine/(kTotalEngines-1);break;}
+       if(requested>=0&&requested<kTotalEngines){
+          activeEngine=requested;
+          params[P_ACTIVE_ENGINE]=(float)activeEngine/(kTotalEngines-1);
+       }
        return FF_SUCCESS;
     }
     if(index==P_ACTIVE_ENGINE){activeEngine=(int)std::lround(std::max(0.f,std::min(1.f,value))*(kTotalEngines-1));params[index]=(float)activeEngine/(kTotalEngines-1);return FF_SUCCESS;}
     if(index==P_QUALITY)params[index]=std::round(std::max(0.f,std::min(2.f,value)));
     else if(index==P_PALETTE){float next=std::max(0.f,std::min((float)(kNumPalettes-1),value));if(next!=params[index])params[P_COLOR_SOURCE]=1.f;params[index]=next;}
 '''+s[b:]
-s=s.replace('return index < P_COUNT ? params[ index ] : 0.0f;','''if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return (float)activeEngine;
+s=s.replace('return index < P_COUNT ? params[ index ] : 0.0f;','''if(index==P_ENGINE)return (float)activeEngine;
     return index < P_COUNT ? params[ index ] : 0.0f;''')
-s=s.replace('   if(index==P_CUSTOM_W || index==P_CUSTOM_H){','''   if(index==P_ENGINE||index==P_EXTRA_MOTOR||(index>=P_MOTOR_ROW_FIRST&&index<=P_MOTOR_ROW_LAST))return const_cast<char*>(kMotorNames[activeEngine]);
+s=s.replace('   if(index==P_CUSTOM_W || index==P_CUSTOM_H){','''   if(index==P_ENGINE)return const_cast<char*>(kMotorNames[activeEngine]);
    if(index==P_LOOP){std::snprintf(display,sizeof(display),"%.1f s",4.f+116.f*params[index]);return display;}
    if(index==P_CUSTOM_W || index==P_CUSTOM_H){''')
 s=s.replace('(expansionReady?"GPU OK":"GPU ERRO")','(expansionReady&&story.isReady()?"GLSL OK":"GLSL ERRO")')
