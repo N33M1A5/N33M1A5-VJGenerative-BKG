@@ -14,13 +14,17 @@ s=s.replace('    params[P_CANVAS]=0.f;','''    params[P_LOOP]=16.f/116.f;params[
     params[P_ACTIVE_ENGINE]=0.f;
     params[P_CANVAS]=0.f;''')
 a=s.index('    // One short FFGL OPTION row');b=s.index('    SetOptionParamInfo(P_PALETTE',a)
-s=s[:a]+'''    // One native V1.0-style control with all 82 engines as options.
-    SetOptionParamInfo(P_ENGINE,"Motores",kTotalEngines,0.f);
-    for(int i=0;i<kTotalEngines;i++){
-       int id=kMotorUIOrder[i];
-       SetParamElementInfo(P_ENGINE,i,kMotorLabels[id],(float)id);
+s=s[:a]+'''    // Unified motor area: native FFGL option rows, all grouped together like V1.0.
+    for(int row=0;row<kMotorRows;row++){
+       unsigned p=row==0?P_ENGINE:(row==1?P_EXTRA_MOTOR:P_MOTOR_ROW_FIRST+row-2);
+       int first=row*6, count=std::min(6,kTotalEngines-first);
+       SetOptionParamInfo(p,"Motores",count,0.f);
+       for(int j=0;j<count;j++){
+          int id=kMotorUIOrder[first+j];
+          SetParamElementInfo(p,j,kMotorLabels[id],(float)id);
+       }
+       SetParamGroup(p,"MOTORES");
     }
-    SetParamGroup(P_ENGINE,"MOTORES");
 
 '''+s[b:]
 needle='    SetParamInfof(P_GPU_TEST,"Teste de Shader GPU",FF_TYPE_BOOLEAN);'
