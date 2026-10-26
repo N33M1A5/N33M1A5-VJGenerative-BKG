@@ -106,7 +106,7 @@ for name,classic in [('makeClassicPaletteShader','true'),('makeExpansionPaletteS
 s=s.replace('if(int(uRGBAType+.5)>0)alpha*=mix(uRGBA_A.a,uRGBA_B.a,clamp(uRGBAMix,0.,1.));','if(int(uRGBAType+.5)>0)alpha*=int(uRGBAType+.5)==1?uRGBA_A.a:mix(uRGBA_A.a,uRGBA_B.a,clamp(uRGBAMix,0.,1.));')
 s=s.replace('paletteId<9;','paletteId<9 && params[P_ORIENTATION]<.000001f && std::abs(params[P_DETAIL]-.5f)<.000001f && std::abs(params[P_DEPTH]-.5f)<.000001f && std::abs(params[P_DENSITY]-.5f)<.000001f;')
 s=s.replace('c.period=4.f+116.f*params[P_LOOP];','c.orientation=params[P_ORIENTATION]*6.28318530718f;c.period=4.f+116.f*params[P_LOOP];')
-s=s.replace('beats+=dt*bpm/60.0;','beats+=dt*bpm/60.0*(params[P_DIRECTION]>=.5f?-1.0:1.0);')
+s=s.replace('beats+=dt*bpm/60.0;','beats+=dt*bpm/60.0*speed*(params[P_DIRECTION]>=.5f?-1.0:1.0);')
 s=s.replace('active->Set("iTime",(float)time);','active->Set("iTime",(float)(time*20.0/(4.0+116.0*params[P_LOOP])));\n    active->Set("uOrientation",params[P_ORIENTATION]*6.28318530718f);\n    active->Set("uGlobalDetail",params[P_DETAIL]);active->Set("uGlobalDepth",params[P_DEPTH]);active->Set("uGlobalDensity",params[P_DENSITY]);')
 s=s.replace('activeEngine=requested;params[P_ACTIVE_ENGINE]', 'if(activeEngine!=requested){activeEngine=requested;syncControlVisibility(true);}params[P_ACTIVE_ENGINE]')
 s=s.replace('if(index==P_ACTIVE_ENGINE){activeEngine=(int)', 'if(index==P_ACTIVE_ENGINE){activeEngine=(int)')
