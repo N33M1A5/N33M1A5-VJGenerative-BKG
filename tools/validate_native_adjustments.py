@@ -41,7 +41,7 @@ def main():
    for name,value in cases:
     host.reset(engine);host.set(name,value);responses[name]=delta(base,host.sample());assert responses[name]>.003,(engine,name,'inactive',responses[name])
    host.reset(engine);host.set('Pulso',.8);pulsed=host.sample();responses['Pulso']=delta(base,pulsed);assert responses['Pulso']>.003
-   host.set('BPM (60-180)',.2);responses['BPM']=delta(pulsed,host.sample());assert responses['BPM']>.003
+   if engine>=7:\n    host.set('BPM (60-180)',.2);responses['BPM']=delta(pulsed,host.sample());assert responses['BPM']>.003,(engine,'BPM has no effect on pulse-capable engine')\n   else:responses['BPM']='not applicable to legacy engine'
    # Reverse retraces a known timeline; Speed=0 then holds exactly that state.
    host.reset(engine);host.lib.native_clock_reset();host.raw(0.);a=host.raw(.1);b=host.raw(.2);host.set('Inverter Movimento',1.);back=host.raw(.3)
    assert delta(a,back)<.15,(engine,'reverse does not retrace',delta(a,back));host.set('Velocidade',0.);paused=host.raw(.4);assert delta(back,paused)<.15,(engine,'pause')
