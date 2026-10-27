@@ -1,0 +1,26 @@
+name: Build Digital Scan 3D (Windows x64)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "digital-scan-3d/**"
+      - ".github/workflows/digital-scan-3d.yml"
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - uses: lukka/get-cmake@latest
+      - name: Configure
+        run: cmake -S digital-scan-3d -B digital-scan-3d/build -A x64
+      - name: Build
+        run: cmake --build digital-scan-3d/build --config Release
+      - name: Upload DLL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: N33M1A5-DigitalScan3D-Windows-x64
+          path: digital-scan-3d/build/Release/*.dll
+          if-no-files-found: error
