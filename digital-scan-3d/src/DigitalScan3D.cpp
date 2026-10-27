@@ -18,15 +18,6 @@ static CFFGLPluginInfo PluginInfo(
     "N33M1A5");
 
 static const char* kFragment = R"(#version 410 core
-uniform float time;
-uniform vec2 resolution;
-uniform float Modo;
-uniform float Velocidade;
-uniform float Densidade;
-uniform float Dispersao;
-uniform float Direcao;
-uniform float Contraste;
-uniform float Brilho;
 uniform sampler2D inputTexture;
 uniform vec2 maxUV;
 in vec2 i_uv;
@@ -51,9 +42,6 @@ public:
     DigitalScan3D() {
         SetMinInputs(1);
         SetMaxInputs(1);
-        AddParam(ParamOption::Create("Modo", {
-            {"Generator", 0.0f}, {"Effect", 1.0f}
-        }, 0));
         AddParam(ParamRange::Create("Velocidade", 0.35f, {0.0f, 1.0f}));
         AddParam(ParamRange::Create("Densidade", 0.6f, {0.0f, 1.0f}));
         AddParam(ParamRange::Create("Dispersao", 0.4f, {0.0f, 1.0f}));
