@@ -14,7 +14,7 @@ class NativeHost:
    getattr(lib,name).argtypes=[ctypes.c_uint];getattr(lib,name).restype=ctypes.c_char_p
   lib.native_get_text.restype=ctypes.c_char_p;lib.native_text.argtypes=[ctypes.c_char_p];lib.native_mask.argtypes=[ctypes.POINTER(ctypes.c_ubyte)]
   assert lib.native_init(240,135)==1,'plugin InitGL'
-  self.names={lib.native_name(i).decode():i for i in range(lib.native_count())};self.defaults={i:lib.native_get(i) for i in range(lib.native_count()) if lib.native_group(i)==b'AJUSTES' and lib.native_type(i)!=100}
+  self.names={lib.native_name(i).decode():i for i in range(lib.native_count())};self.initial_values={i:lib.native_get(i) for i in range(lib.native_count()) if lib.native_type(i)!=100};self.defaults={i:v for i,v in self.initial_values.items() if lib.native_group(i)==b'AJUSTES'}
   self.text('JESUS\nAÇÃO E GRAÇA')
  def set(self,name,v):assert self.lib.native_set(self.names[name],v)==1,(name,v)
  def text(self,value):
@@ -22,7 +22,9 @@ class NativeHost:
   im=Image.new('L',(1024,512));d=ImageDraw.Draw(im);font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',82);d.multiline_text((512,24),value,font=font,anchor='ma',align='center',fill=255,spacing=20)
   data=np.flipud(np.asarray(im)).copy();assert self.lib.native_mask(data.ctypes.data_as(ctypes.POINTER(ctypes.c_ubyte)))==1,'text upload did not restore pixel store'
  def reset(self,engine):
-  for i,v in self.defaults.items():assert self.lib.native_set(i,v)==1
+  # Reset every numeric parameter, not just AJUSTES. Palette/source live in other groups;
+  # failing to reset PALETA leaks the previous engine's test value into the next baseline.
+  for i,v in self.initial_values.items():assert self.lib.native_set(i,v)==1,(self.lib.native_name(i).decode(),v)
   self.set('Cores do Motor',0.)
   assert self.lib.native_select(engine)==1
  def raw(self,t):
