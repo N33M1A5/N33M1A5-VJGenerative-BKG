@@ -21,7 +21,6 @@ static const char* kFragment = R"(
 uniform sampler2D inputTexture;
 uniform vec2 maxUV;
 in vec2 i_uv;
-out vec4 fragColor;
 
 float hash(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
