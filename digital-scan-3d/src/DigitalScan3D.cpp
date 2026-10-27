@@ -67,7 +67,8 @@ public:
    GLint vp[4]; glGetIntegerv(GL_VIEWPORT,vp);
    ScopedShaderBinding binding(shader.GetGLID());
    shader.Set("iResolution",(float)vp[2],(float)vp[3],1.0f);
-   shader.Set("iTime",time); shader.Set("uMode",p[P_MODE]); shader.Set("uSpeed",p[P_SPEED]*3.0f);
+   shader.Set("iTime",time); shader.Set("uMode",p[P_MODE]);
+   if(pGL && pGL->numInputTextures>0 && pGL->inputTextures && pGL->inputTextures[0]) { glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D,pGL->inputTextures[0]->Handle); shader.Set("inputTexture",0.0f); } shader.Set("uSpeed",p[P_SPEED]*3.0f);
    shader.Set("uDensity",p[P_DENSITY]); shader.Set("uDispersion",p[P_DISPERSION]); shader.Set("uDirection",(p[P_DIRECTION]-.5f)*2.0f);
    shader.Set("uContrast",p[P_CONTRAST]*2.0f); shader.Set("uGlow",p[P_GLOW]);
    quad.Draw(); return FF_SUCCESS;
