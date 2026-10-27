@@ -12,7 +12,7 @@ using namespace ffglqs;
 static CFFGLPluginInfo PluginInfo(
     PluginFactory<class DigitalScan3D>,
     "NSD3", "N33M1A5 Digital Scan 3D",
-    2, 1, 1, 0, FF_SOURCE,
+    2, 1, 1, 0, FF_EFFECT,
     "Animated digital scan effect and abstract generator",
     "N33M1A5");
 
