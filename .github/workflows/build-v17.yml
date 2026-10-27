@@ -3,17 +3,44 @@ name: Build VJ Generative V1.7 Windows x64
 on:
   push:
     branches: [feature/v1-7-all-engines-alphabetical]
-    paths:
-      - 'src/v17/**'
-      - 'build/windows/VJGenerativeV17.vcxproj'
-      - '.github/workflows/build-v17.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout plugin source
+        uses: actions/checkout@v4
+      - name: Checkout official Resolume FFGL SDK
+        uses: actions/checkout@v4
+        with:
+          repository: resolume/ffgl
+          ref: master
+          path: ffgl
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install native OpenGL and build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential python3-dev libglew-dev libgl1-mesa-dev libegl1-mesa-dev libepoxy-dev glslang-tools fonts-dejavu-core
+          python -m pip install -r prototypes/gate_a/requirements.txt
+      - name: Verify catalog and generated sources
+        run: |
+          python tools/validate_v17.py
+          python tools/embed_catalog.py
+          python tools/make_v17_plugin.py
+          git diff --exit-code -- src/v17/generated_shaders.h src/v17/engine_catalog.h src/v17/VJGenerativeV17.cpp docs/ENGINE_SOURCES.json
+      - name: Compile and exercise the native FFGL interface
+        run: |
+          python tools/build_native_tests.py --sdk ffgl --out /tmp/vj-native
+          python tools/validate_native_adjustments.py /tmp/vj-native/vj_native_plugin.so
   build:
+    needs: verify
     runs-on: windows-latest
     steps:
       - name: Checkout plugin source
