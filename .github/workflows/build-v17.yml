@@ -3,6 +3,8 @@ name: Build VJ Generative V1.7 Windows x64
 on:
   push:
     branches: [feature/v1-7-all-engines-alphabetical]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
