@@ -1,81 +1,90 @@
-#include "FFGLSDK.h"
-#include <chrono>
+#include <FFGLSDK.h>
+#include <FFGLParamRange.h>
+#include <FFGLParamOption.h>
+#include <FFGLScopedSamplerActivation.h>
+#include <FFGLScopedTextureBinding.h>
+#include <algorithm>
 #include <cmath>
-using namespace ffglex;
 
-static const char* kVertex = R"(#version 410 core
-layout(location=0) in vec4 vPosition;
-layout(location=1) in vec2 vUV;
-out vec2 uv;
-void main(){ gl_Position=vPosition; uv=vUV; })";
+using namespace ffglex;
+using namespace ffglqs;
+
+static CFFGLPluginInfo PluginInfo(
+    PluginFactory<class DigitalScan3D>,
+    "NSD3", "N33M1A5 Digital Scan 3D",
+    2, 1, 1, 0, FF_SOURCE,
+    "Animated digital scan effect and abstract generator",
+    "N33M1A5");
 
 static const char* kFragment = R"(#version 410 core
-uniform vec3 iResolution;
-uniform float iTime;
-uniform float uMode, uSpeed, uDensity, uDispersion, uDirection, uContrast, uGlow;
+uniform float time;
+uniform vec2 resolution;
+uniform float Modo;
+uniform float Velocidade;
+uniform float Densidade;
+uniform float Dispersao;
+uniform float Direcao;
+uniform float Contraste;
+uniform float Brilho;
 uniform sampler2D inputTexture;
 in vec2 uv;
 out vec4 fragColor;
 float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+34.345); return fract(p.x*p.y); }
 void main(){
- vec2 p=uv; float t=iTime*uSpeed; float aspect=iResolution.x/max(iResolution.y,1.0);
- p.x=(p.x-.5)*aspect+.5;
- vec2 shift=vec2(uDirection*0.025*sin(t*1.7+p.y*75.0),0.0);
- vec4 src=vec4(0.0);
- if(uMode<0.5) src=texture(inputTexture,clamp(uv+shift,vec2(0.001),vec2(0.999)));
- else {
-   vec2 q=(uv-.5)*vec2(aspect,1.0);
+ float t=time*Velocidade*3.0;
+ float aspect=resolution.x/max(resolution.y,1.0);
+ vec2 shift=vec2((Direcao*2.0-1.0)*0.018*sin(t*1.7+uv.y*75.0),0.0);
+ vec4 src=vec4(0.0,0.0,0.0,1.0);
+ if(Modo>0.5) {
+   vec2 sampleUV=clamp(uv+shift,vec2(0.001),vec2(0.999));
+   src=texture(inputTexture,sampleUV);
+ } else {
+   vec2 q=(uv-0.5)*vec2(aspect,1.0);
    float r=length(q); float a=atan(q.y,q.x);
-   float rings=0.5+0.5*sin(r*48.0-t*2.0+sin(a*7.0+t)*2.0);
-   float wave=0.5+0.5*sin(q.y*80.0+sin(q.x*9.0-t)*4.0);
-   float particles=step(1.0-uDensity*0.25,hash(floor((uv+shift)*iResolution.xy/ max(2.0,18.0-uDensity*14.0))));
-   float v=max(rings*0.35,wave*0.22)+particles*0.75;
-   src=vec4(vec3(v),1.0);
+   float rings=0.5+0.5*sin(r*52.0-t*2.0+sin(a*7.0+t)*2.0);
+   float wave=0.5+0.5*sin(q.y*88.0+sin(q.x*9.0-t)*4.0);
+   vec2 cell=floor((uv+shift)*resolution/max(2.0,18.0-Densidade*14.0));
+   float particles=step(1.0-Densidade*0.25,hash(cell));
+   float v=max(rings*0.34,wave*0.24)+particles*0.7;
+   src=vec4(vec3(clamp(v,0.0,1.0)),1.0);
  }
- float lum=dot(src.rgb,vec3(.2126,.7152,.0722));
- float scan=0.78+0.22*sin(uv.y*iResolution.y*1.15);
- float noise=(hash(vec2(floor(uv.y*iResolution.y),floor(iTime*24.0)))-.5)*uDispersion*.25;
- float v=clamp((lum-.5)*uContrast+0.5+noise,0.0,1.0)*scan;
- float edge=pow(max(v,0.0),2.0)*uGlow;
- vec3 outColor=vec3(v+edge);
- fragColor=vec4(outColor,src.a);
+ float lum=dot(src.rgb,vec3(0.2126,0.7152,0.0722));
+ float scan=0.78+0.22*sin(uv.y*resolution.y*1.15);
+ float noise=(hash(vec2(floor(uv.y*resolution.y),floor(time*24.0)))-0.5)*Dispersao*0.25;
+ float v=clamp((lum-0.5)*(Contraste*2.0)+0.5+noise,0.0,1.0)*scan;
+ float edge=pow(max(v,0.0),2.0)*Brilho;
+ fragColor=vec4(vec3(clamp(v+edge,0.0,1.0)),src.a);
 })";
 
-enum { P_MODE, P_SPEED, P_DENSITY, P_DISPERSION, P_DIRECTION, P_CONTRAST, P_GLOW, P_COUNT };
-class DigitalScan3D : public CFFGLPlugin {
+class DigitalScan3D : public ffglqs::Plugin {
 public:
- DigitalScan3D(){
-   SetMinInputs(0); SetMaxInputs(1);
-   SetOptionParamInfo(P_MODE,"Modo",2,0.0f);
-   SetParamElementInfo(P_MODE,0,"Generator",0.0f);
-   SetParamElementInfo(P_MODE,1,"Effect",1.0f);
-   SetParamInfof(P_SPEED,"Velocidade",FF_TYPE_STANDARD);
-   SetParamInfof(P_DENSITY,"Densidade",FF_TYPE_STANDARD);
-   SetParamInfof(P_DISPERSION,"Dispersao",FF_TYPE_STANDARD);
-   SetParamInfof(P_DIRECTION,"Direcao",FF_TYPE_STANDARD);
-   SetParamInfof(P_CONTRAST,"Contraste",FF_TYPE_STANDARD);
-   SetParamInfof(P_GLOW,"Brilho",FF_TYPE_STANDARD);
-   p[P_MODE]=0; p[P_SPEED]=.35f; p[P_DENSITY]=.6f; p[P_DISPERSION]=.4f; p[P_DIRECTION]=.5f; p[P_CONTRAST]=.7f; p[P_GLOW]=.2f;
- }
- FFResult InitGL(const FFGLViewportStruct* vp) override {
-   if(!shader.Compile(kVertex,kFragment) || !quad.Initialise()){ DeInitGL(); return FF_FAIL; }
-   last=std::chrono::steady_clock::now(); started=true; return CFFGLPlugin::InitGL(vp);
- }
- FFResult DeInitGL() override { shader.FreeGLResources(); quad.Release(); return FF_SUCCESS; }
- FFResult ProcessOpenGL(ProcessOpenGLStruct* pGL) override {
-   auto now=std::chrono::steady_clock::now(); float dt=std::chrono::duration<float>(now-last).count(); last=now; if(dt<0||dt>.25f)dt=.016f; time+=dt;
-   GLint vp[4]; glGetIntegerv(GL_VIEWPORT,vp);
-   ScopedShaderBinding binding(shader.GetGLID());
-   shader.Set("iResolution",(float)vp[2],(float)vp[3],1.0f);
-   shader.Set("iTime",time); shader.Set("uMode",p[P_MODE]);
-   if(pGL && pGL->numInputTextures>0 && pGL->inputTextures && pGL->inputTextures[0]) { glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D,pGL->inputTextures[0]->Handle); shader.Set("inputTexture",0.0f); } shader.Set("uSpeed",p[P_SPEED]*3.0f);
-   shader.Set("uDensity",p[P_DENSITY]); shader.Set("uDispersion",p[P_DISPERSION]); shader.Set("uDirection",(p[P_DIRECTION]-.5f)*2.0f);
-   shader.Set("uContrast",p[P_CONTRAST]*2.0f); shader.Set("uGlow",p[P_GLOW]);
-   quad.Draw(); return FF_SUCCESS;
- }
- FFResult SetFloatParameter(unsigned int i,float v) override { if(i>=P_COUNT)return FF_FAIL; p[i]=v; return FF_SUCCESS; }
- float GetFloatParameter(unsigned int i) override { return i<P_COUNT?p[i]:0.0f; }
-private:
- FFGLShader shader; FFGLScreenQuad quad; float p[P_COUNT]{}; float time=0; std::chrono::steady_clock::time_point last; bool started=false;
+    DigitalScan3D() {
+        SetMinInputs(0);
+        SetMaxInputs(1);
+        AddParam(ParamOption::Create("Modo", {
+            {"Generator", 0.0f}, {"Effect", 1.0f}
+        }, 0));
+        AddParam(ParamRange::Create("Velocidade", 0.35f, {0.0f, 1.0f}));
+        AddParam(ParamRange::Create("Densidade", 0.6f, {0.0f, 1.0f}));
+        AddParam(ParamRange::Create("Dispersao", 0.4f, {0.0f, 1.0f}));
+        AddParam(ParamRange::Create("Direcao", 0.5f, {0.0f, 1.0f}));
+        AddParam(ParamRange::Create("Contraste", 0.7f, {0.0f, 1.0f}));
+        AddParam(ParamRange::Create("Brilho", 0.2f, {0.0f, 1.0f}));
+        SetFragmentShader(kFragment);
+    }
+
+    const char* GetShortName() override { return "NSD3"; }
+
+    FFResult Render(ProcessOpenGLStruct* pGL) override {
+        if (GetParamOption("Modo")->GetRealValue() > 0.5f) {
+            if (!pGL || pGL->numInputTextures < 1 || !pGL->inputTextures || !pGL->inputTextures[0])
+                return FF_FAIL;
+            ScopedSamplerActivation sampler(0);
+            Scoped2DTextureBinding texture(pGL->inputTextures[0]->Handle);
+            shader.Set("inputTexture", 0);
+        }
+        quad.Draw();
+        return FF_SUCCESS;
+    }
 };
-static CFFGLPluginInfo PluginInfo(PluginFactory<DigitalScan3D>,"NSD3","N33M1A5 Digital Scan 3D",2,1,0,1,FF_SOURCE,"Digital scan / particle generator and video effect","N33M1A5");
+
