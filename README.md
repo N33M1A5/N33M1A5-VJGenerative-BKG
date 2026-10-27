@@ -2,6 +2,16 @@
 
 Plugin **FFGL Source nativo para Resolume Arena/Avenue**, criado a partir dos arquivos fornecidos pelo autor.
 
+## V1.7 — 82 motores
+
+Os sete motores existentes e os 75 motores dos links únicos estão implementados, com seleção única em faixas de até seis botões. Spotlight 1 e Flow Dark Glass foram aprovados pelo operador. O vitral foi refeito com janelas de igreja; os demais novos visuais aguardam avaliação no Resolume.
+
+- [Instalação, AJUSTES, direção, paletas, RGBA e texto](docs/V1_7_ENTREGA_82.md)
+- [Todos os motores, referências e código GLSL](docs/REFERENCIAS_STORYLOOP_ATUALIZADAS.md)
+- [Workflow de compilação e testes](.github/workflows/prototypes.yml)
+
+A DLL da expansão é `VJGenerativeV17.dll`, apresentada como **VJ Gen V1.7 82**. A V1.4.1 e a V1.6 LAB permanecem disponíveis nas versões e commits anteriores. As instruções abaixo descrevem a base histórica.
+
 ## V1 — Base independente
 
 - **6 motores:** Névoa, Túnel, Lasers, Células, Aurora e Orbes.

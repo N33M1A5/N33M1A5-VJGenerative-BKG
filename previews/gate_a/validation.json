@@ -1,0 +1,121 @@
+{
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "gl_version": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+  "engines": {
+    "stained_glass": {
+      "motion_mean_delta_5s": 24.183328993055557,
+      "loop_endpoint_delta": 4.340277777777778e-06,
+      "wrap_delta": 0.40305555555555556,
+      "adjacent_delta": 0.39874855324074077,
+      "controls": {
+        "scale": 22.624341724537036,
+        "intensity": 6.871740451388889,
+        "hue": 15.467973090277777,
+        "symmetry": 18.834463252314816,
+        "seed": 3.1625260416666667,
+        "detail": 2.572705439814815,
+        "depth": 0.5193446180555555,
+        "density": 2.5890697337962965,
+        "glow": 4.617650462962963,
+        "speed": 13.2721875,
+        "direction": 32.70388310185185,
+        "pulse": 0.32816695601851853,
+        "bpm_with_pulse": 1.4667216435185184
+      },
+      "alpha_25_percent": 64.0,
+      "1920x1080": {
+        "render_and_readback_seconds": 0.095,
+        "nonblack": true
+      },
+      "3360x1008": {
+        "render_and_readback_seconds": 0.137,
+        "nonblack": true
+      },
+      "3840x2160": {
+        "render_and_readback_seconds": 0.319,
+        "nonblack": true
+      },
+      "1080x1920": {
+        "render_and_readback_seconds": 0.085,
+        "nonblack": true
+      }
+    },
+    "spotlight": {
+      "motion_mean_delta_5s": 31.193347800925928,
+      "loop_endpoint_delta": 2.8935185185185184e-06,
+      "wrap_delta": 0.13666377314814815,
+      "adjacent_delta": 0.14013744212962964,
+      "controls": {
+        "scale": 28.869561631944446,
+        "intensity": 8.348718171296296,
+        "hue": 12.528776041666667,
+        "symmetry": 25.11413483796296,
+        "seed": 33.31058883101852,
+        "detail": 6.810121527777778,
+        "depth": 0.6048596643518519,
+        "density": 26.144457465277778,
+        "glow": 6.568731192129629,
+        "speed": 17.957390046296297,
+        "direction": 30.097591145833334,
+        "pulse": 0.29401909722222225,
+        "bpm_with_pulse": 1.3208015046296295
+      },
+      "alpha_25_percent": 64.0,
+      "1920x1080": {
+        "render_and_readback_seconds": 0.069,
+        "nonblack": true
+      },
+      "3360x1008": {
+        "render_and_readback_seconds": 0.089,
+        "nonblack": true
+      },
+      "3840x2160": {
+        "render_and_readback_seconds": 0.235,
+        "nonblack": true
+      },
+      "1080x1920": {
+        "render_and_readback_seconds": 0.063,
+        "nonblack": true
+      }
+    },
+    "flow_dark_glass": {
+      "motion_mean_delta_5s": 46.65426359953704,
+      "loop_endpoint_delta": 0.0029890046296296297,
+      "wrap_delta": 1.2465885416666667,
+      "adjacent_delta": 1.2409548611111112,
+      "controls": {
+        "scale": 35.59735243055555,
+        "intensity": 7.9697063078703705,
+        "hue": 5.800263310185185,
+        "symmetry": 27.74949652777778,
+        "seed": 50.49480758101852,
+        "detail": 0.5110011574074074,
+        "depth": 23.591283275462963,
+        "density": 49.019657118055555,
+        "glow": 4.460636574074074,
+        "speed": 31.220907118055557,
+        "direction": 56.45127893518519,
+        "pulse": 0.7109085648148148,
+        "bpm_with_pulse": 3.174777199074074
+      },
+      "alpha_25_percent": 64.0,
+      "1920x1080": {
+        "render_and_readback_seconds": 0.117,
+        "nonblack": true
+      },
+      "3360x1008": {
+        "render_and_readback_seconds": 0.181,
+        "nonblack": true
+      },
+      "3840x2160": {
+        "render_and_readback_seconds": 0.437,
+        "nonblack": true
+      },
+      "1080x1920": {
+        "render_and_readback_seconds": 0.108,
+        "nonblack": true
+      }
+    }
+  },
+  "claim": "OpenGL rendering validation; not an RTX/Resolume performance certification."
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ <ItemGroup Label="ProjectConfigurations"><ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration></ItemGroup>
+ <PropertyGroup Label="Globals"><ProjectGuid>{1655E7FB-E04C-4BCC-BC02-BD2CADB38A91}</ProjectGuid><WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion></PropertyGroup>
+ <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+ <PropertyGroup Label="Configuration"><ConfigurationType>Application</ConfigurationType><PlatformToolset>v143</PlatformToolset><CharacterSet>Unicode</CharacterSet></PropertyGroup>
+ <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
+ <PropertyGroup><OutDir>$(ProjectDir)..\..\font-test\</OutDir><IntDir>$(ProjectDir)..\..\obj\atlas\</IntDir><TargetName>TextAtlasTest</TargetName></PropertyGroup>
+ <ItemDefinitionGroup><ClCompile><LanguageStandard>stdcpp17</LanguageStandard><AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions><AdditionalIncludeDirectories>$(ProjectDir)..\..\;$(ProjectDir)..\..\ffgl\source\lib\;$(ProjectDir)..\..\ffgl\deps\glew-2.1.0\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories></ClCompile><Link><AdditionalDependencies>Gdi32.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies><SubSystem>Console</SubSystem></Link></ItemDefinitionGroup>
+ <ItemGroup><ClCompile Include="..\..\tools\text_atlas_windows.cpp"/></ItemGroup>
+ <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
+</Project>

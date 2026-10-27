@@ -1,0 +1,89 @@
+name: Build VJ Generative V1.7 Windows x64
+
+on:
+  push:
+    branches: [feature/v1-7-all-engines-alphabetical]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout plugin source
+        uses: actions/checkout@v4
+      - name: Checkout official Resolume FFGL SDK
+        uses: actions/checkout@v4
+        with:
+          repository: resolume/ffgl
+          ref: master
+          path: ffgl
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install native OpenGL and build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq build-essential python3-dev libglew-dev libgl1-mesa-dev libegl1-mesa-dev libepoxy-dev glslang-tools fonts-dejavu-core
+          python -m pip install -r prototypes/gate_a/requirements.txt
+      - name: Verify catalog and generated sources
+        run: |
+          python tools/validate_v17.py
+          python tools/embed_catalog.py
+          python tools/make_v17_plugin.py
+          git diff --exit-code -- src/v17/generated_shaders.h src/v17/engine_catalog.h src/v17/VJGenerativeV17.cpp docs/ENGINE_SOURCES.json
+      - name: Compile and exercise the native FFGL interface
+        run: |
+          python tools/build_native_tests.py --sdk ffgl --out /tmp/vj-native
+          python tools/validate_native_adjustments.py /tmp/vj-native/vj_native_plugin.so
+  build:
+    needs: verify
+    runs-on: windows-latest
+    steps:
+      - name: Checkout plugin source
+        uses: actions/checkout@v4
+      - name: Checkout official Resolume FFGL SDK
+        uses: actions/checkout@v4
+        with:
+          repository: resolume/ffgl
+          ref: master
+          path: ffgl
+      - name: Stage V1.7 source into SDK
+        shell: pwsh
+        run: |
+          $target = 'ffgl/source/plugins/VJGenerativeV1'
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+          Copy-Item 'src/v17/*' $target -Recurse -Force
+          Copy-Item 'shaders.h' $target -Force
+          Copy-Item 'shaders_expansion.h' $target -Force
+          Copy-Item 'palettes_extra.h' $target -Force
+          Copy-Item 'build/windows/VJGenerativeV17.vcxproj' 'ffgl/build/windows/VJGenerativeV17.vcxproj' -Force
+          if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
+          if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+      - name: Build FFGL DLL (Release x64)
+        shell: pwsh
+        run: |
+          msbuild 'ffgl/build/windows/VJGenerativeV17.vcxproj' /m /t:Build /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed.' }
+      - name: Stage and hash DLL
+        shell: pwsh
+        run: |
+          $dll = Get-ChildItem 'ffgl' -Filter 'VJGenerativeV17.dll' -Recurse | Select-Object -First 1
+          if (-not $dll) { throw 'Expected VJGenerativeV17.dll was not created.' }
+          New-Item -ItemType Directory -Force -Path artifact | Out-Null
+          Copy-Item $dll.FullName 'artifact/VJGenerativeV17.dll' -Force
+          Write-Host "DLL bytes: $((Get-Item 'artifact/VJGenerativeV17.dll').Length)"
+          Get-FileHash 'artifact/VJGenerativeV17.dll' -Algorithm SHA256 | Format-List
+      - name: Upload verified Windows x64 DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: N33-VJ-V1.7-Windows-x64
+          path: artifact/VJGenerativeV17.dll
+          if-no-files-found: error
