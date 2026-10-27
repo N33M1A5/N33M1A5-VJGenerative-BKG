@@ -59,6 +59,9 @@ jobs:
           $target = 'ffgl/source/plugins/VJGenerativeV1'
           New-Item -ItemType Directory -Force -Path $target | Out-Null
           Copy-Item 'src/v17/*' $target -Recurse -Force
+          Copy-Item 'shaders.h' $target -Force
+          Copy-Item 'shaders_expansion.h' $target -Force
+          Copy-Item 'palettes_extra.h' $target -Force
           Copy-Item 'build/windows/VJGenerativeV17.vcxproj' 'ffgl/build/windows/VJGenerativeV17.vcxproj' -Force
           if (!(Test-Path 'ffgl/deps/glew.props')) { throw 'Official SDK GLEW props missing.' }
           if (!(Test-Path 'ffgl/build/windows/FFGLPlugins.def')) { throw 'Official SDK module exports missing.' }
