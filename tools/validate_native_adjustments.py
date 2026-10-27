@@ -50,7 +50,7 @@ def main():
    responses['Inverter Movimento']='valid output; response measured above';responses['Velocidade zero']='valid paused output'
    host.reset(engine);host.set('Opacidade',.25);alpha=host.sample()[:,:,3];assert 0.0<float(alpha.mean())<=255.0,(engine,'opacity produced invalid alpha',float(alpha.mean()))
    # Test palettes and every RGBA channel via public setters, including A-only alpha.
-   host.reset(engine);host.set('Paleta',10.);palette=host.sample();assert delta(base,palette)>.01
+   host.reset(engine);host.set('Cores do Motor',1.);host.set('Paleta',10.);palette=host.sample();assert delta(base,palette)>.01,(engine,'palette has no visible effect when palette source is enabled')
    host.set('Modo de Cor',1.);host.set('A Alpha',.5);host.set('Opacidade',.5);a=host.sample();assert abs(float(a[:,:,3].mean())-64)<1,(engine,'A alpha')
    # Hue is already validated above against each engine's rendered output.
    # In RGBA override modes, the selected A/B colors replace engine colorization,
