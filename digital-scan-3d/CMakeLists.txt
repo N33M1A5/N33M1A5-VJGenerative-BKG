@@ -29,6 +29,7 @@ add_library(N33M1A5DigitalScan3D SHARED src/DigitalScan3D.cpp ${FFGL_SRC})
 target_include_directories(N33M1A5DigitalScan3D PRIVATE
   "${ffgl_SOURCE_DIR}/source/lib"
   "${ffgl_SOURCE_DIR}/source/lib/ffglquickstart"
+  "${ffgl_SOURCE_DIR}/source/lib/ffglex"
   "${GLEW_INCLUDE_DIR}")
 target_compile_definitions(N33M1A5DigitalScan3D PRIVATE NOMINMAX _CRT_SECURE_NO_WARNINGS)
 target_link_libraries(N33M1A5DigitalScan3D PRIVATE opengl32 "${GLEW_LIBRARY}")
