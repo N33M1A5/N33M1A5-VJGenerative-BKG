@@ -4,7 +4,12 @@ static bool addSharedAdjustments(std::string& s,bool classic){
  const char* rgbHue=R"GLSL(
  vec3 userRGBAHue(vec3 c,float h){vec3 k=normalize(vec3(1));float a=h*6.28318530718;return max(vec3(0),c*cos(a)+cross(k,c)*sin(a)+k*dot(k,c)*(1.-cos(a)));}
 )GLSL";
- if(!replaceOnce(s,"vec3 pal(float t){","vec3 userRGBAHue(vec3 c,float h);\nvec3 pal(float t){")){\n  // The classic palette shader has already wrapped pal() around originalPal().\n  // In that case the shared hue helper is still injected before main() below.\n  if(!(classic && s.find("vec3 originalPal(float t){")!=std::string::npos && s.find("vec3 pal(float t){")!=std::string::npos))return false;\n  if(!replaceOnce(s,"vec3 pal(float t){","vec3 userRGBAHue(vec3 c,float h);\\nvec3 pal(float t){"))return false;\n }
+ // Some assembled classic shaders contain more than one pal() declaration.
+ // Insert the prototype before the first declaration without requiring uniqueness.
+ const std::string palDecl="vec3 pal(float t){";
+ const auto palPos=s.find(palDecl);
+ if(palPos==std::string::npos)return false;
+ s.insert(palPos,"vec3 userRGBAHue(vec3 c,float h);\n");
  if(classic){if(!replaceOnce(s,"if(mode==1)return A;","if(mode==1)return userRGBAHue(A,uHue);"))return false;}
  else{if(!replaceOnce(s,"if(mode==1)return A.rgb;","if(mode==1)return userRGBAHue(A.rgb,uHue);"))return false;}
  if(!replaceOnce(s,"void main(){",std::string(rgbHue)+"\nvoid main(){"))return false;
