@@ -29,7 +29,8 @@ void main(){
  vec2 shift=vec2((Direcao*2.0-1.0)*0.018*sin(t*1.7+uv.y*75.0),0.0);
  vec4 src=texture(inputTexture,clamp(uv+shift,vec2(0.001),max(maxUV,vec2(0.001))));
  float lum=dot(src.rgb,vec3(0.2126,0.7152,0.0722));
- float lineCount=max(resolution.y*(0.35+ Densidade*1.65),1.0);\n float scan=1.0-(0.04+0.18*Densidade)*(0.5+0.5*sin(uv.y*lineCount*6.2831853));
+ float lineCount=max(resolution.y*(0.35+ Densidade*1.65),1.0);
+ float scan=1.0-(0.04+0.18*Densidade)*(0.5+0.5*sin(uv.y*lineCount*6.2831853));
  float noise=(hash(vec2(floor(uv.y*lineCount),floor(time*24.0)))-0.5)*Dispersao*0.25;
  float v=clamp((lum-0.5)*(Contraste*2.0)+0.5+noise,0.0,1.0)*scan;
  float edge=pow(max(v,0.0),2.0)*Brilho;
