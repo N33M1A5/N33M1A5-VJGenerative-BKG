@@ -17,7 +17,7 @@ static CFFGLPluginInfo PluginInfo(
     "Animated digital scan video effect",
     "N33M1A5");
 
-static const char* kFragment = R"(#version 410 core
+static const char* kFragment = R"(
 uniform sampler2D inputTexture;
 uniform vec2 maxUV;
 in vec2 i_uv;
